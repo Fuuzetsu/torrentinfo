@@ -243,15 +243,16 @@ TabChar = '    ';
 
 def GetCommandlineArguments ( appname, arguments ):
 	try:
-		options, arguments = getopt.getopt ( arguments, 'hndbf', [ 'help', 'nocolour', 'dump', 'basic', 'files' ] );
+		options, arguments = getopt.getopt ( arguments, 'hndbtf', [ 'help', 'nocolour', 'dump', 'basic', 'top', 'files' ] );
 	except getopt.GetoptError:
 		ShowUsage ( appname );
 
 	if not arguments: ShowUsage ( appname );
 	optionsmap = [ ( ( '-n', '--nocolour' ), 'nocolour' ),
-	               ( ( '-d', '--dump'     ), 'dump'     ),
-				   ( ( '-b', '--basic'    ), 'basic'    ),
-				   ( ( '-f', '--files'    ), 'files'    ) ];
+	               ( ( '-d', '--dump'     ), 'dump'     ),		       
+		       ( ( '-b', '--basic'    ), 'basic'    ),
+		       ( ( '-t', '--top'      ), 'top'      ),
+		       ( ( '-f', '--files'    ), 'files'    ) ];
 	setoptions = { };
 	for option, value in options:
 		if option in [ '-h', '--help' ]: ShowUsage ( appname );
@@ -264,6 +265,7 @@ def ShowUsage ( appname ):
 	sys.exit ( '%s [ -h -n ] filename1 [ ... filenameN ]\n\n' % appname +
 			   '    -h --help      Displays this message\n' +
 			   '    -b --basic     Shows basic file information (default)\n' +
+		           '    -t --top       Shows only the name of top level file/directory\n' +
 			   '    -f --files     Shows files within the torrent\n' +
 			   '    -d --dump      Dumps the whole file hierarchy\n' +
 			   '    -n --nocolour  No ANSI colour\n' );
@@ -297,6 +299,10 @@ def Basic ( formatter, torrent ):
 	GetLine ( formatter, 'tracker url', 'announce', torrent );
 	GetLine ( formatter, 'created by ', 'created by', torrent );
 	GetLine ( formatter, 'created on ', 'creation date', torrent, isdate = True );
+
+def Top ( formatter, torrent ):
+	if not 'info' in torrent: sys.exit ( 'Missing "info" section in %s' % torrent.filename );
+	torrent['info']['name'].Dump(formatter, '', 1)
 
 def BasicFiles ( formatter, torrent ):
 	if not 'info' in torrent: sys.exit ( 'Missing "info" section in %s' % torrent.filename );
@@ -355,6 +361,8 @@ if __name__ == "__main__":
 				elif 'files' in settings:
 					Basic ( formatter, torrent );
 					ListFiles ( formatter, torrent );
+				elif 'top' in settings:
+					Top ( formatter, torrent );
 			else:
 				Basic ( formatter, torrent );
 				BasicFiles ( formatter, torrent );
