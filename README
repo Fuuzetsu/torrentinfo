@@ -4,9 +4,6 @@
 	          | || (_) | |  | | |  __/ | | | |_| | | | |  _| (_) |
 	           \__\___/|_|  |_|  \___|_| |_|\__|_|_| |_|_|  \___/
 
-                       Release 1.0.2, 30 December 2008
-                   Vrai Stacey <vrai@acherondevelopment.com>
-                http://vrai.net/project.php?project=torrentinfo
 
 
 About
@@ -35,9 +32,12 @@ torrentinfo [ -h -n ] filename1 [ ... filenameN ]
 
     -h --help      Displays this message
     -b --basic     Shows basic file information (default)
+    -t --top       Shows only the name of top level file/directory
     -f --files     Shows files within the torrent
     -d --dump      Dumps the whole file hierarchy
+    -a --ascii     Only prints out ascii
     -n --nocolour  No ANSI colour
+
 
 If no settings are specified the script will default to showing the basic
 information on each file.
@@ -56,6 +56,9 @@ file in the install directory.
 Bugs
 ----
 
-Any bugs or unexpected behavoir should be reported to Vrai
-<vrai@acherondevelopment.com>. If bugs aren't reported they can't be fixed!
+Any bugs or fixes should be submitted to 
+https://github.com/ShanaTsunTsunLove/torrentinfo
 
+Original creator (no longer maintains):
+Vrai Stacey <vrai@acherondevelopment.com>
+http://vrai.net/
