@@ -370,7 +370,10 @@ if __name__ == "__main__":
 		settings, filenames = GetCommandlineArguments ( os.path.basename ( sys.argv [ 0 ] ), sys.argv [ 1: ] );
 		formatter = GetFormatter ( 'nocolour' in settings );
 		if 'nocolour' in settings: del settings [ 'nocolour' ]
-		if 'ascii' in settings: String.asciionly = True
+		if 'ascii' in settings: 
+			String.asciionly = True
+			del settings[ 'ascii' ]
+
 		for filename in filenames:
 			try:
 				torrent = Torrent.LoadTorrent ( filename );
