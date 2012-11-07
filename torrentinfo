@@ -245,7 +245,7 @@ TabChar = '    ';
 
 def GetCommandlineArguments ( appname, arguments ):
 	try:
-		options, arguments = getopt.getopt ( arguments, 'hndbtf', [ 'help', 'nocolour', 'dump', 'basic', 'top', 'files' ] );
+		options, arguments = getopt.gnu_getopt ( arguments, 'hndbtf', [ 'help', 'nocolour', 'dump', 'basic', 'top', 'files' ] );
 	except getopt.GetoptError:
 		ShowUsage ( appname );
 
