@@ -121,11 +121,13 @@ class String:
 		self.value = string.Get ( self.length );
 		self.isprintable = String.IsPrintable ( self );
 
-	def Dump ( self, formatter, tabchar, depth ):
+	def Dump ( self, formatter, tabchar, depth, newline=True):
 		if self.isprintable:
-			formatter.Format ( TextFormatter.NONE, '%s%s\n' % ( tabchar * depth, self.value ) );
+			output = '%s%s' % ( tabchar * depth, self.value ) + ( '\n' if newline else '' );
+			formatter.Format ( TextFormatter.NONE, output );
 		else:
-			formatter.Format ( TextFormatter.BRIGHT | TextFormatter.RED, '%s [%d UTF-8 Bytes]\n' % ( tabchar * depth, self.length ) );
+			output = '%s [%d UTF-8 Bytes]' % ( tabchar * depth, self.length ) + ( '\n' if newline else '' );
+			formatter.Format ( TextFormatter.BRIGHT | TextFormatter.RED, output );
 
 	def __cmp__ ( self, other ):
 		return cmp ( self.value, other.value );
@@ -302,7 +304,7 @@ def Basic ( formatter, torrent ):
 
 def Top ( formatter, torrent ):
 	if not 'info' in torrent: sys.exit ( 'Missing "info" section in %s' % torrent.filename );
-	torrent['info']['name'].Dump(formatter, '', 1)
+	torrent['info']['name'].Dump(formatter, '', 1, newline=False)
 
 def BasicFiles ( formatter, torrent ):
 	if not 'info' in torrent: sys.exit ( 'Missing "info" section in %s' % torrent.filename );
