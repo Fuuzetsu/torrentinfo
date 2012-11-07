@@ -8,7 +8,8 @@
 #
 # $Id: torrentinfo 1483 2009-01-01 15:45:25Z vrai $
 
-import sys, getopt, os.path, re, time;
+import sys, getopt, os.path, re, time, unicodedata;
+
 
 ##############################################################################
 # Class defintions
@@ -140,9 +141,10 @@ class String:
 		return String ( StringBuffer ( '%d:%s' % ( len ( string ), string ) ) );
 
 	def IsPrintable ( string ):
-		for char in string.value:
-			if ord ( char ) < 32 or ord ( char ) > 127: return False;
-		return True;
+		# True if there are no Unicode escape characters in the string
+		control_chars = ''.join(map(unichr, range(0,32) + range(127,160)))		
+		control_char_re = re.compile('[%s]' % re.escape(control_chars))
+		return True if control_char_re.match(string.value) is None else False
 
 	IsPrintable = staticmethod ( IsPrintable );
 
