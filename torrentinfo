@@ -126,7 +126,7 @@ class String:
 			output = '%s%s' % ( tabchar * depth, self.value ) + ( '\n' if newline else '' );
 			formatter.Format ( TextFormatter.NONE, output );
 		else:
-			output = '%s [%d UTF-8 Bytes]' % ( tabchar * depth, self.length ) + ( '\n' if newline else '' );
+			output = '%s[%d UTF-8 Bytes]' % ( tabchar * depth, self.length ) + ( '\n' if newline else '' );
 			formatter.Format ( TextFormatter.BRIGHT | TextFormatter.RED, output );
 
 	def __cmp__ ( self, other ):
