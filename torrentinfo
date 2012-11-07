@@ -355,20 +355,23 @@ if __name__ == "__main__":
 		formatter = GetFormatter ( 'nocolour' in settings );
 		if 'nocolour' in settings: del settings [ 'nocolour' ]
 		for filename in filenames:
-			torrent = Torrent.LoadTorrent ( filename );
-			formatter.Format ( TextFormatter.BRIGHT, '%s\n' % os.path.basename ( torrent.filename ) );
-			if settings and not 'basic' in settings:
-				if 'dump' in settings:
-					Dump ( formatter, torrent );
-				elif 'files' in settings:
+			try:
+				torrent = Torrent.LoadTorrent ( filename );
+				formatter.Format ( TextFormatter.BRIGHT, '%s\n' % os.path.basename ( torrent.filename ) );
+				if settings and not 'basic' in settings:
+					if 'dump' in settings:
+						Dump ( formatter, torrent );
+					elif 'files' in settings:
+						Basic ( formatter, torrent );
+						ListFiles ( formatter, torrent );
+					elif 'top' in settings:
+						Top ( formatter, torrent );
+				else:
 					Basic ( formatter, torrent );
-					ListFiles ( formatter, torrent );
-				elif 'top' in settings:
-					Top ( formatter, torrent );
-			else:
-				Basic ( formatter, torrent );
-				BasicFiles ( formatter, torrent );
-			formatter.Format ( TextFormatter.NORMAL, '\n' );
+					BasicFiles ( formatter, torrent );
+				formatter.Format ( TextFormatter.NORMAL, '\n' );
+			except Torrent.UnknownTypeChar:
+				sys.stderr.write ( 'Could not parse %s as a valid torrent file.\n' % filename );								
 	except SystemExit, message:
 		sys.exit ( message );
 	except KeyboardInterrupt:
