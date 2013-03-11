@@ -325,7 +325,7 @@ def ShowUsage(appname):
     sys.exit('%s [ -h -n ] filename1 [ ... filenameN ]\n\n' % appname +
              '    -h --help      Displays this message\n' +
              '    -b --basic     Shows basic file information (default)\n' +
-             '    -t --top       Shows only the name of top level file/directory\n' +
+             '    -t --top       Shows only the top level file/directory\n' +
              '    -f --files     Shows files within the torrent\n' +
              '    -d --dump      Dumps the whole file hierarchy\n' +
              '    -a --ascii     Only prints out ascii\n' +
@@ -336,13 +336,15 @@ def GetFormatter(nocolour):
     return {True: TextFormatter, False: ANSIColour}[nocolour]()
 
 
-def StartLine(formatter, prefix, depth, postfix='', format=TextFormatter.NORMAL):
+def StartLine(formatter, prefix, depth, postfix='',
+              format=TextFormatter.NORMAL):
     formatter.Format(TextFormatter.BRIGHT | TextFormatter.GREEN,
                      '%s%s' % (TabChar * depth, prefix))
     formatter.Format(format, '%s%s' % (TabChar, postfix))
 
 
-def GetLine(formatter, prefix, key, torrent, depth=1, isdate=False, format=TextFormatter.NORMAL):
+def GetLine(formatter, prefix, key, torrent, depth=1,
+            isdate=False, format=TextFormatter.NORMAL):
     StartLine(formatter, prefix, depth, format=format)
     if key in torrent:
         if isdate:
@@ -416,7 +418,8 @@ def ListFiles(formatter, torrent):
         filestorrent = torrent['info']['files']
         for index in range(len(filestorrent)):
             formatter.Format(TextFormatter.YELLOW |
-                             TextFormatter.BRIGHT, '%s%d' % (TabChar * 2, index))
+                             TextFormatter.BRIGHT,
+                             '%s%d' % (TabChar * 2, index))
             formatter.Format(TextFormatter.NORMAL, '\n')
             if filestorrent[index]['path'].__class__ is String:
                 filestorrent[index]['path'].Dump(formatter, TabChar, 3)
