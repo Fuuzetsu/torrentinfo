@@ -13,7 +13,7 @@ import getopt
 import os.path
 import re
 import time
-import unicodedata
+
 from string import printable
 
 ##############################################################################
