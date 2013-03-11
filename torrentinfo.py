@@ -1,10 +1,11 @@
 #!/usr/bin/env python
+"""
+TORRENTINFO - Parses .torrent files and displays various summaries of the
+              information contained within.
 
-##############################################################################
-# TORRENTINFO - Parses .torrent files and displays various summaries of the
-#               information contained within.
-#
-# Published under the GNU Public License: http://www.gnu.org/copyleft/gpl.html
+Published under the GNU Public License: http://www.gnu.org/copyleft/gpl.html
+"""
+###############################################################################
 #
 # $Id: torrentinfo 1483 2009-01-01 15:45:25Z vrai $
 
@@ -14,7 +15,8 @@ import os.path
 import re
 import time
 
-from string import printable
+#  see pylint ticket #2481
+from string import printable # pylint: disable-msg=W0402
 
 ##############################################################################
 # Class defintions
@@ -31,6 +33,9 @@ class TextFormatter:
     YELLOW = 0x000040
     MAGENTA = 0x000080
     DULL = 0x000100
+
+    def __init__(self):
+        pass
 
     def Format(self, format, string=''):
         self.Output(string)
@@ -175,7 +180,7 @@ class String:
                 break
 
         # True if there are no Unicode escape characters in the string
-        control_chars = ''.join(map(unichr, range(0, 32) + range(127, 160)))
+        control_chars = ''.join([ unichr(x) for x in range(0, 32) + range(127, 160) ])
         control_char_re = re.compile('[%s]' % re.escape(control_chars))
         isunicode = True if control_char_re.match(
             string.value) is None else False
@@ -235,13 +240,13 @@ class Dictionary:
             self.value[key].Dump(formatter, tabchar, depth + 1)
 
     def __getitem__(self, key):
-        for name, value in self.value.iteritems():
+        for name, value in self.value:
             if name.value == key:
                 return value
         raise KeyError(key)
 
     def __contains__(self, key):
-        for name, value in self.value.iteritems():
+        for name, value in self.value.iterkeys():
             if name.value == key:
                 return True
         return False
