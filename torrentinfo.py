@@ -240,13 +240,13 @@ class Dictionary:
             self.value[key].Dump(formatter, tabchar, depth + 1)
 
     def __getitem__(self, key):
-        for name, value in self.value:
+        for name, value in self.value.iteritems():
             if name.value == key:
                 return value
         raise KeyError(key)
 
     def __contains__(self, key):
-        for name, value in self.value.iterkeys():
+        for name in self.value:
             if name.value == key:
                 return True
         return False
