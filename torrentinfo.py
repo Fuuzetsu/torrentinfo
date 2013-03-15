@@ -16,7 +16,7 @@ import re
 import time
 
 #  see pylint ticket #2481
-from string import printable # pylint: disable-msg=W0402
+from string import printable  # pylint: disable-msg=W0402
 
 ##############################################################################
 # Class definitions
@@ -185,8 +185,8 @@ class String:
                 break
 
         # True if there are no Unicode escape characters in the string
-        control_chars = ''.join([ unichr(x) for x in
-                                  range(0, 32) + range(127, 160) ])
+        control_chars = ''.join([unichr(x) for x in
+                                 range(0, 32) + range(127, 160)])
         control_char_re = re.compile('[%s]' % re.escape(control_chars))
         isunicode = True if control_char_re.match(
             string.value) is None else False
@@ -274,8 +274,9 @@ class List:
             self.value[0].dump(formatter, tabchar, depth)
         else:
             for index in range(len(self.value)):
-                formatter.string_format(TextFormatter.BRIGHT | TextFormatter.YELLOW,
-                                 '%s%d\n' % (tabchar * depth, index))
+                formatter.string_format(TextFormatter.BRIGHT |
+                                        TextFormatter.YELLOW,
+                                        '%s%d\n' % (tabchar * depth, index))
                 formatter.string_format(TextFormatter.NORMAL)
                 self.value[index].dump(formatter, tabchar, depth + 1)
 
@@ -297,9 +298,9 @@ class List:
 # Globals
 
 TYPE_MAP = [(re.compile('d'), Dictionary),
-              (re.compile('l'), List),
-              (re.compile('[0-9]'), String),
-              (re.compile('i'), Integer)]
+            (re.compile('l'), List),
+            (re.compile('[0-9]'), String),
+            (re.compile('i'), Integer)]
 
 TAB_CHAR = '    '
 
@@ -350,14 +351,14 @@ def get_formatter(nocolour):
 
 
 def start_line(formatter, prefix, depth, postfix='',
-              format=TextFormatter.NORMAL):
+               format=TextFormatter.NORMAL):
     formatter.string_format(TextFormatter.BRIGHT | TextFormatter.GREEN,
-                     '%s%s' % (TAB_CHAR * depth, prefix))
+                            '%s%s' % (TAB_CHAR * depth, prefix))
     formatter.string_format(format, '%s%s' % (TAB_CHAR, postfix))
 
 
 def get_line(formatter, prefix, key, torrent, depth=1,
-            isdate=False, format=TextFormatter.NORMAL):
+             isdate=False, format=TextFormatter.NORMAL):
     start_line(formatter, prefix, depth, format=format)
     if key in torrent:
         if isdate:
@@ -365,7 +366,7 @@ def get_line(formatter, prefix, key, torrent, depth=1,
                 torrent[key].dump_as_date(formatter, '', 0)
             else:
                 formatter.string_format(TextFormatter.BRIGHT |
-                                 TextFormatter.RED, '[Not An Integer]')
+                                        TextFormatter.RED, '[Not An Integer]')
         else:
             torrent[key].dump(formatter, '', 0)
     else:
@@ -380,7 +381,7 @@ def basic(formatter, torrent):
     if not 'info' in torrent:
         sys.exit('Missing "info" section in %s' % torrent.filename)
     get_line(formatter, 'name       ', 'name', torrent['info'],
-            format=TextFormatter.YELLOW | TextFormatter.DULL)
+             format=TextFormatter.YELLOW | TextFormatter.DULL)
     get_line(formatter, 'tracker url', 'announce', torrent)
     get_line(formatter, 'created by ', 'created by', torrent)
     get_line(
@@ -423,7 +424,7 @@ def list_files(formatter, torrent):
     start_line(formatter, 'files', 1, postfix='\n')
     if not 'files' in torrent['info']:
         formatter.string_format(TextFormatter.YELLOW |
-                         TextFormatter.BRIGHT, '%s%d' % (TAB_CHAR * 2, 0))
+                                TextFormatter.BRIGHT, '%s%d' % (TAB_CHAR * 2, 0))
         formatter.string_format(TextFormatter.NORMAL, '\n')
         torrent['info']['name'].dump(formatter, TAB_CHAR, 3)
         torrent['info']['length'].dump_as_size(formatter, TAB_CHAR, 3)
@@ -431,8 +432,8 @@ def list_files(formatter, torrent):
         filestorrent = torrent['info']['files']
         for index in range(len(filestorrent)):
             formatter.string_format(TextFormatter.YELLOW |
-                             TextFormatter.BRIGHT,
-                             '%s%d' % (TAB_CHAR * 2, index))
+                                    TextFormatter.BRIGHT,
+                                    '%s%d' % (TAB_CHAR * 2, index))
             formatter.string_format(TextFormatter.NORMAL, '\n')
             if filestorrent[index]['path'].__class__ is String:
                 filestorrent[index]['path'].dump(formatter, TAB_CHAR, 3)
@@ -461,7 +462,7 @@ if __name__ == "__main__":
             try:
                 torrent = Torrent.load_torrent(filename)
                 FORMATTER.string_format(TextFormatter.BRIGHT, '%s\n' %
-                                 os.path.basename(torrent.filename))
+                                        os.path.basename(torrent.filename))
                 if SETTINGS and not 'basic' in SETTINGS:
                     if 'dump' in SETTINGS:
                         dump(FORMATTER, torrent)
