@@ -133,6 +133,14 @@ class StringBuffer:
 class Torrent:
     """Class modelling a torrent file."""
     def __init__(self, filename, string):
+        """
+        :param filename: filename of the parsed torrent file
+        :type filename: str
+        :param string:
+        :type string: str
+
+        :raises: UnexpectedType
+        """
         # Should contain only one object, a dictionary
         self.filename = filename
         self.value = Torrent.parse(string)
@@ -140,6 +148,15 @@ class Torrent:
             raise self.UnexpectedType(self.value.__class__, Dictionary)
 
     def dump(self, formatter, tabchar, depth=0):
+        """Calls `String.dump` on the internal string value
+
+        :param formatter: Text formatter to use to format the output
+        :type formatter: TextFormatter
+        :param tabchar: tab character to use for indentation
+        :type tabchar: str
+        :param depth: indentation depth
+        :type depth: int
+        """
         self.value.dump(formatter, tabchar, depth)
 
     def __getitem__(self, key):
