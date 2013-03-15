@@ -434,32 +434,32 @@ def list_files(formatter, torrent):
 
 def main():
     try:
-        SETTINGS, FILENAMES = get_commandline_arguments(
+        settings, filenames = get_commandline_arguments(
             os.path.basename(sys.argv[0]), sys.argv[1:])
-        FORMATTER = get_formatter('nocolour' in SETTINGS)
-        if 'nocolour' in SETTINGS:
-            del SETTINGS['nocolour']
-        if 'ascii' in SETTINGS:
+        formatter = get_formatter('nocolour' in settings)
+        if 'nocolour' in settings:
+            del settings['nocolour']
+        if 'ascii' in settings:
             String.asciionly = True
-            del SETTINGS['ascii']
+            del settings['ascii']
 
-        for filename in FILENAMES:
+        for filename in filenames:
             try:
                 torrent = Torrent.load_torrent(filename)
-                FORMATTER.string_format(TextFormatter.BRIGHT, '%s\n' %
+                formatter.string_format(TextFormatter.BRIGHT, '%s\n' %
                                         os.path.basename(torrent.filename))
-                if SETTINGS and not 'basic' in SETTINGS:
-                    if 'dump' in SETTINGS:
-                        dump(FORMATTER, torrent)
-                    elif 'files' in SETTINGS:
-                        basic(FORMATTER, torrent)
-                        list_files(FORMATTER, torrent)
-                    elif 'top' in SETTINGS:
-                        top(FORMATTER, torrent)
+                if settings and not 'basic' in settings:
+                    if 'dump' in settings:
+                        dump(formatter, torrent)
+                    elif 'files' in settings:
+                        basic(formatter, torrent)
+                        list_files(formatter, torrent)
+                    elif 'top' in settings:
+                        top(formatter, torrent)
                 else:
-                    basic(FORMATTER, torrent)
-                    basic_files(FORMATTER, torrent)
-                FORMATTER.string_format(TextFormatter.NORMAL, '\n')
+                    basic(formatter, torrent)
+                    basic_files(formatter, torrent)
+                formatter.string_format(TextFormatter.NORMAL, '\n')
             except Torrent.UnknownTypeChar:
                 sys.stderr.write(
                     'Could not parse %s as a valid torrent file.\n' % filename)
