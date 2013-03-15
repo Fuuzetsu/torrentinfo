@@ -74,14 +74,30 @@ class StringBuffer:
         self.index = 0
 
     def is_eof(self):
+        """Checks whether we're at the end of the string.
+
+        :returns: bool -- true if this instance reached end of line
+        """
         return self.index >= len(self.string)
 
     def peek(self):
+        """Peeks at the next character in the string.
+
+        :returns: str -- next character of this instance
+        :raises: `BufferOverrun`
+        """
         if self.is_eof():
             raise StringBuffer.BufferOverrun(1)
         return self.string[self.index]
 
     def get(self, length):
+        """Gets certain amount of characters from the buffer.
+
+        :param length: Number of characters to get from the buffer
+        :type length: int
+
+        :returns: str -- first `length` characters from the buffer
+        """
         last = self.index + length
         if last > len(self.string):
             raise StringBuffer.BufferOverrun(last - len(self.string))
@@ -90,6 +106,13 @@ class StringBuffer:
         return segment
 
     def get_upto(self, character):
+        """Gets all characters in a string until the specified one, exclusive.
+
+        :param character: Character until which the string should be collected
+        :type character: str
+
+        :returns: str -- collected string from the buffer up to `character`
+        """
         string_buffer = ''
         while not self.is_eof():
             next_char = self.get(1)
@@ -99,9 +122,11 @@ class StringBuffer:
         raise StringBuffer.CharacterExpected(character)
 
     class BufferOverrun (Exception):
+        """Raised when the buffer goes past EOF."""
         pass
 
     class CharacterExpected (Exception):
+        """Raised when the buffer doesn't find the expected character."""
         pass
 
 
