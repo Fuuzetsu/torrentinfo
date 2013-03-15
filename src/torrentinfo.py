@@ -456,6 +456,15 @@ TAB_CHAR = '    '
 
 
 def get_commandline_arguments(appname, arguments):
+    """Parses the commandline arguments using :mod:`getopt`.
+
+    :param appname: name of the application
+    :type appname: str
+    :param arguments: list of arguments from the commandline
+    :type arguments: list of str
+
+    :returns: (dict, list) -- the list contains any trailing, unparsed args
+    """
     try:
         options, arguments = getopt.gnu_getopt(
             arguments, 'hndbtfa', ['help', 'nocolour', 'dump',
@@ -483,6 +492,11 @@ def get_commandline_arguments(appname, arguments):
 
 
 def show_usage(appname):
+    """Exits the application while printing the help.
+
+    :param appname: name of the application
+    :type appname: str
+    """
     sys.exit('%s [ -h -n ] filename1 [ ... filenameN ]\n\n' % appname +
              '    -h --help      Displays this message\n' +
              '    -b --basic     Shows basic file information (default)\n' +
@@ -494,11 +508,31 @@ def show_usage(appname):
 
 
 def get_formatter(nocolour):
+    """Chooses a text formatter to use throughout the application.
+
+    :param nocolour: determines whether we want the formatter to colour text
+    :type nocolour: bool
+
+    :returns: TextFormatter
+    """
     return {True: TextFormatter, False: ANSIColour}[nocolour]()
 
 
 def start_line(formatter, prefix, depth, postfix='',
                format_spec=TextFormatter.NORMAL):
+    """Print the first line during information output.
+
+    :param formatter: text formatter to use
+    :type formatter: TextFormatter
+    :param prefix: prefix to insert in front of the line
+    :type prefix: str
+    :param depth: indentation depth
+    :type depth: int
+    :param postfix: postfix to insert at the back of the line
+    :type postfix: str
+    :param format_spec: default colour to use for the text
+    :type format_spec: int
+    """
     formatter.string_format(TextFormatter.BRIGHT | TextFormatter.GREEN,
                             '%s%s' % (TAB_CHAR * depth, prefix))
     formatter.string_format(format_spec, '%s%s' % (TAB_CHAR, postfix))
@@ -506,6 +540,23 @@ def start_line(formatter, prefix, depth, postfix='',
 
 def get_line(formatter, prefix, key, torrent, depth=1, is_date=False,
              format_spec=TextFormatter.NORMAL):
+    """Print lines from a torrent instance.
+
+    :param formatter: text formatter to use
+    :type formatter: TextFormatter
+    :param prefix: prefix to insert in front of the line
+    :type prefix: str
+    :param key: key name in the torrent to print out
+    :type key: str
+    :param torrent: torrent instance to use for information
+    :type torrent: Torrent
+    :param depth: indentation depth
+    :type depth: int
+    :param is_date: indicates whether the line is a date
+    :type is_date: bool
+    :param format_spec: default colour to use for the text
+    :type format_spec: int
+    """
     start_line(formatter, prefix, depth, format_spec=format_spec)
     if key in torrent:
         if is_date:
@@ -521,10 +572,24 @@ def get_line(formatter, prefix, key, torrent, depth=1, is_date=False,
 
 
 def dump(formatter, torrent):
+    """Prints out Torrent instance data using `Torrent.dump`.
+
+    :param formatter: text formatter to use
+    :type formatter: TextFormatter
+    :param torrent: torrent instance to use for information
+    :type torrent: Torrent
+    """
     torrent.dump(formatter, TAB_CHAR, 1)
 
 
 def basic(formatter, torrent):
+    """Prints out basic information about a Torrent instance.
+
+    :param formatter: text formatter to use
+    :type formatter: TextFormatter
+    :param torrent: torrent instance to use for information
+    :type torrent: Torrent
+    """
     if not 'info' in torrent:
         sys.exit('Missing "info" section in %s' % torrent.filename)
     get_line(formatter, 'name       ', 'name', torrent['info'])
@@ -535,12 +600,26 @@ def basic(formatter, torrent):
 
 
 def top(formatter, torrent):
+    """Prints out the top file/directory name as well as torrent file name.
+
+    :param formatter: text formatter to use
+    :type formatter: TextFormatter
+    :param torrent: torrent instance to use for information
+    :type torrent: Torrent
+    """
     if not 'info' in torrent:
         sys.exit('Missing "info" section in %s' % torrent.filename)
     torrent['info']['name'].dump(formatter, '', 1, newline=False)
 
 
 def basic_files(formatter, torrent):
+    """Prints out basic file information of a Torrent instance.
+
+    :param formatter: text formatter to use
+    :type formatter: TextFormatter
+    :param torrent: torrent instance to use for information
+    :type torrent: Torrent
+    """
     if not 'info' in torrent:
         sys.exit('Missing "info" section in %s' % torrent.filename)
     if not 'files' in torrent['info']:
@@ -564,6 +643,13 @@ def basic_files(formatter, torrent):
 
 
 def list_files(formatter, torrent):
+    """Prints out a list of files using a Torrent instance
+
+    :param formatter: text formatter to use
+    :type formatter: TextFormatter
+    :param torrent: torrent instance to use for information
+    :type torrent: Torrent
+    """
     if not 'info' in torrent:
         sys.exit('Missing "info" section in %s' % torrent.filename)
     start_line(formatter, 'files', 1, postfix='\n')
