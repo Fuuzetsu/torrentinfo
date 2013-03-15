@@ -201,7 +201,7 @@ class Integer:
         formatter.string_format(
             TextFormatter.CYAN, '%s%d\n' % (tabchar * depth, self.value))
 
-    def dump_as_date(self, formatter, tabchar, depth):
+    def dump_as_date(self, formatter):
         formatter.string_format(TextFormatter.MAGENTA, time.strftime(
             '%Y/%m/%d %H:%M:%S %Z\n', time.gmtime(self.value)))
 
@@ -352,7 +352,7 @@ def get_line(formatter, prefix, key, torrent, depth=1,
     if key in torrent:
         if isdate:
             if torrent[key].__class__ is Integer:
-                torrent[key].dump_as_date(formatter, '', 0)
+                torrent[key].dump_as_date(formatter)
             else:
                 formatter.string_format(TextFormatter.BRIGHT |
                                         TextFormatter.RED, '[Not An Integer]')
@@ -387,7 +387,6 @@ def basic_files(formatter, torrent):
     if not 'info' in torrent:
         sys.exit('Missing "info" section in %s' % torrent.filename)
     if not 'files' in torrent['info']:
-        infotorrent = torrent['info']
         get_line(formatter, 'file name  ', 'name', torrent['info'])
         start_line(formatter, 'file size  ', 1)
         torrent['info']['length'].dump_as_size(formatter, '', 0)
