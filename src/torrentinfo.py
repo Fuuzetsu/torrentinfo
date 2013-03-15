@@ -70,6 +70,11 @@ class ANSIColour (TextFormatter):
 class StringBuffer:
     """String processing class."""
     def __init__(self, string):
+        """Creates an instance of StringBuffer.
+
+        :param string: string to use to create the StringBuffer
+        :type string: str
+        """
         self.string = string
         self.index = 0
 
@@ -97,6 +102,7 @@ class StringBuffer:
         :type length: int
 
         :returns: str -- first `length` characters from the buffer
+        :raises: BufferOverrun
         """
         last = self.index + length
         if last > len(self.string):
@@ -112,6 +118,7 @@ class StringBuffer:
         :type character: str
 
         :returns: str -- collected string from the buffer up to `character`
+        :raises: CharacterExpected
         """
         string_buffer = ''
         while not self.is_eof():
