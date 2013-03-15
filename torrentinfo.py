@@ -424,7 +424,8 @@ def list_files(formatter, torrent):
     start_line(formatter, 'files', 1, postfix='\n')
     if not 'files' in torrent['info']:
         formatter.string_format(TextFormatter.YELLOW |
-                                TextFormatter.BRIGHT, '%s%d' % (TAB_CHAR * 2, 0))
+                                TextFormatter.BRIGHT,
+                                '%s%d' % (TAB_CHAR * 2, 0))
         formatter.string_format(TextFormatter.NORMAL, '\n')
         torrent['info']['name'].dump(formatter, TAB_CHAR, 3)
         torrent['info']['length'].dump_as_size(formatter, TAB_CHAR, 3)
