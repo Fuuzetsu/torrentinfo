@@ -203,9 +203,11 @@ class Torrent:
     load_torrent = staticmethod(load_torrent)
 
     class UnknownTypeChar (Exception):
+        """Thrown when Torrent.parse encounters unexpected character"""
         pass
 
     class UnexpectedType (Exception):
+        """Thrown when the torrent file is not just a single dictionary"""
         pass
 
 
