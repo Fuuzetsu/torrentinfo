@@ -32,7 +32,7 @@ class TextFormatter:
     def __init__(self):
         pass
 
-    def string_format(self, format, string=''):
+    def string_format(self, format_spec, string=''):
         self.output(string)
 
     def output(self, string):
@@ -52,10 +52,10 @@ class ANSIColour (TextFormatter):
                (TextFormatter.RED, '[31m'),
                (TextFormatter.MAGENTA, '[35m'), ]
 
-    def string_format(self, format, string=''):
+    def string_format(self, format_spec, string=''):
         codestring = ''
         for name, code in ANSIColour.mapping:
-            if format & name:
+            if format_spec & name:
                 codestring += ANSIColour.escape + code
         self.output(codestring + string)
 
@@ -83,12 +83,12 @@ class StringBuffer:
         return segment
 
     def get_upto(self, character):
-        buffer = ''
+        string_buffer = ''
         while not self.is_eof():
-            next = self.get(1)
-            if next == character:
-                return buffer
-            buffer += next
+            next_char = self.get(1)
+            if next_char == character:
+                return string_buffer
+            string_buffer += next_char
         raise StringBuffer.CharacterExpected(character)
 
     class BufferOverrun (Exception):
@@ -117,11 +117,11 @@ class Torrent:
         return key in self.value
 
     def parse(string):
-        type = string.peek()
+        content_type = string.peek()
         for exp, parser in TYPE_MAP:
-            if exp.match(type):
+            if exp.match(content_type):
                 return parser(string)
-        raise Torrent.UnknownTypeChar(type, string)
+        raise Torrent.UnknownTypeChar(content_type, string)
 
     def load_torrent(filename):
         handle = file(filename, 'rb')
@@ -340,17 +340,17 @@ def get_formatter(nocolour):
 
 
 def start_line(formatter, prefix, depth, postfix='',
-               format=TextFormatter.NORMAL):
+               format_spec=TextFormatter.NORMAL):
     formatter.string_format(TextFormatter.BRIGHT | TextFormatter.GREEN,
                             '%s%s' % (TAB_CHAR * depth, prefix))
-    formatter.string_format(format, '%s%s' % (TAB_CHAR, postfix))
+    formatter.string_format(format_spec, '%s%s' % (TAB_CHAR, postfix))
 
 
-def get_line(formatter, prefix, key, torrent, depth=1,
-             isdate=False, format=TextFormatter.NORMAL):
-    start_line(formatter, prefix, depth, format=format)
+def get_line(formatter, prefix, key, torrent, depth=1, is_date=False,
+             format_spec=TextFormatter.NORMAL):
+    start_line(formatter, prefix, depth, format_spec=format_spec)
     if key in torrent:
-        if isdate:
+        if is_date:
             if torrent[key].__class__ is Integer:
                 torrent[key].dump_as_date(formatter)
             else:
@@ -369,12 +369,11 @@ def dump(formatter, torrent):
 def basic(formatter, torrent):
     if not 'info' in torrent:
         sys.exit('Missing "info" section in %s' % torrent.filename)
-    get_line(formatter, 'name       ', 'name', torrent['info'],
-             format=TextFormatter.YELLOW | TextFormatter.DULL)
+    get_line(formatter, 'name       ', 'name', torrent['info'])
     get_line(formatter, 'tracker url', 'announce', torrent)
     get_line(formatter, 'created by ', 'created by', torrent)
     get_line(
-        formatter, 'created on ', 'creation date', torrent, isdate=True)
+        formatter, 'created on ', 'creation date', torrent, is_date=True)
 
 
 def top(formatter, torrent):
