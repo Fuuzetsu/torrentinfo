@@ -344,6 +344,11 @@ class Integer:
 class Dictionary:
     """Class representing a dictionary in a torrent file."""
     def __init__(self, string):
+        """Creates an instance of Integer.
+
+        :param string: string to use for instance creation
+        :type string: str
+        """
         # Prefix char, then list of alternation string, object pairs until an
         # 'e' is hit
         string.get(1)
@@ -354,6 +359,15 @@ class Dictionary:
         string.get(1)
 
     def dump(self, formatter, tabchar, depth):
+        """Dumps the dictionary values recursively to stdout  after formatting.
+
+        :param formatter: Text formatter to use to format the output
+        :type formatter: TextFormatter
+        :param tabchar: tab character to use for indentation
+        :type tabchar: str
+        :param depth: indentation depth
+        :type depth: int
+        """
         keys = self.value.keys()
         keys.sort()
         for key in keys:
@@ -379,6 +393,11 @@ class Dictionary:
 
 class List:
     def __init__(self, string):
+        """Creates an instance of List.
+
+        :param string: string to use for instance creation
+        :type string: str
+        """
         # Prefix char, then list of values until an 'e' is hit
         string.get(1)
         self.value = []
@@ -387,6 +406,15 @@ class List:
         string.get(1)
 
     def dump(self, formatter, tabchar, depth):
+        """Dumps the list values recursively to stdout  after formatting.
+
+        :param formatter: Text formatter to use to format the output
+        :type formatter: TextFormatter
+        :param tabchar: tab character to use for indentation
+        :type tabchar: str
+        :param depth: indentation depth
+        :type depth: int
+        """
         if len(self.value) == 1:
             self.value[0].dump(formatter, tabchar, depth)
         else:
@@ -398,6 +426,13 @@ class List:
                 self.value[index].dump(formatter, tabchar, depth + 1)
 
     def join(self, separator):
+        """Joins the list values together using a separator.
+
+        :param separator: separator to use when joining values
+        :type separator: str
+
+        :returns: String
+        """
         separator = String(
             StringBuffer('%d:%s' % (len(separator), separator)))
         return reduce(lambda x, y: x + separator + y, self.value)
