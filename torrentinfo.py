@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
-TORRENTINFO - Parses .torrent files and displays various summaries of the
-              information contained within.
+Parses .torrent files and displays various summaries of the
+information contained within.
 
 Published under the GNU Public License: http://www.gnu.org/copyleft/gpl.html
 """
