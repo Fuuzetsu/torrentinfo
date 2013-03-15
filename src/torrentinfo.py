@@ -140,7 +140,8 @@ class StringBuffer:
 class Torrent:
     """Class modelling a torrent file."""
     def __init__(self, filename, string):
-        """
+        """Creates an instance of Torrent class
+
         :param filename: filename of the parsed torrent file
         :type filename: str
         :param string:
@@ -173,6 +174,14 @@ class Torrent:
         return key in self.value
 
     def parse(string):
+        """Static method which determines the type of the parsing string.
+
+        :param string: string to parse
+        :type string: str
+
+        :returns: Any of: String, Integer, List, Dictionary
+        :raises: UnknownTypeChar
+        """
         content_type = string.peek()
         for exp, parser in TYPE_MAP:
             if exp.match(content_type):
@@ -180,6 +189,13 @@ class Torrent:
         raise Torrent.UnknownTypeChar(content_type, string)
 
     def load_torrent(filename):
+        """Loads file contents from a torrent file
+
+        :param filename: torrent file path
+        :type filename: str:
+
+        :returns: Torrent
+        """
         handle = file(filename, 'rb')
         return Torrent(filename, StringBuffer(handle.read()))
 
