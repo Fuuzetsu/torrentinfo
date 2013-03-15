@@ -5,9 +5,6 @@ TORRENTINFO - Parses .torrent files and displays various summaries of the
 
 Published under the GNU Public License: http://www.gnu.org/copyleft/gpl.html
 """
-###############################################################################
-#
-# $Id: torrentinfo 1483 2009-01-01 15:45:25Z vrai $
 
 import sys
 import getopt
@@ -17,9 +14,6 @@ import time
 
 #  see pylint ticket #2481
 from string import printable  # pylint: disable-msg=W0402
-
-##############################################################################
-# Class definitions
 
 
 class TextFormatter:
@@ -294,8 +288,6 @@ class List:
     def __getitem__(self, index):
         return self.value[index]
 
-##############################################################################
-# Globals
 
 TYPE_MAP = [(re.compile('d'), Dictionary),
             (re.compile('l'), List),
@@ -303,9 +295,6 @@ TYPE_MAP = [(re.compile('d'), Dictionary),
             (re.compile('i'), Integer)]
 
 TAB_CHAR = '    '
-
-##############################################################################
-# Function definitions
 
 
 def get_commandline_arguments(appname, arguments):
@@ -444,9 +433,6 @@ def list_files(formatter, torrent):
             filestorrent[index]['length'].dump_as_size(
                 formatter, TAB_CHAR, 3)
 
-
-##############################################################################
-# Script entry point
 
 if __name__ == "__main__":
     try:
