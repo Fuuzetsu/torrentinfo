@@ -38,10 +38,10 @@ class TextFormatter:
     def __init__(self):
         pass
 
-    def Format(self, format, string=''):
-        self.Output(string)
+    def string_format(self, format, string=''):
+        self.output(string)
 
-    def Output(self, string):
+    def output(self, string):
         sys.stdout.write(string)
 
 
@@ -58,12 +58,12 @@ class ANSIColour (TextFormatter):
                (TextFormatter.RED, '[31m'),
                (TextFormatter.MAGENTA, '[35m'), ]
 
-    def Format(self, format, string=''):
+    def string_format(self, format, string=''):
         codestring = ''
         for name, code in ANSIColour.mapping:
             if format & name:
                 codestring += ANSIColour.escape + code
-        self.Output(codestring + string)
+        self.output(codestring + string)
 
 
 class StringBuffer:
@@ -72,15 +72,15 @@ class StringBuffer:
         self.string = string
         self.index = 0
 
-    def IsEOF(self):
+    def is_eof(self):
         return self.index >= len(self.string)
 
-    def Peek(self):
-        if self.IsEOF():
+    def peek(self):
+        if self.is_eof():
             raise StringBuffer.BufferOverrun(1)
         return self.string[self.index]
 
-    def Get(self, length):
+    def get(self, length):
         last = self.index + length
         if last > len(self.string):
             raise StringBuffer.BufferOverrun(last - len(self.string))
@@ -88,10 +88,10 @@ class StringBuffer:
         self.index = last
         return segment
 
-    def GetUpto(self, character):
+    def get_upto(self, character):
         buffer = ''
-        while not self.IsEOF():
-            next = self.Get(1)
+        while not self.is_eof():
+            next = self.get(1)
             if next == character:
                 return buffer
             buffer += next
@@ -109,12 +109,12 @@ class Torrent:
     def __init__(self, filename, string):
         # Should contain only one object, a dictionary
         self.filename = filename
-        self.value = Torrent.Parse(string)
+        self.value = Torrent.parse(string)
         if not self.value.__class__ is Dictionary:
             raise UnexpectedType(self.value__class__, Dictionary)
 
-    def Dump(self, formatter, tabchar, depth=0):
-        self.value.Dump(formatter, tabchar, depth)
+    def dump(self, formatter, tabchar, depth=0):
+        self.value.dump(formatter, tabchar, depth)
 
     def __getitem__(self, key):
         return self.value[key]
@@ -122,19 +122,19 @@ class Torrent:
     def __contains__(self, key):
         return key in self.value
 
-    def Parse(string):
-        type = string.Peek()
-        for exp, parser in TypeLookup:
+    def parse(string):
+        type = string.peek()
+        for exp, parser in TYPE_MAP:
             if exp.match(type):
                 return parser(string)
         raise Torrent.UnknownTypeChar(type, string)
 
-    def LoadTorrent(filename):
+    def load_torrent(filename):
         handle = file(filename, 'rb')
         return Torrent(filename, StringBuffer(handle.read()))
 
-    Parse = staticmethod(Parse)
-    LoadTorrent = staticmethod(LoadTorrent)
+    parse = staticmethod(parse)
+    load_torrent = staticmethod(load_torrent)
 
     class UnknownTypeChar (Exception):
         pass
@@ -151,19 +151,19 @@ class String:
 
     def __init__(self, string):
         # Length, colon and then content
-        self.length = int(string.GetUpto(':'))
-        self.value = string.Get(self.length)
-        self.isprintable = String.IsPrintable(self)
+        self.length = int(string.get_upto(':'))
+        self.value = string.get(self.length)
+        self.isprintable = String.is_printable(self)
 
-    def Dump(self, formatter, tabchar, depth, newline=True):
+    def dump(self, formatter, tabchar, depth, newline=True):
         if self.isprintable:
             output = '%s%s' % (
                 tabchar * depth, self.value) + ('\n' if newline else '')
-            formatter.Format(TextFormatter.NONE, output)
+            formatter.string_format(TextFormatter.NONE, output)
         else:
             output = '%s[%d UTF-8 Bytes]' % (
                 tabchar * depth, self.length) + ('\n' if newline else '')
-            formatter.Format(
+            formatter.string_format(
                 TextFormatter.BRIGHT | TextFormatter.RED, output)
 
     def __cmp__(self, other):
@@ -176,7 +176,7 @@ class String:
         string = self.value + value.value
         return String(StringBuffer('%d:%s' % (len(string), string)))
 
-    def IsPrintable(string):
+    def is_printable(string):
         # Bit inefficient but ensures we can print ascii only
         isascii = True
         for char in string.value:
@@ -193,31 +193,31 @@ class String:
 
         return isascii if String.asciionly else isunicode
 
-    IsPrintable = staticmethod(IsPrintable)
+    is_printable = staticmethod(is_printable)
 
 
 class Integer:
     """Class representing an integer in a torrent file."""
     def __init__(self, string):
         # Prefix char, then base 10 integers until e is hit
-        string.Get(1)
-        self.value = int(string.GetUpto('e'))
+        string.get(1)
+        self.value = int(string.get_upto('e'))
 
-    def Dump(self, formatter, tabchar, depth):
-        formatter.Format(
+    def dump(self, formatter, tabchar, depth):
+        formatter.string_format(
             TextFormatter.CYAN, '%s%d\n' % (tabchar * depth, self.value))
 
-    def DumpAsDate(self, formatter, tabchar, depth):
-        formatter.Format(TextFormatter.MAGENTA, time.strftime(
+    def dump_as_date(self, formatter, tabchar, depth):
+        formatter.string_format(TextFormatter.MAGENTA, time.strftime(
             '%Y/%m/%d %H:%M:%S %Z\n', time.gmtime(self.value)))
 
-    def DumpAsSize(self, formatter, tabchar, depth):
+    def dump_as_size(self, formatter, tabchar, depth):
         size = float(self.value)
         sizes = ['B', 'KB', 'MB', 'GB']
         while size > 1024 and len(sizes) > 1:
             size /= 1024
             sizes = sizes[1:]
-        formatter.Format(TextFormatter.CYAN, '%s%.1f%s\n' % (
+        formatter.string_format(TextFormatter.CYAN, '%s%.1f%s\n' % (
             tabchar * depth, size + 0.05, sizes[0]))
 
     def __add__(self, value):
@@ -229,23 +229,23 @@ class Dictionary:
     def __init__(self, string):
         # Prefix char, then list of alternation string, object pairs until an
         # 'e' is hit
-        string.Get(1)
+        string.get(1)
         self.value = {}
-        while string.Peek() != 'e':
+        while string.peek() != 'e':
             key = String(string)
-            self.value[key] = Torrent.Parse(string)
-        string.Get(1)
+            self.value[key] = Torrent.parse(string)
+        string.get(1)
 
-    def Dump(self, formatter, tabchar, depth):
+    def dump(self, formatter, tabchar, depth):
         keys = self.value.keys()
         keys.sort()
         for key in keys:
-            formatter.Format(TextFormatter.NORMAL | TextFormatter.GREEN)
+            formatter.string_format(TextFormatter.NORMAL | TextFormatter.GREEN)
             if depth < 2:
-                formatter.Format(TextFormatter.BRIGHT)
-            key.Dump(formatter, tabchar, depth)
-            formatter.Format(TextFormatter.NORMAL)
-            self.value[key].Dump(formatter, tabchar, depth + 1)
+                formatter.string_format(TextFormatter.BRIGHT)
+            key.dump(formatter, tabchar, depth)
+            formatter.string_format(TextFormatter.NORMAL)
+            self.value[key].dump(formatter, tabchar, depth + 1)
 
     def __getitem__(self, key):
         for name, value in self.value.iteritems():
@@ -263,23 +263,23 @@ class Dictionary:
 class List:
     def __init__(self, string):
         # Prefix char, then list of values until an 'e' is hit
-        string.Get(1)
+        string.get(1)
         self.value = []
-        while string.Peek() != 'e':
-            self.value.append(Torrent.Parse(string))
-        string.Get(1)
+        while string.peek() != 'e':
+            self.value.append(Torrent.parse(string))
+        string.get(1)
 
-    def Dump(self, formatter, tabchar, depth):
+    def dump(self, formatter, tabchar, depth):
         if len(self.value) == 1:
-            self.value[0].Dump(formatter, tabchar, depth)
+            self.value[0].dump(formatter, tabchar, depth)
         else:
             for index in range(len(self.value)):
-                formatter.Format(TextFormatter.BRIGHT | TextFormatter.YELLOW,
+                formatter.string_format(TextFormatter.BRIGHT | TextFormatter.YELLOW,
                                  '%s%d\n' % (tabchar * depth, index))
-                formatter.Format(TextFormatter.NORMAL)
-                self.value[index].Dump(formatter, tabchar, depth + 1)
+                formatter.string_format(TextFormatter.NORMAL)
+                self.value[index].dump(formatter, tabchar, depth + 1)
 
-    def Join(self, separator):
+    def join(self, separator):
         separator = String(
             StringBuffer('%d:%s' % (len(separator), separator)))
         return reduce(lambda x, y: x + separator + y, self.value)
@@ -296,27 +296,27 @@ class List:
 ##############################################################################
 # Globals
 
-TypeLookup = [(re.compile('d'), Dictionary),
+TYPE_MAP = [(re.compile('d'), Dictionary),
               (re.compile('l'), List),
               (re.compile('[0-9]'), String),
               (re.compile('i'), Integer)]
 
-TabChar = '    '
+TAB_CHAR = '    '
 
 ##############################################################################
 # Function definitions
 
 
-def GetCommandlineArguments(appname, arguments):
+def get_commandline_arguments(appname, arguments):
     try:
         options, arguments = getopt.gnu_getopt(
             arguments, 'hndbtfa', ['help', 'nocolour', 'dump',
                                    'basic', 'top', 'files', 'ascii'])
     except getopt.GetoptError:
-        ShowUsage(appname)
+        show_usage(appname)
 
     if not arguments:
-        ShowUsage(appname)
+        show_usage(appname)
     optionsmap = [(('-n', '--nocolour'), 'nocolour'),
                   (('-d', '--dump'), 'dump'),
                   (('-b', '--basic'), 'basic'),
@@ -326,7 +326,7 @@ def GetCommandlineArguments(appname, arguments):
     setoptions = {}
     for option, value in options:
         if option in ['-h', '--help']:
-            ShowUsage(appname)
+            show_usage(appname)
         for switches, key in optionsmap:
             if option in switches:
                 setoptions[key] = value
@@ -334,7 +334,7 @@ def GetCommandlineArguments(appname, arguments):
     return setoptions, arguments
 
 
-def ShowUsage(appname):
+def show_usage(appname):
     sys.exit('%s [ -h -n ] filename1 [ ... filenameN ]\n\n' % appname +
              '    -h --help      Displays this message\n' +
              '    -b --basic     Shows basic file information (default)\n' +
@@ -345,102 +345,102 @@ def ShowUsage(appname):
              '    -n --nocolour  No ANSI colour\n')
 
 
-def GetFormatter(nocolour):
+def get_formatter(nocolour):
     return {True: TextFormatter, False: ANSIColour}[nocolour]()
 
 
-def StartLine(formatter, prefix, depth, postfix='',
+def start_line(formatter, prefix, depth, postfix='',
               format=TextFormatter.NORMAL):
-    formatter.Format(TextFormatter.BRIGHT | TextFormatter.GREEN,
-                     '%s%s' % (TabChar * depth, prefix))
-    formatter.Format(format, '%s%s' % (TabChar, postfix))
+    formatter.string_format(TextFormatter.BRIGHT | TextFormatter.GREEN,
+                     '%s%s' % (TAB_CHAR * depth, prefix))
+    formatter.string_format(format, '%s%s' % (TAB_CHAR, postfix))
 
 
-def GetLine(formatter, prefix, key, torrent, depth=1,
+def get_line(formatter, prefix, key, torrent, depth=1,
             isdate=False, format=TextFormatter.NORMAL):
-    StartLine(formatter, prefix, depth, format=format)
+    start_line(formatter, prefix, depth, format=format)
     if key in torrent:
         if isdate:
             if torrent[key].__class__ is Integer:
-                torrent[key].DumpAsDate(formatter, '', 0)
+                torrent[key].dump_as_date(formatter, '', 0)
             else:
-                formatter.Format(TextFormatter.BRIGHT |
+                formatter.string_format(TextFormatter.BRIGHT |
                                  TextFormatter.RED, '[Not An Integer]')
         else:
-            torrent[key].Dump(formatter, '', 0)
+            torrent[key].dump(formatter, '', 0)
     else:
-        formatter.Format(TextFormatter.NORMAL, '\n')
+        formatter.string_format(TextFormatter.NORMAL, '\n')
 
 
-def Dump(formatter, torrent):
-    torrent.Dump(formatter, TabChar, 1)
+def dump(formatter, torrent):
+    torrent.dump(formatter, TAB_CHAR, 1)
 
 
-def Basic(formatter, torrent):
+def basic(formatter, torrent):
     if not 'info' in torrent:
         sys.exit('Missing "info" section in %s' % torrent.filename)
-    GetLine(formatter, 'name       ', 'name', torrent['info'],
+    get_line(formatter, 'name       ', 'name', torrent['info'],
             format=TextFormatter.YELLOW | TextFormatter.DULL)
-    GetLine(formatter, 'tracker url', 'announce', torrent)
-    GetLine(formatter, 'created by ', 'created by', torrent)
-    GetLine(
+    get_line(formatter, 'tracker url', 'announce', torrent)
+    get_line(formatter, 'created by ', 'created by', torrent)
+    get_line(
         formatter, 'created on ', 'creation date', torrent, isdate=True)
 
 
-def Top(formatter, torrent):
+def top(formatter, torrent):
     if not 'info' in torrent:
         sys.exit('Missing "info" section in %s' % torrent.filename)
-    torrent['info']['name'].Dump(formatter, '', 1, newline=False)
+    torrent['info']['name'].dump(formatter, '', 1, newline=False)
 
 
-def BasicFiles(formatter, torrent):
+def basic_files(formatter, torrent):
     if not 'info' in torrent:
         sys.exit('Missing "info" section in %s' % torrent.filename)
     if not 'files' in torrent['info']:
         infotorrent = torrent['info']
-        GetLine(formatter, 'file name  ', 'name', torrent['info'])
-        StartLine(formatter, 'file size  ', 1)
-        torrent['info']['length'].DumpAsSize(formatter, '', 0)
+        get_line(formatter, 'file name  ', 'name', torrent['info'])
+        start_line(formatter, 'file size  ', 1)
+        torrent['info']['length'].dump_as_size(formatter, '', 0)
     else:
         filestorrent = torrent['info']['files']
         numfiles = len(filestorrent)
         if numfiles > 1:
-            StartLine(formatter, 'num files  ', 1, '%d\n' % numfiles)
+            start_line(formatter, 'num files  ', 1, '%d\n' % numfiles)
             lengths = [filetorrent['length']
                        for filetorrent in filestorrent]
-            StartLine(formatter, 'total size ', 1)
+            start_line(formatter, 'total size ', 1)
             reduce(
-                lambda x, y: x + y, lengths).DumpAsSize(formatter, '', 0)
+                lambda x, y: x + y, lengths).dump_as_size(formatter, '', 0)
         else:
-            GetLine(formatter, 'file name  ', 'path', filestorrent[0])
-            StartLine(formatter, 'file size  ', 1)
-            filestorrent[0]['length'].DumpAsSize(formatter, '', 0)
+            get_line(formatter, 'file name  ', 'path', filestorrent[0])
+            start_line(formatter, 'file size  ', 1)
+            filestorrent[0]['length'].dump_as_size(formatter, '', 0)
 
 
-def ListFiles(formatter, torrent):
+def list_files(formatter, torrent):
     if not 'info' in torrent:
         sys.exit('Missing "info" section in %s' % torrent.filename)
-    StartLine(formatter, 'files', 1, postfix='\n')
+    start_line(formatter, 'files', 1, postfix='\n')
     if not 'files' in torrent['info']:
-        formatter.Format(TextFormatter.YELLOW |
-                         TextFormatter.BRIGHT, '%s%d' % (TabChar * 2, 0))
-        formatter.Format(TextFormatter.NORMAL, '\n')
-        torrent['info']['name'].Dump(formatter, TabChar, 3)
-        torrent['info']['length'].DumpAsSize(formatter, TabChar, 3)
+        formatter.string_format(TextFormatter.YELLOW |
+                         TextFormatter.BRIGHT, '%s%d' % (TAB_CHAR * 2, 0))
+        formatter.string_format(TextFormatter.NORMAL, '\n')
+        torrent['info']['name'].dump(formatter, TAB_CHAR, 3)
+        torrent['info']['length'].dump_as_size(formatter, TAB_CHAR, 3)
     else:
         filestorrent = torrent['info']['files']
         for index in range(len(filestorrent)):
-            formatter.Format(TextFormatter.YELLOW |
+            formatter.string_format(TextFormatter.YELLOW |
                              TextFormatter.BRIGHT,
-                             '%s%d' % (TabChar * 2, index))
-            formatter.Format(TextFormatter.NORMAL, '\n')
+                             '%s%d' % (TAB_CHAR * 2, index))
+            formatter.string_format(TextFormatter.NORMAL, '\n')
             if filestorrent[index]['path'].__class__ is String:
-                filestorrent[index]['path'].Dump(formatter, TabChar, 3)
+                filestorrent[index]['path'].dump(formatter, TAB_CHAR, 3)
             else:
-                filestorrent[index]['path'].Join(
-                    os.path.sep).Dump(formatter, TabChar, 3)
-            filestorrent[index]['length'].DumpAsSize(
-                formatter, TabChar, 3)
+                filestorrent[index]['path'].join(
+                    os.path.sep).dump(formatter, TAB_CHAR, 3)
+            filestorrent[index]['length'].dump_as_size(
+                formatter, TAB_CHAR, 3)
 
 
 ##############################################################################
@@ -448,32 +448,32 @@ def ListFiles(formatter, torrent):
 
 if __name__ == "__main__":
     try:
-        settings, filenames = GetCommandlineArguments(
+        SETTINGS, FILENAMES = get_commandline_arguments(
             os.path.basename(sys.argv[0]), sys.argv[1:])
-        formatter = GetFormatter('nocolour' in settings)
-        if 'nocolour' in settings:
-            del settings['nocolour']
-        if 'ascii' in settings:
+        FORMATTER = get_formatter('nocolour' in SETTINGS)
+        if 'nocolour' in SETTINGS:
+            del SETTINGS['nocolour']
+        if 'ascii' in SETTINGS:
             String.asciionly = True
-            del settings['ascii']
+            del SETTINGS['ascii']
 
-        for filename in filenames:
+        for filename in FILENAMES:
             try:
-                torrent = Torrent.LoadTorrent(filename)
-                formatter.Format(TextFormatter.BRIGHT, '%s\n' %
+                torrent = Torrent.load_torrent(filename)
+                FORMATTER.string_format(TextFormatter.BRIGHT, '%s\n' %
                                  os.path.basename(torrent.filename))
-                if settings and not 'basic' in settings:
-                    if 'dump' in settings:
-                        Dump(formatter, torrent)
-                    elif 'files' in settings:
-                        Basic(formatter, torrent)
-                        ListFiles(formatter, torrent)
-                    elif 'top' in settings:
-                        Top(formatter, torrent)
+                if SETTINGS and not 'basic' in SETTINGS:
+                    if 'dump' in SETTINGS:
+                        dump(FORMATTER, torrent)
+                    elif 'files' in SETTINGS:
+                        basic(FORMATTER, torrent)
+                        list_files(FORMATTER, torrent)
+                    elif 'top' in SETTINGS:
+                        top(FORMATTER, torrent)
                 else:
-                    Basic(formatter, torrent)
-                    BasicFiles(formatter, torrent)
-                formatter.Format(TextFormatter.NORMAL, '\n')
+                    basic(FORMATTER, torrent)
+                    basic_files(FORMATTER, torrent)
+                FORMATTER.string_format(TextFormatter.NORMAL, '\n')
             except Torrent.UnknownTypeChar:
                 sys.stderr.write(
                     'Could not parse %s as a valid torrent file.\n' % filename)
