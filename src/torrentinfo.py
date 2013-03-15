@@ -218,12 +218,26 @@ class String:
     asciionly = False
 
     def __init__(self, string):
+        """Creates an instance of String.
+
+        :param string: string to use for instance creation
+        :type string: str
+        """
         # Length, colon and then content
         self.length = int(string.get_upto(':'))
         self.value = string.get(self.length)
         self.isprintable = String.is_printable(self)
 
     def dump(self, formatter, tabchar, depth, newline=True):
+        """Dumps the string to the stdout after formatting it.
+
+        :param formatter: Text formatter to use to format the output
+        :type formatter: TextFormatter
+        :param tabchar: tab character to use for indentation
+        :type tabchar: str
+        :param depth: indentation depth
+        :type depth: int
+        """
         if self.isprintable:
             output = '%s%s' % (
                 tabchar * depth, self.value) + ('\n' if newline else '')
@@ -245,6 +259,13 @@ class String:
         return String(StringBuffer('%d:%s' % (len(string), string)))
 
     def is_printable(string):
+        """Determines whether a string only contains printable characters.
+
+        :param string: string to check for strictly printable characters
+        :type string: str
+
+        :returns: bool -- True if the string is fully printable
+        """
         # Bit inefficient but ensures we can print ascii only
         isascii = True
         for char in string.value:
