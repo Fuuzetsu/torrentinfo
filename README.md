@@ -1,8 +1,8 @@
                _                            _   _        __
               | |_ ___  _ __ _ __ ___ _ __ | |_(_)_ __  / _| ___
               | __/ _ \| '__| '__/ _ \ '_ \| __| | '_ \| |_ / _ \
-	          | || (_) | |  | | |  __/ | | | |_| | | | |  _| (_) |
-	           \__\___/|_|  |_|  \___|_| |_|\__|_|_| |_|_|  \___/
+              | || (_) | |  | | |  __/ | | | |_| | | | |  _| (_) |
+               \__\___/|_|  |_|  \___|_| |_|\__|_|_| |_|_|  \___/
 
 
 
@@ -20,7 +20,7 @@ and the files that it references. On the default basic setting it shows:
  - The name of the file (if a single-file torrent)
  - The total size of the file/files
 
-If asked to display file information the path and size of each file is 
+If asked to display file information the path and size of each file is
 listed.
 
 Additionally the entire torrent can be shown in hierachical form.
@@ -40,11 +40,11 @@ themself in a similar position and does a Google search for "torrentinfo".
 Usage
 -----
 
-torrentinfo [ -h -n ] filename1 [ ... filenameN ]
+torrentinfo.py [ -h -n ] filename1 [ ... filenameN ]
 
     -h --help      Displays this message
     -b --basic     Shows basic file information (default)
-    -t --top       Shows only the name of top level file/directory
+    -t --top       Shows only the top level file/directory
     -f --files     Shows files within the torrent
     -d --dump      Dumps the whole file hierarchy
     -a --ascii     Only prints out ascii
@@ -60,7 +60,7 @@ Install
 TorrentInfo uses the standard Python distribution utilities. So it should just
 be a case of uncompressing the archive and running:
 
-	./setup.py install
+    ./setup.py install
 
 Obviously the user running this must have sufficient permissions to create a
 file in the install directory.
@@ -68,7 +68,7 @@ file in the install directory.
 Bugs
 ----
 
-Any bugs or fixes should be submitted to 
+Any bugs or fixes should be submitted to
 https://github.com/ShanaTsunTsunLove/torrentinfo
 
 Original creator (no longer maintains):
