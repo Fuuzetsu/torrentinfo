@@ -105,7 +105,7 @@ class Torrent:
         self.filename = filename
         self.value = Torrent.parse(string)
         if not self.value.__class__ is Dictionary:
-            raise UnexpectedType(self.value__class__, Dictionary)
+            raise self.UnexpectedType(self.value.__class__, Dictionary)
 
     def dump(self, formatter, tabchar, depth=0):
         self.value.dump(formatter, tabchar, depth)
