@@ -432,8 +432,7 @@ def list_files(formatter, torrent):
             filestorrent[index]['length'].dump_as_size(
                 formatter, TAB_CHAR, 3)
 
-
-if __name__ == "__main__":
+def main():
     try:
         SETTINGS, FILENAMES = get_commandline_arguments(
             os.path.basename(sys.argv[0]), sys.argv[1:])
@@ -468,3 +467,8 @@ if __name__ == "__main__":
         sys.exit(message)
     except KeyboardInterrupt:
         pass
+
+
+
+if __name__ == "__main__":
+    main()
