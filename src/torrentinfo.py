@@ -53,6 +53,13 @@ class ANSIColour (TextFormatter):
                (TextFormatter.MAGENTA, '[35m'), ]
 
     def string_format(self, format_spec, string=''):
+        """Attaches colour codes to strings before outputting them.
+
+        :param format_spec: value of the colour code
+        :type format_spec: int
+        :param string: string to colour
+        :type string: str
+        """
         codestring = ''
         for name, code in ANSIColour.mapping:
             if format_spec & name:
