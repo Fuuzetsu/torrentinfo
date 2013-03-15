@@ -23,6 +23,7 @@ from string import printable # pylint: disable-msg=W0402
 
 
 class TextFormatter:
+    """Class used to provide hex colour codes."""
     NONE = 0x000000
     NORMAL = 0x000001
     BRIGHT = 0x000002
@@ -45,6 +46,7 @@ class TextFormatter:
 
 
 class ANSIColour (TextFormatter):
+    """Provides a map from colour values to terminal escape codes."""
     escape = chr(0x1b)
     mapping = [(TextFormatter.NORMAL, '[0m'),
                (TextFormatter.BRIGHT, '[1m'),
@@ -65,6 +67,7 @@ class ANSIColour (TextFormatter):
 
 
 class StringBuffer:
+    """String processing class."""
     def __init__(self, string):
         self.string = string
         self.index = 0
@@ -102,6 +105,7 @@ class StringBuffer:
 
 
 class Torrent:
+    """Class modelling a torrent file."""
     def __init__(self, filename, string):
         # Should contain only one object, a dictionary
         self.filename = filename
@@ -140,6 +144,7 @@ class Torrent:
 
 
 class String:
+    """Class representing a string in a torrent file."""
     # A static variable is really the easiest way to implement this without
     # large changes
     asciionly = False
@@ -192,6 +197,7 @@ class String:
 
 
 class Integer:
+    """Class representing an integer in a torrent file."""
     def __init__(self, string):
         # Prefix char, then base 10 integers until e is hit
         string.Get(1)
@@ -219,6 +225,7 @@ class Integer:
 
 
 class Dictionary:
+    """Class representing a dictionary in a torrent file."""
     def __init__(self, string):
         # Prefix char, then list of alternation string, object pairs until an
         # 'e' is hit
