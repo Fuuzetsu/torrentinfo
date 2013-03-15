@@ -19,7 +19,7 @@ import time
 from string import printable # pylint: disable-msg=W0402
 
 ##############################################################################
-# Class defintions
+# Class definitions
 
 
 class TextFormatter:
@@ -180,7 +180,8 @@ class String:
                 break
 
         # True if there are no Unicode escape characters in the string
-        control_chars = ''.join([ unichr(x) for x in range(0, 32) + range(127, 160) ])
+        control_chars = ''.join([ unichr(x) for x in
+                                  range(0, 32) + range(127, 160) ])
         control_char_re = re.compile('[%s]' % re.escape(control_chars))
         isunicode = True if control_char_re.match(
             string.value) is None else False
