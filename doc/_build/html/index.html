@@ -1,0 +1,681 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Welcome to torrentinfo’s documentation! &mdash; torrentinfo 1.1.3 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '1.1.3',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="torrentinfo 1.1.3 documentation" href="#" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="#">torrentinfo 1.1.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="welcome-to-torrentinfo-s-documentation">
+<h1>Welcome to torrentinfo&#8217;s documentation!<a class="headerlink" href="#welcome-to-torrentinfo-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>This documentation aims to provide at least an overview of what to expect when using or scripting against torrentinfo.</p>
+<div class="section" id="about">
+<h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
+<p><cite>torrentinfo</cite> parses .torrent files and displays information about the torrent
+and the files that it references. On the default basic setting it shows:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Torrent name</li>
+<li>Tracker URL</li>
+<li>The creator of the torrent</li>
+<li>The torrent&#8217;s creation date</li>
+<li>The number of files (if a multi-file torrent)</li>
+<li>The name of the file (if a single-file torrent)</li>
+<li>The total size of the file/files</li>
+</ul>
+</div></blockquote>
+<p>If asked to display file information the path and size of each file is
+listed.</p>
+<p>Additionally the entire torrent can be shown in hierachical form.</p>
+</div>
+<div class="section" id="why-fork">
+<h2>Why fork?<a class="headerlink" href="#why-fork" title="Permalink to this headline">¶</a></h2>
+<p>I forked the original project simply because it was missing functionality I
+desired, namely what the <cite>-t</cite> flag does now. It turned out that the code
+was an undocummented mess but it worked so no one bothered. It was no longer
+listed on the creators website and the original creator was surprised that
+anyone even found it useful. For this reason I decided to the dust off the
+project, clean it up, document it and provide a few tests along the way.</p>
+<p>I&#8217;m keeping the original name of the project in case someone (like me) finds
+themself in a similar position and does a Google search for &#8220;torrentinfo&#8221;.</p>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">torrentinfo.py</span> <span class="pre">[</span> <span class="pre">-h</span> <span class="pre">-n</span> <span class="pre">]</span> <span class="pre">filename1</span> <span class="pre">[</span> <span class="pre">...</span> <span class="pre">filenameN</span> <span class="pre">]</span></tt>:</p>
+<div class="highlight-python"><pre>-h --help      Displays this message
+-b --basic     Shows basic file information (default)
+-t --top       Shows only the top level file/directory
+-f --files     Shows files within the torrent
+-d --dump      Dumps the whole file hierarchy
+-a --ascii     Only prints out ascii
+-n --nocolour  No ANSI colour</pre>
+</div>
+<p>If no settings are specified the script will default to showing the basic
+information on each file.</p>
+</div>
+<div class="section" id="install">
+<h2>Install<a class="headerlink" href="#install" title="Permalink to this headline">¶</a></h2>
+<p>TorrentInfo uses the standard Python distribution utilities. So it should just
+be a case of uncompressing the archive and running:</p>
+<div class="highlight-python"><pre>./setup.py install</pre>
+</div>
+<p>The user running this must have sufficient permissions to create a
+file in the install directory.</p>
+</div>
+<div class="section" id="bugs">
+<h2>Bugs<a class="headerlink" href="#bugs" title="Permalink to this headline">¶</a></h2>
+<p>Any bugs or fixes should be submitted to <a class="reference external" href="https://github.com/ShanaTsunTsunLove/torrentinfo">my GitHub</a>.</p>
+</div>
+<div class="section" id="credits">
+<h2>Credits<a class="headerlink" href="#credits" title="Permalink to this headline">¶</a></h2>
+<p>I like to give credit where it&#8217;s due. <a class="reference external" href="http://vrai.net">Vrai Stacey</a> is the original creator but no longer maintains the project .</p>
+</div>
+<div class="section" id="code-doc">
+<h2>Code doc<a class="headerlink" href="#code-doc" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul class="simple">
+</ul>
+</div>
+<span class="target" id="module-torrentinfo"></span><p>Parses .torrent files and displays various summaries of the
+information contained within.</p>
+<p>Published under the GNU Public License: <a class="reference external" href="http://www.gnu.org/copyleft/gpl.html">http://www.gnu.org/copyleft/gpl.html</a></p>
+<dl class="class">
+<dt id="torrentinfo.ANSIColour">
+<em class="property">class </em><tt class="descclassname">torrentinfo.</tt><tt class="descname">ANSIColour</tt><a class="reference internal" href="_modules/torrentinfo.html#ANSIColour"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.ANSIColour" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides a map from colour values to terminal escape codes.</p>
+<dl class="method">
+<dt id="torrentinfo.ANSIColour.string_format">
+<tt class="descname">string_format</tt><big>(</big><em>format_spec</em>, <em>string=''</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#ANSIColour.string_format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.ANSIColour.string_format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attaches colour codes to strings before outputting them.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>format_spec</strong> (<em>int</em>) &#8211; value of the colour code</li>
+<li><strong>string</strong> (<em>str</em>) &#8211; string to colour</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="torrentinfo.Dictionary">
+<em class="property">class </em><tt class="descclassname">torrentinfo.</tt><tt class="descname">Dictionary</tt><big>(</big><em>string</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#Dictionary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.Dictionary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class representing a dictionary in a torrent file.</p>
+<dl class="method">
+<dt id="torrentinfo.Dictionary.dump">
+<tt class="descname">dump</tt><big>(</big><em>formatter</em>, <em>tabchar</em>, <em>depth</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#Dictionary.dump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.Dictionary.dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dumps the dictionary values recursively to stdout  after formatting.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>formatter</strong> (<em>TextFormatter</em>) &#8211; Text formatter to use to format the output</li>
+<li><strong>tabchar</strong> (<em>str</em>) &#8211; tab character to use for indentation</li>
+<li><strong>depth</strong> (<em>int</em>) &#8211; indentation depth</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="torrentinfo.Integer">
+<em class="property">class </em><tt class="descclassname">torrentinfo.</tt><tt class="descname">Integer</tt><big>(</big><em>string</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#Integer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.Integer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class representing an integer in a torrent file.</p>
+<dl class="method">
+<dt id="torrentinfo.Integer.dump">
+<tt class="descname">dump</tt><big>(</big><em>formatter</em>, <em>tabchar</em>, <em>depth</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#Integer.dump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.Integer.dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dumps the string to the stdout after formatting it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>formatter</strong> (<em>TextFormatter</em>) &#8211; Text formatter to use to format the output</li>
+<li><strong>tabchar</strong> (<em>str</em>) &#8211; tab character to use for indentation</li>
+<li><strong>depth</strong> (<em>int</em>) &#8211; indentation depth</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="torrentinfo.Integer.dump_as_date">
+<tt class="descname">dump_as_date</tt><big>(</big><em>formatter</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#Integer.dump_as_date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.Integer.dump_as_date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dumps out the Integer instance as a date.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>formatter</strong> (<em>TextFormatter</em>) &#8211; formatter to use for string formatting</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="torrentinfo.Integer.dump_as_size">
+<tt class="descname">dump_as_size</tt><big>(</big><em>formatter</em>, <em>tabchar</em>, <em>depth</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#Integer.dump_as_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.Integer.dump_as_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dumps the string to the stdout as file size after formatting it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>formatter</strong> (<em>TextFormatter</em>) &#8211; Text formatter to use to format the output</li>
+<li><strong>tabchar</strong> (<em>str</em>) &#8211; tab character to use for indentation</li>
+<li><strong>depth</strong> (<em>int</em>) &#8211; indentation depth</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="torrentinfo.String">
+<em class="property">class </em><tt class="descclassname">torrentinfo.</tt><tt class="descname">String</tt><big>(</big><em>string</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#String"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.String" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class representing a string in a torrent file.</p>
+<dl class="method">
+<dt id="torrentinfo.String.dump">
+<tt class="descname">dump</tt><big>(</big><em>formatter</em>, <em>tabchar</em>, <em>depth</em>, <em>newline=True</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#String.dump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.String.dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dumps the string to the stdout after formatting it.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>formatter</strong> (<em>TextFormatter</em>) &#8211; Text formatter to use to format the output</li>
+<li><strong>tabchar</strong> (<em>str</em>) &#8211; tab character to use for indentation</li>
+<li><strong>depth</strong> (<em>int</em>) &#8211; indentation depth</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="torrentinfo.String.is_printable">
+<em class="property">static </em><tt class="descname">is_printable</tt><big>(</big><em>string</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#String.is_printable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.String.is_printable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines whether a string only contains printable characters.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>string</strong> (<em>str</em>) &#8211; string to check for strictly printable characters</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">bool &#8211; True if the string is fully printable</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="torrentinfo.StringBuffer">
+<em class="property">class </em><tt class="descclassname">torrentinfo.</tt><tt class="descname">StringBuffer</tt><big>(</big><em>string</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#StringBuffer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.StringBuffer" title="Permalink to this definition">¶</a></dt>
+<dd><p>String processing class.</p>
+<dl class="exception">
+<dt id="torrentinfo.StringBuffer.BufferOverrun">
+<em class="property">exception </em><tt class="descname">BufferOverrun</tt><a class="reference internal" href="_modules/torrentinfo.html#StringBuffer.BufferOverrun"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.StringBuffer.BufferOverrun" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when the buffer goes past EOF.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="torrentinfo.StringBuffer.CharacterExpected">
+<em class="property">exception </em><tt class="descclassname">StringBuffer.</tt><tt class="descname">CharacterExpected</tt><a class="reference internal" href="_modules/torrentinfo.html#StringBuffer.CharacterExpected"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.StringBuffer.CharacterExpected" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raised when the buffer doesn&#8217;t find the expected character.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="torrentinfo.StringBuffer.get">
+<tt class="descclassname">StringBuffer.</tt><tt class="descname">get</tt><big>(</big><em>length</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#StringBuffer.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.StringBuffer.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets certain amount of characters from the buffer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>length</strong> (<em>int</em>) &#8211; Number of characters to get from the buffer</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">str &#8211; first <cite>length</cite> characters from the buffer</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body">BufferOverrun</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="torrentinfo.StringBuffer.get_upto">
+<tt class="descclassname">StringBuffer.</tt><tt class="descname">get_upto</tt><big>(</big><em>character</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#StringBuffer.get_upto"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.StringBuffer.get_upto" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets all characters in a string until the specified one, exclusive.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>character</strong> (<em>str</em>) &#8211; Character until which the string should be collected</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">str &#8211; collected string from the buffer up to <cite>character</cite></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body">CharacterExpected</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="torrentinfo.StringBuffer.is_eof">
+<tt class="descclassname">StringBuffer.</tt><tt class="descname">is_eof</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#StringBuffer.is_eof"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.StringBuffer.is_eof" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks whether we&#8217;re at the end of the string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">bool &#8211; true if this instance reached end of line</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="torrentinfo.StringBuffer.peek">
+<tt class="descclassname">StringBuffer.</tt><tt class="descname">peek</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#StringBuffer.peek"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.StringBuffer.peek" title="Permalink to this definition">¶</a></dt>
+<dd><p>Peeks at the next character in the string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">str &#8211; next character of this instance</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises :</th><td class="field-body"><cite>BufferOverrun</cite></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="torrentinfo.TextFormatter">
+<em class="property">class </em><tt class="descclassname">torrentinfo.</tt><tt class="descname">TextFormatter</tt><a class="reference internal" href="_modules/torrentinfo.html#TextFormatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.TextFormatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class used to provide hex colour codes.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="torrentinfo.Torrent">
+<em class="property">class </em><tt class="descclassname">torrentinfo.</tt><tt class="descname">Torrent</tt><big>(</big><em>filename</em>, <em>string</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#Torrent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.Torrent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class modelling a torrent file.</p>
+<dl class="exception">
+<dt id="torrentinfo.Torrent.UnexpectedType">
+<em class="property">exception </em><tt class="descname">UnexpectedType</tt><a class="reference internal" href="_modules/torrentinfo.html#Torrent.UnexpectedType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.Torrent.UnexpectedType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when the torrent file is not just a single dictionary</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="torrentinfo.Torrent.UnknownTypeChar">
+<em class="property">exception </em><tt class="descclassname">Torrent.</tt><tt class="descname">UnknownTypeChar</tt><a class="reference internal" href="_modules/torrentinfo.html#Torrent.UnknownTypeChar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.Torrent.UnknownTypeChar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Thrown when Torrent.parse encounters unexpected character</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="torrentinfo.Torrent.dump">
+<tt class="descclassname">Torrent.</tt><tt class="descname">dump</tt><big>(</big><em>formatter</em>, <em>tabchar</em>, <em>depth=0</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#Torrent.dump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.Torrent.dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls <cite>String.dump</cite> on the internal string value</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>formatter</strong> (<em>TextFormatter</em>) &#8211; Text formatter to use to format the output</li>
+<li><strong>tabchar</strong> (<em>str</em>) &#8211; tab character to use for indentation</li>
+<li><strong>depth</strong> (<em>int</em>) &#8211; indentation depth</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="torrentinfo.Torrent.load_torrent">
+<em class="property">static </em><tt class="descclassname">Torrent.</tt><tt class="descname">load_torrent</tt><big>(</big><em>filename</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#Torrent.load_torrent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.Torrent.load_torrent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads file contents from a torrent file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filename</strong> (<em>str:</em>) &#8211; torrent file path</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Torrent</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="torrentinfo.Torrent.parse">
+<em class="property">static </em><tt class="descclassname">Torrent.</tt><tt class="descname">parse</tt><big>(</big><em>string</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#Torrent.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.Torrent.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Static method which determines the type of the parsing string.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>string</strong> (<em>str</em>) &#8211; string to parse</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Any of: String, Integer, List, Dictionary</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises :</th><td class="field-body">UnknownTypeChar</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="torrentinfo.basic">
+<tt class="descclassname">torrentinfo.</tt><tt class="descname">basic</tt><big>(</big><em>formatter</em>, <em>torrent</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#basic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.basic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints out basic information about a Torrent instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>formatter</strong> (<em>TextFormatter</em>) &#8211; text formatter to use</li>
+<li><strong>torrent</strong> (<em>Torrent</em>) &#8211; torrent instance to use for information</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="torrentinfo.basic_files">
+<tt class="descclassname">torrentinfo.</tt><tt class="descname">basic_files</tt><big>(</big><em>formatter</em>, <em>torrent</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#basic_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.basic_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints out basic file information of a Torrent instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>formatter</strong> (<em>TextFormatter</em>) &#8211; text formatter to use</li>
+<li><strong>torrent</strong> (<em>Torrent</em>) &#8211; torrent instance to use for information</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="torrentinfo.dump">
+<tt class="descclassname">torrentinfo.</tt><tt class="descname">dump</tt><big>(</big><em>formatter</em>, <em>torrent</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#dump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.dump" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints out Torrent instance data using <cite>Torrent.dump</cite>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>formatter</strong> (<em>TextFormatter</em>) &#8211; text formatter to use</li>
+<li><strong>torrent</strong> (<em>Torrent</em>) &#8211; torrent instance to use for information</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="torrentinfo.get_commandline_arguments">
+<tt class="descclassname">torrentinfo.</tt><tt class="descname">get_commandline_arguments</tt><big>(</big><em>appname</em>, <em>arguments</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#get_commandline_arguments"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.get_commandline_arguments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the commandline arguments using <tt class="xref py py-mod docutils literal"><span class="pre">getopt</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>appname</strong> (<em>str</em>) &#8211; name of the application</li>
+<li><strong>arguments</strong> (<em>list of str</em>) &#8211; list of arguments from the commandline</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(dict, list) &#8211; the list contains any trailing, unparsed args</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="torrentinfo.get_formatter">
+<tt class="descclassname">torrentinfo.</tt><tt class="descname">get_formatter</tt><big>(</big><em>nocolour</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#get_formatter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.get_formatter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Chooses a text formatter to use throughout the application.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>nocolour</strong> (<em>bool</em>) &#8211; determines whether we want the formatter to colour text</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">TextFormatter</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="torrentinfo.get_line">
+<tt class="descclassname">torrentinfo.</tt><tt class="descname">get_line</tt><big>(</big><em>formatter</em>, <em>prefix</em>, <em>key</em>, <em>torrent</em>, <em>depth=1</em>, <em>is_date=False</em>, <em>format_spec=1</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#get_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.get_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print lines from a torrent instance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>formatter</strong> (<em>TextFormatter</em>) &#8211; text formatter to use</li>
+<li><strong>prefix</strong> (<em>str</em>) &#8211; prefix to insert in front of the line</li>
+<li><strong>key</strong> (<em>str</em>) &#8211; key name in the torrent to print out</li>
+<li><strong>torrent</strong> (<em>Torrent</em>) &#8211; torrent instance to use for information</li>
+<li><strong>depth</strong> (<em>int</em>) &#8211; indentation depth</li>
+<li><strong>is_date</strong> (<em>bool</em>) &#8211; indicates whether the line is a date</li>
+<li><strong>format_spec</strong> (<em>int</em>) &#8211; default colour to use for the text</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="torrentinfo.list_files">
+<tt class="descclassname">torrentinfo.</tt><tt class="descname">list_files</tt><big>(</big><em>formatter</em>, <em>torrent</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#list_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.list_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints out a list of files using a Torrent instance</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>formatter</strong> (<em>TextFormatter</em>) &#8211; text formatter to use</li>
+<li><strong>torrent</strong> (<em>Torrent</em>) &#8211; torrent instance to use for information</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="torrentinfo.show_usage">
+<tt class="descclassname">torrentinfo.</tt><tt class="descname">show_usage</tt><big>(</big><em>appname</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#show_usage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.show_usage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exits the application while printing the help.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>appname</strong> (<em>str</em>) &#8211; name of the application</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="torrentinfo.start_line">
+<tt class="descclassname">torrentinfo.</tt><tt class="descname">start_line</tt><big>(</big><em>formatter</em>, <em>prefix</em>, <em>depth</em>, <em>postfix=''</em>, <em>format_spec=1</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#start_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.start_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the first line during information output.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>formatter</strong> (<em>TextFormatter</em>) &#8211; text formatter to use</li>
+<li><strong>prefix</strong> (<em>str</em>) &#8211; prefix to insert in front of the line</li>
+<li><strong>depth</strong> (<em>int</em>) &#8211; indentation depth</li>
+<li><strong>postfix</strong> (<em>str</em>) &#8211; postfix to insert at the back of the line</li>
+<li><strong>format_spec</strong> (<em>int</em>) &#8211; default colour to use for the text</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="torrentinfo.top">
+<tt class="descclassname">torrentinfo.</tt><tt class="descname">top</tt><big>(</big><em>formatter</em>, <em>torrent</em><big>)</big><a class="reference internal" href="_modules/torrentinfo.html#top"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#torrentinfo.top" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints out the top file/directory name as well as torrent file name.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>formatter</strong> (<em>TextFormatter</em>) &#8211; text formatter to use</li>
+<li><strong>torrent</strong> (<em>Torrent</em>) &#8211; torrent instance to use for information</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Welcome to torrentinfo&#8217;s documentation!</a><ul>
+<li><a class="reference internal" href="#about">About</a></li>
+<li><a class="reference internal" href="#why-fork">Why fork?</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#install">Install</a></li>
+<li><a class="reference internal" href="#bugs">Bugs</a></li>
+<li><a class="reference internal" href="#credits">Credits</a></li>
+<li><a class="reference internal" href="#code-doc">Code doc</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="#">torrentinfo 1.1.3 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013, Mateusz Kowalczyk.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
