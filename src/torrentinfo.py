@@ -288,19 +288,47 @@ class String:
 class Integer:
     """Class representing an integer in a torrent file."""
     def __init__(self, string):
+        """Creates an instance of Integer.
+
+        :param string: string to use for instance creation
+        :type string: str
+        """
         # Prefix char, then base 10 integers until e is hit
         string.get(1)
         self.value = int(string.get_upto('e'))
 
     def dump(self, formatter, tabchar, depth):
+        """Dumps the string to the stdout after formatting it.
+
+        :param formatter: Text formatter to use to format the output
+        :type formatter: TextFormatter
+        :param tabchar: tab character to use for indentation
+        :type tabchar: str
+        :param depth: indentation depth
+        :type depth: int
+        """
         formatter.string_format(
             TextFormatter.CYAN, '%s%d\n' % (tabchar * depth, self.value))
 
     def dump_as_date(self, formatter):
+        """Dumps out the Integer instance as a date.
+
+        :param formatter: formatter to use for string formatting
+        :type formatter: TextFormatter
+        """
         formatter.string_format(TextFormatter.MAGENTA, time.strftime(
             '%Y/%m/%d %H:%M:%S %Z\n', time.gmtime(self.value)))
 
     def dump_as_size(self, formatter, tabchar, depth):
+        """Dumps the string to the stdout as file size after formatting it.
+
+        :param formatter: Text formatter to use to format the output
+        :type formatter: TextFormatter
+        :param tabchar: tab character to use for indentation
+        :type tabchar: str
+        :param depth: indentation depth
+        :type depth: int
+        """
         size = float(self.value)
         sizes = ['B', 'KB', 'MB', 'GB']
         while size > 1024 and len(sizes) > 1:
