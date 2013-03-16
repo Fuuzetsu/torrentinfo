@@ -404,6 +404,7 @@ class Dictionary:
 
 
 class List:
+    """Class representing a list in a torrent file."""
     def __init__(self, string):
         """Creates an instance of List.
 
@@ -688,6 +689,7 @@ def list_files(formatter, torrent):
                 formatter, TAB_CHAR, 3)
 
 def main():
+    """Main control flow function used to encapsulate initialisation."""
     try:
         settings, filenames = get_commandline_arguments(
             os.path.basename(sys.argv[0]), sys.argv[1:])
