@@ -105,7 +105,7 @@ class TorrentObject(object):
         raise NotImplementedError('Method dump in TorrentObject '
                                   + 'not implemented.')
 
-class StringBuffer(TorrentObject):
+class StringBuffer:
     """String processing class."""
     def __init__(self, string):
         """Creates an instance of StringBuffer.
