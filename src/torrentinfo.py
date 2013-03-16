@@ -99,7 +99,52 @@ def decode(string_buffer):
 
     :returns: dict
     """
-    return
+    content_type = string_buffer.get(1)
+    parser_map = [(re.compile('d'), dict_parse),
+                  (re.compile('l'), list_parse),
+                  (re.compile('[0-9]'), str_parse),
+                  (re.compile('i'), int_parse)]
+    for exp, parser in parser_map:
+        if exp.match(content_type):
+            return parser(string_buffer)
+    raise UnknownTypeChar(content_type, string_buffer)
+
+def dict_parse(string_buffer):
+    d = dict()
+    while string_buffer.peek() != 'e':
+        key = str_parse(string_buffer)
+        d[key] = decode(string_buffer)
+    string_buffer.get(1)
+    return d
+
+def list_parse(string_buffer):
+    l = list()
+    while string_buffer.peek() != 'e':
+        l.append(decode(string_buffer))
+    string_buffer.get(1)
+    return l
+
+def str_parse(string_buffer):
+    length = int(string_buffer.get_upto(':'))
+    return string_buffer.get(length)
+
+def int_parse(string_buffer):
+    return int(string_buffer.get_upto('e'))
+
+
+class UnknownTypeChar(Exception):
+    pass
+
+def load_torrent(filename):
+    """Loads file contents from a torrent file
+
+    :param filename: torrent file path
+    :type filename: str:
+
+    :returns: StringBuffer
+    """
+    handle = file(filename, 'rb')
+    return StringBuffer(handle.read())
 
 class StringBuffer:
     """String processing class."""
@@ -404,25 +449,27 @@ def main():
             del settings['ascii']
 
         for filename in filenames:
-            try:
-                torrent = Torrent.load_torrent(filename)
-                formatter.string_format(TextFormatter.BRIGHT, '%s\n' %
-                                        os.path.basename(torrent.filename))
-                if settings and not 'basic' in settings:
-                    if 'dump' in settings:
-                        dump(formatter, torrent)
-                    elif 'files' in settings:
-                        basic(formatter, torrent)
-                        list_files(formatter, torrent)
-                    elif 'top' in settings:
-                        top(formatter, torrent)
-                else:
-                    basic(formatter, torrent)
-                    basic_files(formatter, torrent)
-                formatter.string_format(TextFormatter.NORMAL, '\n')
-            except Torrent.UnknownTypeChar:
-                sys.stderr.write(
-                    'Could not parse %s as a valid torrent file.\n' % filename)
+            # try:
+            torrent = load_torrent(filename)
+            print decode(torrent)
+            sys.exit(0)
+            #     formatter.string_format(TextFormatter.BRIGHT, '%s\n' %
+            #                             os.path.basename(torrent.filename))
+            #     if settings and not 'basic' in settings:
+            #         if 'dump' in settings:
+            #             dump(formatter, torrent)
+            #         elif 'files' in settings:
+            #             basic(formatter, torrent)
+            #             list_files(formatter, torrent)
+            #         elif 'top' in settings:
+            #             top(formatter, torrent)
+            #     else:
+            #         basic(formatter, torrent)
+            #         basic_files(formatter, torrent)
+            #     formatter.string_format(TextFormatter.NORMAL, '\n')
+            # except Torrent.UnknownTypeChar:
+            #     sys.stderr.write(
+            #         'Could not parse %s as a valid torrent file.\n' % filename)
     except SystemExit, message:
         sys.exit(message)
     except KeyboardInterrupt:
