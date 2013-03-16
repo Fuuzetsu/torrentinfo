@@ -18,7 +18,7 @@
 import sys
 import os.path
 import os
-sys.path.append(os.path.join('..', 'src'))
+sys.path.append('../src')
 
 import unittest
 import nose
