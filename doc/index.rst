@@ -73,8 +73,8 @@ Credits
 
 I like to give credit where it's due. `Vrai Stacey <http://vrai.net>`_ is the original creator but no longer maintains the project .
 
-torrentinfo.py
-=============
+torrentinfo
+===========
 
 .. toctree::
    :maxdepth: 2
