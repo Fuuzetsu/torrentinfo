@@ -411,15 +411,13 @@ class Dictionary(TorrentObject, dict):
         :param depth: indentation depth
         :type depth: int
         """
-        keys = self.value.keys()
-        keys.sort()
-        for key in keys:
+        for key in self.keys().sort():
             formatter.string_format(TextFormatter.NORMAL | TextFormatter.GREEN)
             if depth < 2:
                 formatter.string_format(TextFormatter.BRIGHT)
             key.dump(formatter, tabchar, depth)
             formatter.string_format(TextFormatter.NORMAL)
-            self.value[key].dump(formatter, tabchar, depth + 1)
+            self[key].dump(formatter, tabchar, depth + 1)
 
     def __getitem__(self, key):
         for name, value in self.iteritems():
