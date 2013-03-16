@@ -90,8 +90,22 @@ class ANSIColour (TextFormatter):
                 codestring += ANSIColour.escape + code
         self.output(codestring + string)
 
+class TorrentObject(object):
 
-class StringBuffer:
+    def dump(self, formatter, tabchar, depth):
+        """Dumps the string to the stdout after formatting it.
+
+        :param formatter: Text formatter to use to format the output
+        :type formatter: TextFormatter
+        :param tabchar: tab character to use for indentation
+        :type tabchar: str
+        :param depth: indentation depth
+        :type depth: int
+        """
+        raise NotImplementedError('Method dump in TorrentObject '
+                                  + 'not implemented.')
+
+class StringBuffer(TorrentObject):
     """String processing class."""
     def __init__(self, string):
         """Creates an instance of StringBuffer.
@@ -161,7 +175,7 @@ class StringBuffer:
         pass
 
 
-class Torrent:
+class Torrent(TorrentObject):
     """Class modelling a torrent file."""
     def __init__(self, filename, string):
         """Creates an instance of Torrent class
@@ -235,7 +249,7 @@ class Torrent:
         pass
 
 
-class String:
+class String(TorrentObject):
     """Class representing a string in a torrent file."""
     # A static variable is really the easiest way to implement this without
     # large changes
@@ -309,7 +323,7 @@ class String:
     is_printable = staticmethod(is_printable)
 
 
-class Integer:
+class Integer(TorrentObject):
     """Class representing an integer in a torrent file."""
     def __init__(self, string):
         """Creates an instance of Integer.
@@ -365,7 +379,7 @@ class Integer:
         return Integer(StringBuffer('i%de' % (self.value + value.value)))
 
 
-class Dictionary:
+class Dictionary(TorrentObject):
     """Class representing a dictionary in a torrent file."""
     def __init__(self, string):
         """Creates an instance of Integer.
@@ -415,7 +429,7 @@ class Dictionary:
         return False
 
 
-class List:
+class List(TorrentObject):
     """Class representing a list in a torrent file."""
     def __init__(self, string):
         """Creates an instance of List.
