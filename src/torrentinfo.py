@@ -33,9 +33,21 @@ class TextFormatter:
         pass
 
     def string_format(self, format_spec, string=''):
+        """Sends a string to output.
+
+        :param format_spec: format parameter used by extending classes
+        :type format_spec: int
+        :param string: string to output
+        :type string: str
+        """
         self.output(string)
 
     def output(self, string):
+        """Outputs a string to stdout.
+
+        :param string: string to output
+        :type string: str
+        """
         sys.stdout.write(string)
 
 
