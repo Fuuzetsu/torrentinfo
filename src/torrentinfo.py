@@ -221,7 +221,11 @@ class Torrent(TorrentObject):
         :raises: UnknownTypeChar
         """
         content_type = string.peek()
-        for exp, parser in TYPE_MAP:
+        parser_map = [(re.compile('d'), Dictionary),
+                      (re.compile('l'), List),
+                      (re.compile('[0-9]'), String),
+                      (re.compile('i'), Integer)]
+        for exp, parser in parser_map:
             if exp.match(content_type):
                 return parser(string)
         raise Torrent.UnknownTypeChar(content_type, string)
@@ -485,11 +489,6 @@ class List(TorrentObject):
     def __getitem__(self, index):
         return self.value[index]
 
-
-TYPE_MAP = [(re.compile('d'), Dictionary),
-            (re.compile('l'), List),
-            (re.compile('[0-9]'), String),
-            (re.compile('i'), Integer)]
 
 TAB_CHAR = '    '
 
