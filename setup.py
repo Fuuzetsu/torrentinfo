@@ -1,19 +1,12 @@
 #!/usr/bin/env python
+from distutils.core import setup
+import os.path
 
-##############################################################################
-# T O R R E N T I N F O - Setup file
-# version 1.1.0
-#
-# Vrai Stacey <vrai@acherondevelopment.com>
-##############################################################################
-
-from distutils.core import setup;
-
-setup ( name         = "torrentinfo",
-		version      = "1.1.0",
-		description  = "Bittorrent .torrent file parser and summariser",
-		author       = "Vrai Stacey",
-		author_email = "vrai@acherondevelopment.com",
-		url          = "http://vrai.net/project.php?project=torrentinfo",
-		license      = "GNU General Public License v2 (see LICENSE file)",
-		scripts      = [ "torrentinfo" ] );
+setup(name="torrentinfo",
+      version="1.3.1",
+      description="Bittorrent .torrent file parser and summariser",
+      author="Mateusz Kowalczyk",
+      author_email="fuuzetsu@fuuzetsu.co.uk",
+      url="https://github.com/ShanaTsunTsunLove/torrentinfo",
+      license="GNU General Public License v2 (see LICENSE file)",
+      scripts=[os.path.join("src", "torrentinfo.py")])
