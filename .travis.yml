@@ -3,4 +3,4 @@ python:
   - "2.6"
   - "2.7"
 
-script: nosetests -v
+script: nosetests -v --with-coverage --cover-package=torrentinfo
