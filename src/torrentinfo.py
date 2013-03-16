@@ -422,13 +422,13 @@ class Dictionary(TorrentObject, dict):
             self.value[key].dump(formatter, tabchar, depth + 1)
 
     def __getitem__(self, key):
-        for name, value in self.value.iteritems():
+        for name, value in self.iteritems():
             if name.value == key:
                 return value
         raise KeyError(key)
 
     def __contains__(self, key):
-        for name in self.value:
+        for name in self:
             if name.value == key:
                 return True
         return False
