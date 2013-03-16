@@ -44,9 +44,6 @@ class TextFormatter:
     MAGENTA = 0x000080
     DULL = 0x000100
 
-    def __init__(self):
-        pass
-
     def string_format(self, format_spec, string=''):
         """Sends a string to output.
 
