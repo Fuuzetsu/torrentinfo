@@ -16,13 +16,14 @@
 # along with torrentinfo.  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
-sys.path.append('../src')
+import os.path
+import os
+sys.path.append(os.path.join('..', 'src'))
 
 import unittest
 import nose
 import torrentinfo
-import os.path
-import os
+
 
 class StringBufferTest(unittest.TestCase):
 
