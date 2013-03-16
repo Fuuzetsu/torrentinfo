@@ -395,7 +395,6 @@ class Dictionary(TorrentObject, dict):
         # Prefix char, then list of alternation string, object pairs until an
         # 'e' is hit
         string.get(1)
-        self.value = self
         while string.peek() != 'e':
             key = String(string)
             self[key] = Torrent.parse(string)
