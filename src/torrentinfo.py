@@ -384,7 +384,7 @@ class Integer(TorrentObject):
         return Integer(StringBuffer('i%de' % (self.value + value.value)))
 
 
-class Dictionary(TorrentObject):
+class Dictionary(TorrentObject, dict):
     """Class representing a dictionary in a torrent file."""
     def __init__(self, string):
         """Creates an instance of Integer.
@@ -395,7 +395,7 @@ class Dictionary(TorrentObject):
         # Prefix char, then list of alternation string, object pairs until an
         # 'e' is hit
         string.get(1)
-        self.value = {}
+        self.value = self
         while string.peek() != 'e':
             key = String(string)
             self.value[key] = Torrent.parse(string)
