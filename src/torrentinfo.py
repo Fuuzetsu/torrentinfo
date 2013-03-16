@@ -398,7 +398,7 @@ class Dictionary(TorrentObject, dict):
         self.value = self
         while string.peek() != 'e':
             key = String(string)
-            self.value[key] = Torrent.parse(string)
+            self[key] = Torrent.parse(string)
         string.get(1)
 
     def dump(self, formatter, tabchar, depth):
