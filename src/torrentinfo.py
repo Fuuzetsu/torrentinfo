@@ -431,7 +431,7 @@ class Dictionary(TorrentObject, dict):
         return False
 
 
-class List(TorrentObject):
+class List(TorrentObject, list):
     """Class representing a list in a torrent file."""
     def __init__(self, string):
         """Creates an instance of List.
@@ -441,9 +441,8 @@ class List(TorrentObject):
         """
         # Prefix char, then list of values until an 'e' is hit
         string.get(1)
-        self.value = []
         while string.peek() != 'e':
-            self.value.append(Torrent.parse(string))
+            self.append(Torrent.parse(string))
         string.get(1)
 
     def dump(self, formatter, tabchar, depth):
@@ -456,15 +455,15 @@ class List(TorrentObject):
         :param depth: indentation depth
         :type depth: int
         """
-        if len(self.value) == 1:
-            self.value[0].dump(formatter, tabchar, depth)
+        if len(self) == 1:
+            self[0].dump(formatter, tabchar, depth)
         else:
-            for index in range(len(self.value)):
+            for index in range(len(self)):
                 formatter.string_format(TextFormatter.BRIGHT |
                                         TextFormatter.YELLOW,
                                         '%s%d\n' % (tabchar * depth, index))
                 formatter.string_format(TextFormatter.NORMAL)
-                self.value[index].dump(formatter, tabchar, depth + 1)
+                self[index].dump(formatter, tabchar, depth + 1)
 
     def join(self, separator):
         """Joins the list values together using a separator.
@@ -476,16 +475,7 @@ class List(TorrentObject):
         """
         separator = String(
             StringBuffer('%d:%s' % (len(separator), separator)))
-        return reduce(lambda x, y: x + separator + y, self.value)
-
-    def __len__(self):
-        return len(self.value)
-
-    def __iter__(self):
-        return self.value.__iter__()
-
-    def __getitem__(self, index):
-        return self.value[index]
+        return reduce(lambda x, y: x + separator + y, self)
 
 
 def get_commandline_arguments(appname, arguments):
