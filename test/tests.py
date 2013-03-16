@@ -60,7 +60,48 @@ class StringBufferTest(unittest.TestCase):
         self.assertRaises(torrentinfo.StringBuffer.CharacterExpected,
                           s.get_upto, 'x')
 
+class TorrentTest(unittest.TestCase):
 
+    def setUp(self):
+        self.torrent = None
+        self.file = os.path.join('files', 'regular.torrent')
+        self.torrent = torrentinfo.Torrent.load_torrent(self.file)
+
+    def test_load_torrent_succeed(self):
+        self.assertNotEqual(self.torrent, None, "Loaded %s is None" % self.file)
+
+    def test_load_torrent_fail(self):
+        self.assertRaises(IOError, torrentinfo.Torrent.load_torrent,
+                          'fakefoobar.fake')
+
+    def test_load_torrent_unexpected_type(self):
+        data = torrentinfo.StringBuffer('4:fake')
+        self.assertRaises(torrentinfo.Torrent.UnexpectedType,
+                          torrentinfo.Torrent, *('foo', data))
+
+    def test_filename_succeed(self):
+        self.assertEqual(self.torrent.filename, self.file)
+
+    def test_filename_fail(self):
+        self.assertNotEqual(self.torrent.filename, 'fakefilename.xyz')
+
+    def test_parse_unknown_type_char(self):
+        bogus_data = torrentinfo.StringBuffer("d8:announcex7:invalid")
+        self.assertRaises(torrentinfo.Torrent.UnknownTypeChar,
+                          self.torrent.parse, bogus_data)
+
+    def test_parse_buffer_overrun(self):
+        bogus_data = torrentinfo.StringBuffer("d20:announce")
+        self.assertRaises(torrentinfo.StringBuffer.BufferOverrun,
+                          self.torrent.parse, bogus_data)
+
+    def test_tracker_succeed(self):
+        self.assertEqual(self.torrent['announce'].value,
+                         'faketracker.com/announce')
+
+    def test_tracker_fail(self):
+        self.assertNotEqual(self.torrent['announce'].value,
+                            'different_tracker.fake')
 
 if __name__ == '__main__':
     nose.main()
