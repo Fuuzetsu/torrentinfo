@@ -5,6 +5,7 @@ import unittest
 import nose
 import torrentinfo
 import os.path
+import os
 
 class StringBufferTest(unittest.TestCase):
 
@@ -64,7 +65,7 @@ class TorrentTest(unittest.TestCase):
 
     def setUp(self):
         self.torrent = None
-        self.file = os.path.join('files', 'regular.torrent')
+        self.file = os.path.join('test', 'files', 'regular.torrent')
         self.torrent = torrentinfo.Torrent.load_torrent(self.file)
 
     def test_load_torrent_succeed(self):
