@@ -30,6 +30,7 @@ import time
 #  see pylint ticket #2481
 from string import printable  # pylint: disable-msg=W0402
 
+TAB_CHAR = '    '
 
 class TextFormatter:
     """Class used to provide hex colour codes."""
@@ -488,9 +489,6 @@ class List(TorrentObject):
 
     def __getitem__(self, index):
         return self.value[index]
-
-
-TAB_CHAR = '    '
 
 
 def get_commandline_arguments(appname, arguments):
