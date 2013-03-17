@@ -504,7 +504,7 @@ def is_printable(string):
     return is_ascii or not is_unicode
 
 
-def basic(formatter, torrent):
+def basic(formatter, torrent, out=sys.stdout):
     """Prints out basic information about a Torrent instance.
 
     :param formatter: text formatter to use
