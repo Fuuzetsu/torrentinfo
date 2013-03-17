@@ -84,18 +84,19 @@ class TorrentTest(unittest.TestCase):
     def setUp(self):
         self.torrent = None
         self.file = os.path.join('test', 'files', 'regular.torrent')
-        self.torrent = torrentinfo.Torrent.load_torrent(self.file)
+        self.torrent = torrentinfo.Torrent(self.file,
+                                           torrentinfo.load_torrent(self.file))
 
     def test_load_torrent_succeed(self):
         self.assertNotEqual(self.torrent, None, "Loaded %s is None" % self.file)
 
     def test_load_torrent_fail(self):
-        self.assertRaises(IOError, torrentinfo.Torrent.load_torrent,
+        self.assertRaises(IOError, torrentinfo.load_torrent,
                           'fakefoobar.fake')
 
     def test_load_torrent_unexpected_type(self):
         data = torrentinfo.StringBuffer('4:fake')
-        self.assertRaises(torrentinfo.Torrent.UnexpectedType,
+        self.assertRaises(torrentinfo.UnexpectedType,
                           torrentinfo.Torrent, *('foo', data))
 
     def test_filename_succeed(self):
@@ -106,20 +107,20 @@ class TorrentTest(unittest.TestCase):
 
     def test_parse_unknown_type_char(self):
         bogus_data = torrentinfo.StringBuffer("d8:announcex7:invalid")
-        self.assertRaises(torrentinfo.Torrent.UnknownTypeChar,
-                          self.torrent.parse, bogus_data)
+        self.assertRaises(torrentinfo.UnknownTypeChar,
+                          torrentinfo.decode, bogus_data)
 
     def test_parse_buffer_overrun(self):
         bogus_data = torrentinfo.StringBuffer("d20:announce")
         self.assertRaises(torrentinfo.StringBuffer.BufferOverrun,
-                          self.torrent.parse, bogus_data)
+                          torrentinfo.decode, bogus_data)
 
     def test_tracker_succeed(self):
-        self.assertEqual(self.torrent['announce'].value,
+        self.assertEqual(self.torrent['announce'],
                          'faketracker.com/announce')
 
     def test_tracker_fail(self):
-        self.assertNotEqual(self.torrent['announce'].value,
+        self.assertNotEqual(self.torrent['announce'],
                             'different_tracker.fake')
 
 if __name__ == '__main__':

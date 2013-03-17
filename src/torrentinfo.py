@@ -96,9 +96,17 @@ class Torrent(dict):
     """A class modelling a parsed torrent file."""
 
     def __init__(self, filename, string_buffer):
-        super(Torrent, self).__init__(decode(string_buffer))
+        tmp_dict = decode(string_buffer)
+
+        if type(tmp_dict) != dict:
+            raise UnexpectedType(self.__class__, dict)
+
+        super(Torrent, self).__init__(tmp_dict)
         self.filename = filename
 
+
+class UnexpectedType(Exception):
+    pass
 
 def dump_as_date(n, formatter):
     """Dumps out the Integer instance as a date.
