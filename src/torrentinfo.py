@@ -22,7 +22,7 @@ Published under the GNU Public License: http://www.gnu.org/copyleft/gpl.html
 """
 
 import sys
-import getopt
+import argparse
 import os.path
 import re
 import time
