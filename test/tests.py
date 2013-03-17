@@ -113,7 +113,7 @@ class GenericTorrentTest(unittest.TestCase):
 
     def test_tracker_succeed(self):
         self.assertEqual(self.torrent['announce'],
-                         'faketracker.com/announce')
+                         'fake.com/announce')
 
     def test_tracker_fail(self):
         self.assertNotEqual(self.torrent['announce'],
