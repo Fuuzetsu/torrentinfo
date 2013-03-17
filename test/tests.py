@@ -26,6 +26,33 @@ import nose
 import torrentinfo
 
 
+class TextFormatterTest(unittest.TestCase):
+
+    def setUp(self):
+        self.out = StringIO()
+
+    def test_no_colour_simple_succeed(self):
+        formatter = torrentinfo.TextFormatter(False)
+        norm_col = torrentinfo.TextFormatter.NORMAL
+        test_string = 'foo_bar_baz'
+        formatter.string_format(norm_col, string=test_string, out=self.out)
+        output = self.out.getvalue()
+        self.assertEqual(output, test_string)
+
+    def test_no_colour_simple_fail(self):
+        formatter = torrentinfo.TextFormatter(False)
+        norm_col = torrentinfo.TextFormatter.NORMAL
+        test_string = 'foo_bar_baz'
+        trash_output = 'trash_output'
+        formatter.string_format(norm_col, string=test_string, out=self.out)
+        output = self.out.getvalue()
+        assert trash_output != test_string
+        self.assertNotEqual(output, trash_output)
+
+    def tearDown(self):
+        self.out = sys.stdout
+
+
 class StringBufferTest(unittest.TestCase):
 
     def test_is_eof_true(self):
