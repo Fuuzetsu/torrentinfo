@@ -31,6 +31,7 @@ import time
 from string import printable  # pylint: disable-msg=W0402
 
 TAB_CHAR = '    '
+VERSION = '1.4.0'
 
 class TextFormatter:
     """Class used to format strings before printing."""
@@ -311,6 +312,8 @@ def get_args():
     """
     parser = argparse.ArgumentParser(description='Print information '
                                      + 'about torrent files')
+    parser.add_argument('-v', '--version', dest='version', action='store_true',
+                        help='Print version and quit')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-t', '--top', dest='top', action='store_true',
                         help='Only show top level file/directory')
@@ -530,6 +533,10 @@ def main():
     try:
         args = get_args()
         formatter = TextFormatter(not args.nocolour)
+
+        if args.version:
+            sys.out.write('torrentinfo %s' % VERSION)
+            sys.exit(0)
 
         for filename in args.filename:
             try:
