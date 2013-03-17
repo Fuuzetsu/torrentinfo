@@ -509,8 +509,8 @@ def basic(formatter, torrent):
     get_line(formatter, 'name       ', 'name', torrent['info'])
     get_line(formatter, 'tracker url', 'announce', torrent)
     get_line(formatter, 'created by ', 'created by', torrent)
-    get_line(
-        formatter, 'created on ', 'creation date', torrent, is_date=True)
+    get_line(formatter, 'created on ', 'creation date',
+             torrent, is_date=True)
 
 
 def top(formatter, torrent):
@@ -548,8 +548,7 @@ def basic_files(formatter, torrent):
             lengths = [filetorrent['length']
                        for filetorrent in filestorrent]
             start_line(formatter, 'total size ', 1)
-            reduce(
-                lambda x, y: x + y, lengths).dump_as_size(formatter, '', 0)
+            dump_as_size(sum(lengths), formatter, '', 0)
         else:
             get_line(formatter, 'file name  ', 'path', filestorrent[0])
             start_line(formatter, 'file size  ', 1)
