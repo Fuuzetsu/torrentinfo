@@ -3,7 +3,7 @@ from distutils.core import setup
 import os.path
 
 setup(name="torrentinfo",
-      version="1.3.1",
+      version="1.4.0",
       description="Bittorrent .torrent file parser and summariser",
       author="Mateusz Kowalczyk",
       author_email="fuuzetsu@fuuzetsu.co.uk",
