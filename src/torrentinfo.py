@@ -271,8 +271,8 @@ def int_parse(string_buffer):
 
 
 class UnknownTypeChar(Exception):
-   """Thrown when Torrent.parse encounters unexpected character"""
-   pass
+    """Thrown when Torrent.parse encounters unexpected character"""
+    pass
 
 
 def load_torrent(filename):
