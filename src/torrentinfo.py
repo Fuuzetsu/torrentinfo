@@ -60,7 +60,7 @@ class TextFormatter:
     def __init__(self, colour):
         self.colour = colour
 
-    def string_format(self, format_spec, string=''):
+    def string_format(self, format_spec, string='', out=sys.stdout):
         """Attaches colour codes to strings before outputting them.
 
         :param format_spec: value of the colour code
@@ -73,9 +73,9 @@ class TextFormatter:
             for name, code in TextFormatter.mapping:
                 if format_spec & name:
                     codestring += TextFormatter.escape + code
-            sys.stdout.write(codestring + string)
+            out.write(codestring + string)
         else:
-            sys.stdout.write(string)
+            out.stdout.write(string)
 
 
 class Torrent(dict):
@@ -99,7 +99,7 @@ class UnknownTypeChar(Exception):
     """Thrown when Torrent.parse encounters unexpected character"""
     pass
 
-def dump_as_date(number, formatter):
+def dump_as_date(number, formatter, out=sys.stdout):
     """Dumps out the Integer instance as a date.
 
     :param n: number to format
@@ -108,9 +108,9 @@ def dump_as_date(number, formatter):
     :type formatter: TextFormatter
     """
     formatter.string_format(TextFormatter.MAGENTA, time.strftime(
-            '%Y/%m/%d %H:%M:%S %Z\n', time.gmtime(number)))
+            '%Y/%m/%d %H:%M:%S %Z\n', time.gmtime(number)), out=out)
 
-def dump_as_size(number, formatter, tabchar, depth):
+def dump_as_size(number, formatter, tabchar, depth, out=sys.stdout):
     """Dumps the string to the stdout as file size after formatting it.
 
     :param n: number to format
@@ -128,10 +128,11 @@ def dump_as_size(number, formatter, tabchar, depth):
         size /= 1024
         sizes = sizes[1:]
     formatter.string_format(TextFormatter.CYAN, '%s%.1f%s\n' % (
-            tabchar * depth, size + 0.05, sizes[0]))
+            tabchar * depth, size + 0.05, sizes[0]),
+                            out=out)
 
 
-def dump(item, formatter, tabchar, depth, newline=True):
+def dump(item, formatter, tabchar, depth, newline=True, out=sys.stdout):
     """Printing method.
 
     :param item: item to print
@@ -151,37 +152,41 @@ def dump(item, formatter, tabchar, depth, newline=True):
 
     if teq(dict):
         for key in item.keys().sort():
-            formatter.string_format(TextFormatter.NORMAL | TextFormatter.GREEN)
+            formatter.string_format(TextFormatter.NORMAL | TextFormatter.GREEN,
+                                    out=out)
 
             if depth < 2:
-                formatter.string_format(TextFormatter.BRIGHT)
+                formatter.string_format(TextFormatter.BRIGHT, out=out)
 
-            dump(key, formatter, tabchar, depth)
-            formatter.string_format(TextFormatter.NORMAL)
-            dump(item[key], formatter, tabchar, depth + 1)
+            dump(key, formatter, tabchar, depth, out=out)
+            formatter.string_format(TextFormatter.NORMAL, out=out)
+            dump(item[key], formatter, tabchar, depth + 1, out=out)
     elif teq(list):
         if len(item) == 1:
-            dump(item[0], formatter, tabchar, depth)
+            dump(item[0], formatter, tabchar, depth, out=out)
         else:
             for index in range(len(item)):
                 formatter.string_format(TextFormatter.BRIGHT |
                                         TextFormatter.YELLOW,
-                                        '%s%d\n' % (tabchar * depth, index))
-                formatter.string_format(TextFormatter.NORMAL)
-                dump(item[index], formatter, tabchar, depth + 1)
+                                        '%s%d\n' % (tabchar * depth, index),
+                                        out=out)
+                formatter.string_format(TextFormatter.NORMAL, out=out)
+                dump(item[index], formatter, tabchar, depth + 1, out=out)
     elif teq(str):
         if is_printable(item):
             str_output = '%s%s' % (
                 tabchar * depth, item) + ('\n' if newline else '')
-            formatter.string_format(TextFormatter.NONE, str_output)
+            formatter.string_format(TextFormatter.NONE, str_output, out=out)
         else:
             str_output = '%s[%d UTF-8 Bytes]' % (
                 tabchar * depth, len(item)) + ('\n' if newline else '')
             formatter.string_format(
-                TextFormatter.BRIGHT | TextFormatter.RED, str_output)
+                TextFormatter.BRIGHT | TextFormatter.RED, str_output,
+                out=out)
     elif teq(int):
         formatter.string_format(
-            TextFormatter.CYAN, '%s%d\n' % (tabchar * depth, item))
+            TextFormatter.CYAN, '%s%d\n' % (tabchar * depth, item),
+            out=out)
     else:
         sys.exit("Don't know how to print %s" % str(item))
 
@@ -412,7 +417,7 @@ def show_usage(appname):
 
 
 def start_line(formatter, prefix, depth, postfix='',
-               format_spec=TextFormatter.NORMAL):
+               format_spec=TextFormatter.NORMAL, out=sys.stdout):
     """Print the first line during information output.
 
     :param formatter: text formatter to use
@@ -427,11 +432,11 @@ def start_line(formatter, prefix, depth, postfix='',
     :type format_spec: int
     """
     formatter.string_format(TextFormatter.BRIGHT | TextFormatter.GREEN,
-                            '%s%s' % (TAB_CHAR * depth, prefix))
-    formatter.string_format(format_spec, '%s%s' % (TAB_CHAR, postfix))
+                            '%s%s' % (TAB_CHAR * depth, prefix), out=out)
+    formatter.string_format(format_spec, '%s%s' % (TAB_CHAR, postfix), out=out)
 
 
-def get_line(formatter, prefix, key, torrent, is_date=False):
+def get_line(formatter, prefix, key, torrent, is_date=False, out=sys.stdout):
     """Print lines from a torrent instance.
 
     :param formatter: text formatter to use
@@ -449,18 +454,19 @@ def get_line(formatter, prefix, key, torrent, is_date=False):
     :param format_spec: default colour to use for the text
     :type format_spec: int
     """
-    start_line(formatter, prefix, 1, format_spec=TextFormatter.NORMAL)
+    start_line(formatter, prefix, 1, format_spec=TextFormatter.NORMAL, out=out)
     if key in torrent:
         if is_date:
             if type(torrent[key]) == int:
-                dump_as_date(torrent[key], formatter)
+                dump_as_date(torrent[key], formatter, out=out)
             else:
                 formatter.string_format(TextFormatter.BRIGHT |
-                                        TextFormatter.RED, '[Not An Integer]')
+                                        TextFormatter.RED, '[Not An Integer]',
+                                        out=out)
         else:
-            dump(torrent[key], formatter, '', 0)
+            dump(torrent[key], formatter, '', 0, out=out)
     else:
-        formatter.string_format(TextFormatter.NORMAL, '\n')
+        formatter.string_format(TextFormatter.NORMAL, '\n', out=out)
 
 def is_ascii_only(string):
     """Checks whether a string is ascii only.
@@ -508,14 +514,14 @@ def basic(formatter, torrent):
     """
     if not 'info' in torrent:
         sys.exit('Missing "info" section in %s' % torrent.filename)
-    get_line(formatter, 'name       ', 'name', torrent['info'])
-    get_line(formatter, 'tracker url', 'announce', torrent)
-    get_line(formatter, 'created by ', 'created by', torrent)
+    get_line(formatter, 'name       ', 'name', torrent['info'], out=out)
+    get_line(formatter, 'tracker url', 'announce', torrent, out=out)
+    get_line(formatter, 'created by ', 'created by', torrent, out=out)
     get_line(formatter, 'created on ', 'creation date',
-             torrent, is_date=True)
+             torrent, is_date=True, out=out)
 
 
-def top(formatter, torrent):
+def top(formatter, torrent, out=sys.stdout):
     """Prints out the top file/directory name as well as torrent file name.
 
     :param formatter: text formatter to use
@@ -525,10 +531,10 @@ def top(formatter, torrent):
     """
     if not 'info' in torrent:
         sys.exit('Missing "info" section in %s' % torrent.filename)
-    dump(torrent['info']['name'], formatter, '', 1, newline=False)
+    dump(torrent['info']['name'], formatter, '', 1, newline=False, out=out)
 
 
-def basic_files(formatter, torrent):
+def basic_files(formatter, torrent, out=sys.stdout):
     """Prints out basic file information of a Torrent instance.
 
     :param formatter: text formatter to use
@@ -539,25 +545,25 @@ def basic_files(formatter, torrent):
     if not 'info' in torrent:
         sys.exit('Missing "info" section in %s' % torrent.filename)
     if not 'files' in torrent['info']:
-        get_line(formatter, 'file name  ', 'name', torrent['info'])
-        start_line(formatter, 'file size  ', 1)
-        dump_as_size(torrent['info']['length'], formatter, '', 0)
+        get_line(formatter, 'file name  ', 'name', torrent['info'], out=out)
+        start_line(formatter, 'file size  ', 1, out=out)
+        dump_as_size(torrent['info']['length'], formatter, '', 0, out=out)
     else:
         filestorrent = torrent['info']['files']
         numfiles = len(filestorrent)
         if numfiles > 1:
-            start_line(formatter, 'num files  ', 1, '%d\n' % numfiles)
+            start_line(formatter, 'num files  ', 1, '%d\n' % numfiles, out=out)
             lengths = [filetorrent['length']
                        for filetorrent in filestorrent]
-            start_line(formatter, 'total size ', 1)
-            dump_as_size(sum(lengths), formatter, '', 0)
+            start_line(formatter, 'total size ', 1, out=out)
+            dump_as_size(sum(lengths), formatter, '', 0, out=out)
         else:
-            get_line(formatter, 'file name  ', 'path', filestorrent[0])
-            start_line(formatter, 'file size  ', 1)
-            filestorrent[0]['length'].dump_as_size(formatter, '', 0)
+            get_line(formatter, 'file name  ', 'path', filestorrent[0], out=out)
+            start_line(formatter, 'file size  ', 1, out=out)
+            filestorrent[0]['length'].dump_as_size(formatter, '', 0, out=out)
 
 
-def list_files(formatter, torrent, detailed=False):
+def list_files(formatter, torrent, detailed=False, out=sys.stdout):
     """Prints out a list of files using a Torrent instance
 
     :param formatter: text formatter to use
@@ -567,40 +573,44 @@ def list_files(formatter, torrent, detailed=False):
     """
     if not 'info' in torrent:
         sys.exit('Missing "info" section in %s' % torrent.filename)
-    start_line(formatter, 'files', 1, postfix='\n')
+    start_line(formatter, 'files', 1, postfix='\n', out=out)
     if not 'files' in torrent['info']:
         formatter.string_format(TextFormatter.YELLOW |
                                 TextFormatter.BRIGHT,
-                                '%s%d' % (TAB_CHAR * 2, 0))
-        formatter.string_format(TextFormatter.NORMAL, '\n')
-        dump(torrent['info']['name'], formatter, TAB_CHAR, 3)
-        dump_as_size(torrent['info']['length'], formatter, TAB_CHAR, 3)
+                                '%s%d' % (TAB_CHAR * 2, 0),
+                                out=out)
+        formatter.string_format(TextFormatter.NORMAL, '\n', out=out)
+        dump(torrent['info']['name'], formatter, TAB_CHAR, 3, out=out)
+        dump_as_size(torrent['info']['length'], formatter, TAB_CHAR, 3, out=out)
     else:
         filestorrent = torrent['info']['files']
         for index in range(len(filestorrent)):
             formatter.string_format(TextFormatter.YELLOW |
                                     TextFormatter.BRIGHT,
-                                    '%s%d' % (TAB_CHAR * 2, index))
+                                    '%s%d' % (TAB_CHAR * 2, index),
+                                    out=out)
 
-            formatter.string_format(TextFormatter.NORMAL, '\n')
+            formatter.string_format(TextFormatter.NORMAL, '\n', out=out)
             if detailed:
                 for kwrd in filestorrent[index]:
-                    start_line(formatter, kwrd, 3, postfix='\n')
-                    dump(filestorrent[index][kwrd], formatter, TAB_CHAR, 4)
+                    start_line(formatter, kwrd, 3, postfix='\n', out=out)
+                    dump(filestorrent[index][kwrd], formatter, TAB_CHAR, 4,
+                         out=out)
             else:
                 if type(filestorrent[index]['path']) == str:
-                    dump(filestorrent[index]['path'], formatter, TAB_CHAR, 3)
+                    dump(filestorrent[index]['path'], formatter, TAB_CHAR, 3,
+                         out=out)
                 else:
                     dump(os.path.join(*filestorrent[index]['path']),
-                         formatter, TAB_CHAR, 3)
+                         formatter, TAB_CHAR, 3, out=out)
                     dump_as_size(filestorrent[index]['length'],
-                                 formatter, TAB_CHAR, 3)
+                                 formatter, TAB_CHAR, 3, out=out)
 
     if detailed:
-        start_line(formatter, 'piece length', 1, postfix='\n')
-        dump(torrent['info']['piece length'], formatter, TAB_CHAR, 3)
-        start_line(formatter, 'pieces', 1, postfix='\n')
-        dump(torrent['info']['pieces'], formatter, TAB_CHAR, 3)
+        start_line(formatter, 'piece length', 1, postfix='\n', out=out)
+        dump(torrent['info']['piece length'], formatter, TAB_CHAR, 3, out=out)
+        start_line(formatter, 'pieces', 1, postfix='\n', out=out)
+        dump(torrent['info']['pieces'], formatter, TAB_CHAR, 3, out=out)
 
 
 def main():
