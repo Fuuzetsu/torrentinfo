@@ -201,7 +201,6 @@ def decode(string_buffer):
     for exp, parser in parser_map:
         if exp.match(content_type):
             return parser(string_buffer)
-    print string_buffer.string
     raise UnknownTypeChar(content_type, string_buffer)
 
 
