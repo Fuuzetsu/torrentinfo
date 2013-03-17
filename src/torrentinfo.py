@@ -530,30 +530,33 @@ def list_files(formatter, torrent, detailed=False,
         dump(torrent['info']['pieces'], formatter, TAB_CHAR, 3, out=out)
 
 
-def main():
+def main(alt_args=None, out=sys.stdout, err=sys.stderr):
     """Main control flow function used to encapsulate initialisation."""
     try:
-        args = get_args()
+        args = get_args() if alt_args is None else alt_args
         formatter = TextFormatter(not args.nocolour)
 
         for filename in args.filename:
             try:
                 torrent = Torrent(filename, load_torrent(filename))
                 formatter.string_format(TextFormatter.BRIGHT, '%s\n' %
-                                        os.path.basename(torrent.filename))
+                                        os.path.basename(torrent.filename),
+                                        out=out)
                 if args.dump:
-                    list_files(formatter, torrent, detailed=True)
+                    list_files(formatter, torrent, detailed=True,
+                               out=out, err=err)
                 elif args.files:
-                    basic(formatter, torrent)
-                    list_files(formatter, torrent, detailed=False)
+                    basic(formatter, torrent, out=out, err=err)
+                    list_files(formatter, torrent, detailed=False,
+                               out=out, err=err)
                 elif args.top:
-                    top(formatter, torrent)
+                    top(formatter, torrent, out=out, err=err)
                 else:
-                    basic(formatter, torrent)
-                    basic_files(formatter, torrent)
-                formatter.string_format(TextFormatter.NORMAL, '\n')
+                    basic(formatter, torrent, out=out, err=err)
+                    basic_files(formatter, torrent, out=out, err=err)
+                formatter.string_format(TextFormatter.NORMAL, '\n', out=out)
             except UnknownTypeChar:
-                sys.stderr.write(
+                err.write(
                     'Could not parse %s as a valid torrent file.\n' % filename)
     except KeyboardInterrupt:
         pass
