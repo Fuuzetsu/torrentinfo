@@ -365,21 +365,23 @@ class StringBuffer:
 
 
 def get_args():
+    """Parses command-line arguments.
+
+    :returns: Namespace
+    """
     parser = argparse.ArgumentParser(description='Print information '
                                      + 'about torrent files')
-    parser.add_argument('-b', '--basic', dest='basic', action='store_true',
-                        help='Show basic file information (default)')
-    parser.add_argument('-t', '--top', dest='top', action='store_true',
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument('-t', '--top', dest='top', action='store_true',
                         help='Only show top level file/directory')
-    parser.add_argument('-f', '--files', dest='files', action='store_true',
+    group.add_argument('-f', '--files', dest='files', action='store_true',
                         help='Show files within the torrent')
-    parser.add_argument('-d', '--dump', dest='dump', action='store_true',
+    group.add_argument('-d', '--dump', dest='dump', action='store_true',
                        help='Dump the whole file hierarchy')
     parser.add_argument('-a', '--ascii', dest='ascii', action='store_true',
                         help='Only print out ascii')
     parser.add_argument('-n', '--nocolour', dest='nocolour',
                         action='store_true', help='No ANSI colour')
-
     parser.add_argument('filename', type=str, metavar='filename',
                         nargs='+', help='Torrent files to process')
 
@@ -594,14 +596,13 @@ def main():
                 torrent = Torrent(filename, load_torrent(filename))
                 formatter.string_format(TextFormatter.BRIGHT, '%s\n' %
                                         os.path.basename(torrent.filename))
-                if not args.basic:
-                    if args.dump:
-                        list_files(formatter, torrent, detailed=True)
-                    elif args.files:
-                        basic(formatter, torrent)
-                        list_files(formatter, torrent, detailed=False)
-                    elif args.top:
-                        top(formatter, torrent)
+                if args.dump:
+                    list_files(formatter, torrent, detailed=True)
+                elif args.files:
+                    basic(formatter, torrent)
+                    list_files(formatter, torrent, detailed=False)
+                elif args.top:
+                    top(formatter, torrent)
                 else:
                     basic(formatter, torrent)
                     basic_files(formatter, torrent)
