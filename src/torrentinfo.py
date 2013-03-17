@@ -560,7 +560,7 @@ def basic_files(formatter, torrent, out=sys.stdout):
         else:
             get_line(formatter, 'file name  ', 'path', filestorrent[0], out=out)
             start_line(formatter, 'file size  ', 1, out=out)
-            filestorrent[0]['length'].dump_as_size(formatter, '', 0, out=out)
+            dump_as_size(filestorrent[0]['length'], formatter, '', 0, out=out)
 
 
 def list_files(formatter, torrent, detailed=False, out=sys.stdout):
