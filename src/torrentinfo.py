@@ -33,7 +33,7 @@ from string import printable  # pylint: disable-msg=W0402
 TAB_CHAR = '    '
 
 class TextFormatter:
-    """Class used to provide hex colour codes."""
+    """Class used to format strings before printing."""
     NONE = 0x000000
     NORMAL = 0x000001
     BRIGHT = 0x000002
@@ -45,29 +45,20 @@ class TextFormatter:
     MAGENTA = 0x000080
     DULL = 0x000100
 
-    def string_format(self, format_spec, string=''):
-        """Sends a string to output.
-
-        :param format_spec: format parameter used by extending classes
-        :type format_spec: int
-        :param string: string to output
-        :type string: str
-        """
-        output(string)
-
-
-class ANSIColour (TextFormatter):
-    """Provides a map from colour values to terminal escape codes."""
     escape = chr(0x1b)
-    mapping = [(TextFormatter.NORMAL, '[0m'),
-               (TextFormatter.BRIGHT, '[1m'),
-               (TextFormatter.DULL, '[22m'),
-               (TextFormatter.WHITE, '[37m'),
-               (TextFormatter.GREEN, '[32m'),
-               (TextFormatter.CYAN, '[36m'),
-               (TextFormatter.YELLOW, '[33m'),
-               (TextFormatter.RED, '[31m'),
-               (TextFormatter.MAGENTA, '[35m'), ]
+
+    mapping = [(NORMAL, '[0m'),
+               (BRIGHT, '[1m'),
+               (DULL, '[22m'),
+               (WHITE, '[37m'),
+               (GREEN, '[32m'),
+               (CYAN, '[36m'),
+               (YELLOW, '[33m'),
+               (RED, '[31m'),
+               (MAGENTA, '[35m'), ]
+
+    def __init__(self, colour):
+        self.colour = colour
 
     def string_format(self, format_spec, string=''):
         """Attaches colour codes to strings before outputting them.
@@ -77,11 +68,14 @@ class ANSIColour (TextFormatter):
         :param string: string to colour
         :type string: str
         """
-        codestring = ''
-        for name, code in ANSIColour.mapping:
-            if format_spec & name:
-                codestring += ANSIColour.escape + code
-        output(codestring + string)
+        if self.colour:
+            codestring = ''
+            for name, code in TextFormatter.mapping:
+                if format_spec & name:
+                    codestring += TextFormatter.escape + code
+            output(codestring + string)
+        else:
+            output(string)
 
 
 def output(string):
@@ -421,17 +415,6 @@ def show_usage(appname):
              '    -n --nocolour  No ANSI colour\n')
 
 
-def get_formatter(nocolour):
-    """Chooses a text formatter to use throughout the application.
-
-    :param nocolour: determines whether we want the formatter to colour text
-    :type nocolour: bool
-
-    :returns: TextFormatter
-    """
-    return {True: TextFormatter, False: ANSIColour}[nocolour]()
-
-
 def start_line(formatter, prefix, depth, postfix='',
                format_spec=TextFormatter.NORMAL):
     """Print the first line during information output.
@@ -619,7 +602,7 @@ def main():
     try:
         settings, filenames = get_commandline_arguments(
             os.path.basename(sys.argv[0]), sys.argv[1:])
-        formatter = get_formatter('nocolour' in settings)
+        formatter = TextFormatter('nocolour' not in settings)
         if 'nocolour' in settings:
             del settings['nocolour']
         if 'ascii' in settings:
