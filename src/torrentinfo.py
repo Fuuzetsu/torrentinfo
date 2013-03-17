@@ -555,7 +555,7 @@ def basic_files(formatter, torrent):
             filestorrent[0]['length'].dump_as_size(formatter, '', 0)
 
 
-def list_files(formatter, torrent):
+def list_files(formatter, torrent, detailed=False):
     """Prints out a list of files using a Torrent instance
 
     :param formatter: text formatter to use
@@ -579,14 +579,26 @@ def list_files(formatter, torrent):
             formatter.string_format(TextFormatter.YELLOW |
                                     TextFormatter.BRIGHT,
                                     '%s%d' % (TAB_CHAR * 2, index))
+
             formatter.string_format(TextFormatter.NORMAL, '\n')
-            if type(filestorrent[index]['path']) == str:
-                dump(filestorrent[index]['path'], formatter, TAB_CHAR, 3)
+            if detailed:
+                for kwrd in filestorrent[index]:
+                    start_line(formatter, kwrd, 3, postfix='\n')
+                    dump(filestorrent[index][kwrd], formatter, TAB_CHAR, 4)
             else:
-                dump(os.path.join(*filestorrent[index]['path']),
-                     formatter, TAB_CHAR, 3)
-            dump_as_size(filestorrent[index]['length'],
-                formatter, TAB_CHAR, 3)
+                if type(filestorrent[index]['path']) == str:
+                    dump(filestorrent[index]['path'], formatter, TAB_CHAR, 3)
+                else:
+                    dump(os.path.join(*filestorrent[index]['path']),
+                         formatter, TAB_CHAR, 3)
+                    dump_as_size(filestorrent[index]['length'],
+                                 formatter, TAB_CHAR, 3)
+
+    if detailed:
+        start_line(formatter, 'piece length', 1, postfix='\n')
+        dump(torrent['info']['piece length'], formatter, TAB_CHAR, 3)
+        start_line(formatter, 'pieces', 1, postfix='\n')
+        dump(torrent['info']['pieces'], formatter, TAB_CHAR, 3)
 
 
 def main():
@@ -607,10 +619,10 @@ def main():
                                         os.path.basename(torrent.filename))
                 if settings and not 'basic' in settings:
                     if 'dump' in settings:
-                        dump(formatter, torrent)
+                        list_files(formatter, torrent, detailed=True)
                     elif 'files' in settings:
                         basic(formatter, torrent)
-                        list_files(formatter, torrent)
+                        list_files(formatter, torrent, detailed=False)
                     elif 'top' in settings:
                         top(formatter, torrent)
                 else:
