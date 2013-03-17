@@ -428,8 +428,7 @@ def start_line(formatter, prefix, depth, postfix='',
     formatter.string_format(format_spec, '%s%s' % (TAB_CHAR, postfix))
 
 
-def get_line(formatter, prefix, key, torrent, depth=1, is_date=False,
-             format_spec=TextFormatter.NORMAL):
+def get_line(formatter, prefix, key, torrent, is_date=False):
     """Print lines from a torrent instance.
 
     :param formatter: text formatter to use
@@ -447,7 +446,7 @@ def get_line(formatter, prefix, key, torrent, depth=1, is_date=False,
     :param format_spec: default colour to use for the text
     :type format_spec: int
     """
-    start_line(formatter, prefix, depth, format_spec=format_spec)
+    start_line(formatter, prefix, 1, format_spec=TextFormatter.NORMAL)
     if key in torrent:
         if is_date:
             if type(torrent[key]) == int:
