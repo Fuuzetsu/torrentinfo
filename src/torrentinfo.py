@@ -91,6 +91,7 @@ class ANSIColour (TextFormatter):
                 codestring += ANSIColour.escape + code
         self.output(codestring + string)
 
+
 def decode(string_buffer):
     """Returns a de-bencoded dictionary.
 
@@ -99,7 +100,7 @@ def decode(string_buffer):
 
     :returns: dict
     """
-    content_type = string_buffer.get(1)
+    content_type = string_buffer.peek()
     parser_map = [(re.compile('d'), dict_parse),
                   (re.compile('l'), list_parse),
                   (re.compile('[0-9]'), str_parse),
@@ -109,7 +110,9 @@ def decode(string_buffer):
             return parser(string_buffer)
     raise UnknownTypeChar(content_type, string_buffer)
 
+
 def dict_parse(string_buffer):
+    string_buffer.get(1)
     d = dict()
     while string_buffer.peek() != 'e':
         key = str_parse(string_buffer)
@@ -117,19 +120,23 @@ def dict_parse(string_buffer):
     string_buffer.get(1)
     return d
 
+
 def list_parse(string_buffer):
-    l = list()
-    while string_buffer.peek() != 'e':
-        l.append(decode(string_buffer))
+    string_buffer.get(1)
+    l = ''.join([decode(string_buffer) for x in string_buffer.peek() if x != 'e'])
     string_buffer.get(1)
     return l
+
 
 def str_parse(string_buffer):
     length = int(string_buffer.get_upto(':'))
     return string_buffer.get(length)
 
+
 def int_parse(string_buffer):
+    string_buffer.get(1)
     return int(string_buffer.get_upto('e'))
+
 
 
 class UnknownTypeChar(Exception):
@@ -157,13 +164,29 @@ class StringBuffer:
         self.string = string
         self.index = 0
 
+    # def is_eof(self):
+    #     """Checks whether we're at the end of the string.
+
+    #     :returns: bool -- true if this instance reached end of line
+    #     """
+    #     return self.index >= len(self.string)
+
     def is_eof(self):
         """Checks whether we're at the end of the string.
 
         :returns: bool -- true if this instance reached end of line
         """
-        return self.index >= len(self.string)
+        return len(self.string) == 0
 
+    # def peek(self):
+    #     """Peeks at the next character in the string.
+
+    #     :returns: str -- next character of this instance
+    #     :raises: `BufferOverrun`
+    #     """
+    #     if self.is_eof():
+    #         raise StringBuffer.BufferOverrun(1)
+    #     return self.string[self.index]
     def peek(self):
         """Peeks at the next character in the string.
 
@@ -172,9 +195,25 @@ class StringBuffer:
         """
         if self.is_eof():
             raise StringBuffer.BufferOverrun(1)
-        return self.string[self.index]
+        return self.string[0]
 
-    def get(self, length):
+    # def get(self, length):
+    #     """Gets certain amount of characters from the buffer.
+
+    #     :param length: Number of characters to get from the buffer
+    #     :type length: int
+
+    #     :returns: str -- first `length` characters from the buffer
+    #     :raises: BufferOverrun
+    #     """
+    #     last = self.index + length
+    #     if last > len(self.string):
+    #         raise StringBuffer.BufferOverrun(last - len(self.string))
+    #     segment = self.string[self.index: last]
+    #     self.index = last
+    #     return segment
+
+    def get(self, length): # destructive
         """Gets certain amount of characters from the buffer.
 
         :param length: Number of characters to get from the buffer
@@ -183,11 +222,10 @@ class StringBuffer:
         :returns: str -- first `length` characters from the buffer
         :raises: BufferOverrun
         """
-        last = self.index + length
-        if last > len(self.string):
-            raise StringBuffer.BufferOverrun(last - len(self.string))
-        segment = self.string[self.index: last]
-        self.index = last
+        if length > len(self.string):
+            raise StringBuffer.BufferOverrun(length - len(self.string))
+        segment = self.string[:length]
+        self.string = self.string[length:]
         return segment
 
     def get_upto(self, character):
