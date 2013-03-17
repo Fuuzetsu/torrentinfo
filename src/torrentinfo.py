@@ -31,7 +31,7 @@ import time
 from string import printable  # pylint: disable-msg=W0402
 
 TAB_CHAR = '    '
-VERSION = '1.5.0'
+VERSION = '1.5.1'
 
 class TextFormatter:
     """Class used to format strings before printing."""
