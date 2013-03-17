@@ -199,13 +199,28 @@ def decode(string_buffer):
     :returns: dict
     """
     content_type = string_buffer.peek()
-    parser_map = [(re.compile('d'), dict_parse),
-                  (re.compile('l'), list_parse),
-                  (re.compile('[0-9]'), str_parse),
-                  (re.compile('i'), int_parse)]
-    for exp, parser in parser_map:
-        if exp.match(content_type):
-            return parser(string_buffer)
+
+    if content_type == 'd':
+        string_buffer.get(1)
+        tmp_dict = dict()
+        while string_buffer.peek() != 'e':
+            key = string_buffer.get(int(string_buffer.get_upto(':')))
+            tmp_dict[key] = decode(string_buffer)
+        string_buffer.get(1)
+        return tmp_dict
+    elif content_type == 'l':
+        string_buffer.get(1)
+        tmp_list = list()
+        while string_buffer.peek() != 'e':
+            tmp_list.append(decode(string_buffer))
+        string_buffer.get(1)
+        return tmp_list
+    elif content_type == 'i':
+        string_buffer.get(1)
+        return int(string_buffer.get_upto('e'))
+    elif content_type in [str(x) for x in xrange(0, 10)]:
+        return string_buffer.get(int(string_buffer.get_upto(':')))
+
     raise UnknownTypeChar(content_type, string_buffer)
 
 
