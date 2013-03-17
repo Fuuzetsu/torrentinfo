@@ -320,6 +320,58 @@ class MultiMegabyteTorrentTest(GenericTorrentTest, GenericOutputTest):
         self.torrent = torrentinfo.Torrent(self.file['path'],
                                            torrentinfo.load_torrent(self.file['path']))
 
+class MissingInfoTest(unittest.TestCase):
+
+    def setUp(self):
+        self.tf = torrentinfo.TextFormatter(False)
+        path = os.path.join('test', 'files', 'missing_info.torrent')
+        self.torrent = torrentinfo.Torrent(path,
+                                           torrentinfo.load_torrent(path))
+        self.msg = 'Missing "info" section in %s' % self.torrent.filename
+
+    def generic_exit_trigger(self, f):
+        out = StringIO()
+        try:
+            out = f(self.tf, self.torrent, err=out)
+        except SystemExit:
+            return out.getvalue()
+
+    def test_top_exit_value_on_fail(self):
+        self.assertRaises(SystemExit, torrentinfo.top, *(self.tf, self.torrent))
+
+    def test_top_msg(self):
+        errmsg = self.generic_exit_trigger(torrentinfo.top)
+        self.assertEqual(errmsg, self.msg)
+
+    def test_basic_files_exit_value_on_fail(self):
+        self.assertRaises(SystemExit, torrentinfo.basic_files,
+                          *(self.tf, self.torrent))
+
+    def test_basic_files_msg(self):
+        errmsg = self.generic_exit_trigger(torrentinfo.basic_files)
+        self.assertEqual(errmsg, self.msg)
+
+    def test_basic_exit_value_on_fail(self):
+        self.assertRaises(SystemExit, torrentinfo.basic,
+                          *(self.tf, self.torrent))
+
+    def test_basic_msg(self):
+        errmsg = self.generic_exit_trigger(torrentinfo.basic)
+        self.assertEqual(errmsg, self.msg)
+
+    def test_list_files_exit_value_on_fail(self):
+        self.assertRaises(SystemExit, torrentinfo.list_files,
+                          *(self.tf, self.torrent))
+
+    def test_list_files_msg(self):
+        errmsg = self.generic_exit_trigger(torrentinfo.list_files)
+        self.assertEqual(errmsg, self.msg)
+
+    def tearDown(self):
+        self.torrent = None
+
+
+
 
 
 if __name__ == '__main__':
