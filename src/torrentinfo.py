@@ -53,15 +53,7 @@ class TextFormatter:
         :param string: string to output
         :type string: str
         """
-        self.output(string)
-
-    def output(self, string):
-        """Outputs a string to stdout.
-
-        :param string: string to output
-        :type string: str
-        """
-        sys.stdout.write(string)
+        output(string)
 
 
 class ANSIColour (TextFormatter):
@@ -89,8 +81,16 @@ class ANSIColour (TextFormatter):
         for name, code in ANSIColour.mapping:
             if format_spec & name:
                 codestring += ANSIColour.escape + code
-        self.output(codestring + string)
+        output(codestring + string)
 
+
+def output(string):
+    """Outputs the string to stdout.
+
+    :param string: string to output
+    :type string: str
+    """
+    sys.stdout.write(string)
 
 class Torrent(dict):
     """A class modelling a parsed torrent file."""
@@ -106,9 +106,10 @@ class Torrent(dict):
 
 
 class UnexpectedType(Exception):
+    """Thrown when the torrent file is not just a single dictionary"""
     pass
 
-def dump_as_date(n, formatter):
+def dump_as_date(number, formatter):
     """Dumps out the Integer instance as a date.
 
     :param n: number to format
@@ -117,9 +118,9 @@ def dump_as_date(n, formatter):
     :type formatter: TextFormatter
     """
     formatter.string_format(TextFormatter.MAGENTA, time.strftime(
-            '%Y/%m/%d %H:%M:%S %Z\n', time.gmtime(n)))
+            '%Y/%m/%d %H:%M:%S %Z\n', time.gmtime(number)))
 
-def dump_as_size(n, formatter, tabchar, depth):
+def dump_as_size(number, formatter, tabchar, depth):
     """Dumps the string to the stdout as file size after formatting it.
 
     :param n: number to format
@@ -131,7 +132,7 @@ def dump_as_size(n, formatter, tabchar, depth):
     :param depth: indentation depth
     :type depth: int
     """
-    size = float(n)
+    size = float(number)
     sizes = ['B', 'KB', 'MB', 'GB']
     while size > 1024 and len(sizes) > 1:
         size /= 1024
@@ -154,14 +155,17 @@ def dump(item, formatter, tabchar, depth, newline=True):
     :param newline: indicates whether to insert a newline after certain strings
     :type newline: bool
     """
-    def teq(t):
-        return type(item) == t
+    def teq(comp_type):
+        """Helper that checks for type equality."""
+        return type(item) == comp_type
 
     if teq(dict):
         for key in item.keys().sort():
             formatter.string_format(TextFormatter.NORMAL | TextFormatter.GREEN)
+
             if depth < 2:
                 formatter.string_format(TextFormatter.BRIGHT)
+
             dump(key, formatter, tabchar, depth)
             formatter.string_format(TextFormatter.NORMAL)
             dump(item[key], formatter, tabchar, depth + 1)
@@ -211,7 +215,7 @@ def decode(string_buffer):
     raise UnknownTypeChar(content_type, string_buffer)
 
 
-def pop_buffer(f):
+def pop_buffer(wrapped_func):
     """Decorator that pops a character before and after a function call.
 
     :param f: function to call between pops
@@ -219,12 +223,13 @@ def pop_buffer(f):
 
     :returns: f(*args)
     """
-    def g(sb):
-        sb.get(1)
-        x = f(sb)
-        sb.get(1)
-        return x
-    return g
+    def wrapper(string_buffer):
+        """Wraps passed in func in StringBuffer get(1)s."""
+        string_buffer.get(1)
+        parsed_struct = wrapped_func(string_buffer)
+        string_buffer.get(1)
+        return parsed_struct
+    return wrapper
 
 @pop_buffer
 def dict_parse(string_buffer):
@@ -235,11 +240,11 @@ def dict_parse(string_buffer):
 
     :returns: dict
     """
-    d = dict()
+    tmp_dict = dict()
     while string_buffer.peek() != 'e':
         key = str_parse(string_buffer)
-        d[key] = decode(string_buffer)
-    return d
+        tmp_dict[key] = decode(string_buffer)
+    return tmp_dict
 
 @pop_buffer
 def list_parse(string_buffer):
@@ -250,10 +255,10 @@ def list_parse(string_buffer):
 
     :returns: list
     """
-    l = list()
+    tmp_list = list()
     while string_buffer.peek() != 'e':
-        l.append(decode(string_buffer))
-    return l
+        tmp_list.append(decode(string_buffer))
+    return tmp_list
 
 
 def str_parse(string_buffer):
@@ -603,7 +608,8 @@ def list_files(formatter, torrent):
             if type(filestorrent[index]['path']) == str:
                 dump(filestorrent[index]['path'], formatter, TAB_CHAR, 3)
             else:
-                dump(os.path.join(*filestorrent[index]['path']), formatter, TAB_CHAR, 3)
+                dump(os.path.join(*filestorrent[index]['path']),
+                     formatter, TAB_CHAR, 3)
             dump_as_size(filestorrent[index]['length'],
                 formatter, TAB_CHAR, 3)
 
