@@ -95,6 +95,10 @@ class UnexpectedType(Exception):
     """Thrown when the torrent file is not just a single dictionary"""
     pass
 
+class UnknownTypeChar(Exception):
+    """Thrown when Torrent.parse encounters unexpected character"""
+    pass
+
 def dump_as_date(number, formatter):
     """Dumps out the Integer instance as a date.
 
@@ -268,11 +272,6 @@ def int_parse(string_buffer):
     """
     string_buffer.get(1)
     return int(string_buffer.get_upto('e'))
-
-
-class UnknownTypeChar(Exception):
-    """Thrown when Torrent.parse encounters unexpected character"""
-    pass
 
 
 def load_torrent(filename):
