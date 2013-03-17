@@ -93,7 +93,7 @@ class ANSIColour (TextFormatter):
 
 
 def decode(string_buffer):
-    """Returns a de-bencoded dictionary.
+    """Decodes a bencoded string.
 
     :param string_buffer: bencoded torrent file content buffer
     :type string_buffer: StringBuffer
@@ -107,37 +107,68 @@ def decode(string_buffer):
                   (re.compile('i'), int_parse)]
     for exp, parser in parser_map:
         if exp.match(content_type):
-            print string_buffer.string
-            print
             return parser(string_buffer)
     print string_buffer.string
     raise UnknownTypeChar(content_type, string_buffer)
 
 
+def pop_buffer(f):
+    def g(sb):
+        sb.get(1)
+        x = f(sb)
+        sb.get(1)
+        return x
+    return g
+
+@pop_buffer
 def dict_parse(string_buffer):
-    string_buffer.get(1)
+    """Parses a bencoded string into a dictionary.
+
+    :param string_buffer: StringBuffer to use for parsing
+    :type string_buffer: StringBuffer
+
+    :returns: dict
+    """
     d = dict()
     while string_buffer.peek() != 'e':
         key = str_parse(string_buffer)
         d[key] = decode(string_buffer)
-    string_buffer.get(1)
     return d
 
-
+@pop_buffer
 def list_parse(string_buffer):
-    string_buffer.get(1)
-    l = []
+    """Parses a bencoded string into a list.
+
+    :param string_buffer: StringBuffer to use for parsing
+    :type string_buffer: StringBuffer
+
+    :returns: list
+    """
+    l = list()
     while string_buffer.peek() != 'e':
         l.append(decode(string_buffer))
-    string_buffer.get(1)
     return l
 
 
 def str_parse(string_buffer):
+    """Parses a bencoded string into a string.
+
+    :param string_buffer: StringBuffer to use for parsing
+    :type string_buffer: StringBuffer
+
+    :returns: str
+    """
     return string_buffer.get(int(string_buffer.get_upto(':')))
 
 
 def int_parse(string_buffer):
+    """Parses a bencoded string into an integer.
+
+    :param string_buffer: StringBuffer to use for parsing
+    :type string_buffer: StringBuffer
+
+    :returns: int
+    """
     string_buffer.get(1)
     return int(string_buffer.get_upto('e'))
 
@@ -342,17 +373,6 @@ def get_line(formatter, prefix, key, torrent, depth=1, is_date=False,
             torrent[key].dump(formatter, '', 0)
     else:
         formatter.string_format(TextFormatter.NORMAL, '\n')
-
-
-def dump(formatter, torrent):
-    """Prints out Torrent instance data using `Torrent.dump`.
-
-    :param formatter: text formatter to use
-    :type formatter: TextFormatter
-    :param torrent: torrent instance to use for information
-    :type torrent: Torrent
-    """
-    torrent.dump(formatter, TAB_CHAR, 1)
 
 
 def basic(formatter, torrent):
