@@ -26,7 +26,6 @@ import argparse
 import os.path
 import re
 import time
-import getopt
 
 #  see pylint ticket #2481
 from string import printable  # pylint: disable-msg=W0402
@@ -365,41 +364,6 @@ class StringBuffer:
         pass
 
 
-def get_commandline_arguments(appname, arguments):
-    """Parses the commandline arguments using :mod:`getopt`.
-
-    :param appname: name of the application
-    :type appname: str
-    :param arguments: list of arguments from the commandline
-    :type arguments: list of str
-
-    :returns: (dict, list) -- the list contains any trailing, unparsed args
-    """
-    try:
-        options, arguments = getopt.gnu_getopt(
-            arguments, 'hndbtfa', ['help', 'nocolour', 'dump',
-                                   'basic', 'top', 'files', 'ascii'])
-    except getopt.GetoptError:
-        show_usage(appname)
-
-    if not arguments:
-        show_usage(appname)
-    optionsmap = [(('-n', '--nocolour'), 'nocolour'),
-                  (('-d', '--dump'), 'dump'),
-                  (('-b', '--basic'), 'basic'),
-                  (('-t', '--top'), 'top'),
-                  (('-f', '--files'), 'files'),
-                  (('-a', '--ascii'), 'ascii')]
-    setoptions = {}
-    for option, value in options:
-        if option in ['-h', '--help']:
-            show_usage(appname)
-        for switches, key in optionsmap:
-            if option in switches:
-                setoptions[key] = value
-
-    return setoptions, arguments
-
 def get_args():
     parser = argparse.ArgumentParser(description='Print information '
                                      + 'about torrent files')
@@ -416,27 +380,10 @@ def get_args():
     parser.add_argument('-n', '--nocolour', dest='nocolour',
                         action='store_true', help='No ANSI colour')
 
-    parser.add_argument('filename', type=str, metavar='filenames',
+    parser.add_argument('filename', type=str, metavar='filename',
                         nargs='+', help='Torrent files to process')
 
     return parser.parse_args()
-
-
-
-def show_usage(appname):
-    """Exits the application while printing the help.
-
-    :param appname: name of the application
-    :type appname: str
-    """
-    sys.exit('%s [ -h -n ] filename1 [ ... filenameN ]\n\n' % appname +
-             '    -h --help      Displays this message\n' +
-             '    -b --basic     Shows basic file information (default)\n' +
-             '    -t --top       Shows only the top level file/directory\n' +
-             '    -f --files     Shows files within the torrent\n' +
-             '    -d --dump      Dumps the whole file hierarchy\n' +
-             '    -a --ascii     Only prints out ascii\n' +
-             '    -n --nocolour  No ANSI colour\n')
 
 
 def start_line(formatter, prefix, depth, postfix='',
@@ -640,26 +587,20 @@ def main():
     """Main control flow function used to encapsulate initialisation."""
     try:
         args = get_args()
-        settings, filenames = get_commandline_arguments(
-            os.path.basename(sys.argv[0]), sys.argv[1:])
         formatter = TextFormatter(not args.nocolour)
-        if 'nocolour' in settings:
-            del settings['nocolour']
-        if 'ascii' in settings:
-            del settings['ascii']
 
-        for filename in filenames:
+        for filename in args.filename:
             try:
                 torrent = Torrent(filename, load_torrent(filename))
                 formatter.string_format(TextFormatter.BRIGHT, '%s\n' %
                                         os.path.basename(torrent.filename))
-                if settings and not 'basic' in settings:
-                    if 'dump' in settings:
+                if not args.basic:
+                    if args.dump:
                         list_files(formatter, torrent, detailed=True)
-                    elif 'files' in settings:
+                    elif args.files:
                         basic(formatter, torrent)
                         list_files(formatter, torrent, detailed=False)
-                    elif 'top' in settings:
+                    elif args.top:
                         top(formatter, torrent)
                 else:
                     basic(formatter, torrent)
