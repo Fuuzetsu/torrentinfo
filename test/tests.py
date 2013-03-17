@@ -135,6 +135,22 @@ class TextFormatterTest(unittest.TestCase):
         output = self.out.getvalue()
         self.assertNotEqual(output[:-5], result[:-5])
 
+    def test_size_success(self):
+        formatter = torrentinfo.TextFormatter(False)
+        size = 1024 * 1024
+        torrentinfo.dump_as_size(size, formatter, '    ', 0,
+                                 out=self.out)
+        output = self.out.getvalue()
+        self.assertEqual(output, '1.0MB\n')
+
+    def test_size_fail(self):
+        formatter = torrentinfo.TextFormatter(False)
+        size = 1024
+        torrentinfo.dump_as_size(size, formatter, '    ', 0,
+                                 out=self.out)
+        output = self.out.getvalue()
+        self.assertNotEqual(output, '1.0GB')
+
 
     def tearDown(self):
         self.out = sys.stdout
