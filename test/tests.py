@@ -540,5 +540,31 @@ class CommandLineOutputTest(unittest.TestCase):
         self.err = None
 
 
+class PrintableTest(unittest.TestCase):
+
+    def setUp(self):
+        self.out = StringIO()
+        self.tf = torrentinfo.TextFormatter(False)
+
+    def test_is_printable_ascii_true(self):
+        test_string = 'simple ascii'
+        p = torrentinfo.is_printable(test_string)
+        self.assertTrue(p)
+
+    def test_is_printable_unicode_true(self):
+        test_string ='oaeuAOEU灼眼のシャナ:<>%75'
+        p = torrentinfo.is_printable(test_string)
+        torrentinfo.dump(test_string, self.tf, '    ', 0, out=self.out,
+                         newline=False)
+        self.assertFalse(p)
+
+
+    def test_is_printable_ascii_success(self):
+        test_string = 'perfectly printable ascii'
+        torrentinfo.dump(test_string, self.tf, '    ', 0, out=self.out,
+                         newline=False)
+        self.assertEqual(self.out.getvalue(), test_string)
+
+
 if __name__ == '__main__':
     nose.main(buffer=True)
