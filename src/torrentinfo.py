@@ -399,6 +399,28 @@ def get_commandline_arguments(appname, arguments):
 
     return setoptions, arguments
 
+def get_args():
+    parser = argparse.ArgumentParser(description='Print information '
+                                     + 'about torrent files')
+    parser.add_argument('-b', '--basic', dest='basic', action='store_true',
+                        help='Show basic file information (default)')
+    parser.add_argument('-t', '--top', dest='top', action='store_true',
+                        help='Only show top level file/directory')
+    parser.add_argument('-f', '--files', dest='files', action='store_true',
+                        help='Show files within the torrent')
+    parser.add_argument('-d', '--dump', dest='dump', action='store_true',
+                       help='Dump the whole file hierarchy')
+    parser.add_argument('-a', '--ascii', dest='ascii', action='store_true',
+                        help='Only print out ascii')
+    parser.add_argument('-n', '--nocolour', dest='nocolour',
+                        action='store_true', help='No ANSI colour')
+
+    parser.add_argument('filename', type=str, metavar='filenames',
+                        nargs='+', help='Torrent files to process')
+
+    return parser.parse_args()
+
+
 
 def show_usage(appname):
     """Exits the application while printing the help.
