@@ -73,18 +73,10 @@ class TextFormatter:
             for name, code in TextFormatter.mapping:
                 if format_spec & name:
                     codestring += TextFormatter.escape + code
-            output(codestring + string)
+            sys.stdout.write(codestring + string)
         else:
-            output(string)
+            sys.stdout.write(string)
 
-
-def output(string):
-    """Outputs the string to stdout.
-
-    :param string: string to output
-    :type string: str
-    """
-    sys.stdout.write(string)
 
 class Torrent(dict):
     """A class modelling a parsed torrent file."""
@@ -279,7 +271,8 @@ def int_parse(string_buffer):
 
 
 class UnknownTypeChar(Exception):
-    pass
+   """Thrown when Torrent.parse encounters unexpected character"""
+   pass
 
 
 def load_torrent(filename):
