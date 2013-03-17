@@ -173,9 +173,9 @@ def int_parse(string_buffer):
     return int(string_buffer.get_upto('e'))
 
 
-
 class UnknownTypeChar(Exception):
     pass
+
 
 def load_torrent(filename):
     """Loads file contents from a torrent file
@@ -229,8 +229,7 @@ class StringBuffer:
         """
         if length > len(self.string):
             raise StringBuffer.BufferOverrun(length - len(self.string))
-        segment = self.string[:length]
-        self.string = self.string[length:]
+        segment, self.string = self.string[:length], self.string[length:]
         return segment
 
     def get_upto(self, character):
