@@ -555,8 +555,6 @@ def main():
             except UnknownTypeChar:
                 sys.stderr.write(
                     'Could not parse %s as a valid torrent file.\n' % filename)
-    except SystemExit, message:
-        sys.exit(message)
     except KeyboardInterrupt:
         pass
 
