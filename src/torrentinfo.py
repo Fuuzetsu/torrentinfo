@@ -128,7 +128,7 @@ def dump_as_size(number, formatter, tabchar, depth, out=sys.stdout):
         size /= 1024
         sizes = sizes[1:]
     formatter.string_format(TextFormatter.CYAN, '%s%.1f%s\n' % (
-            tabchar * depth, size + 0.05, sizes[0]),
+            tabchar * depth, size, sizes[0]),
                             out=out)
 
 
