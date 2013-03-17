@@ -294,7 +294,6 @@ class StringBuffer:
         :type string: str
         """
         self.string = string
-        self.index = 0
 
     def is_eof(self):
         """Checks whether we're at the end of the string.
