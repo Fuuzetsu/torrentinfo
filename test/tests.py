@@ -24,6 +24,7 @@ sys.path.append(os.path.join('..', 'src'))
 from StringIO import StringIO
 import unittest
 import nose
+import argparse
 import torrentinfo
 
 
@@ -369,6 +370,174 @@ class MissingInfoTest(unittest.TestCase):
 
     def tearDown(self):
         self.torrent = None
+
+class CommandLineOutputTest(unittest.TestCase):
+
+    def setUp(self):
+        self.parser = torrentinfo.get_arg_parser()
+        self.out = StringIO()
+        self.err = StringIO()
+
+    def torrent_path(self, name):
+        return os.path.join('test', 'files', name)
+
+    def arg_namespace(self, arg_string):
+        return self.parser.parse_args(arg_string.split(' '))
+
+
+    def test_basic_single(self):
+        tname = 'regular.torrent'
+        tp = self.torrent_path(tname)
+        ns = self.arg_namespace('-n %s' % tp)
+
+        return_string = '\n'.join([tname,
+                                   '    name           torrentinfo.py',
+                                   '    tracker url    fake.com/announce',
+                                   '    created by     mktorrent 1.0',
+                                   '    created on     2013/03/17 14:32:36 GMT',
+                                   '    file name      torrentinfo.py',
+                                   '    file size      22.1KB\n\n'])
+
+        torrentinfo.main(alt_args=ns, out=self.out, err=self.err)
+        assert self.err.getvalue() == ''
+        self.assertEqual(self.out.getvalue(), return_string)
+
+    def test_basic_multi(self):
+        tname = 'multi_bytes.torrent'
+        tp = self.torrent_path(tname)
+        ns = self.arg_namespace('-n %s' % tp)
+
+        return_string = '\n'.join([tname,
+                                   '    name           multibyte',
+                                   '    tracker url    fake.com/announce',
+                                   '    created by     mktorrent 1.0',
+                                   '    created on     2013/03/17 13:52:41 GMT',
+                                   '    num files      2',
+                                   '    total size     3.0MB\n\n'])
+
+        torrentinfo.main(alt_args=ns, out=self.out, err=self.err)
+        assert self.err.getvalue() == ''
+        self.assertEqual(self.out.getvalue(), return_string)
+
+    def test_top_single(self):
+        tname = 'regular.torrent'
+        tp = self.torrent_path(tname)
+        ns = self.arg_namespace('-n -t %s' % tp)
+
+        return_string = '\n'.join([tname,
+                                   'torrentinfo.py\n'])
+
+        torrentinfo.main(alt_args=ns, out=self.out, err=self.err)
+        assert self.err.getvalue() == ''
+        self.assertEqual(self.out.getvalue(), return_string)
+
+    def test_top_multi(self):
+        tname = 'multi_bytes.torrent'
+        tp = self.torrent_path(tname)
+        ns = self.arg_namespace('-n -t %s' % tp)
+
+        return_string = '\n'.join([tname,
+                                   'multibyte\n'])
+
+        torrentinfo.main(alt_args=ns, out=self.out, err=self.err)
+        assert self.err.getvalue() == ''
+        self.assertEqual(self.out.getvalue(), return_string)
+
+
+    def test_basic_files_single(self):
+        tname = 'regular.torrent'
+        tp = self.torrent_path(tname)
+        ns = self.arg_namespace('-n -f %s' % tp)
+
+        return_string = '\n'.join([tname,
+                                   '    name           torrentinfo.py',
+                                   '    tracker url    fake.com/announce',
+                                   '    created by     mktorrent 1.0',
+                                   '    created on     2013/03/17 14:32:36 GMT',
+                                   '    files    ',
+                                   '        0',
+                                   '            torrentinfo.py',
+                                   '            22.1KB\n\n'])
+
+        torrentinfo.main(alt_args=ns, out=self.out, err=self.err)
+        assert self.err.getvalue() == ''
+        self.assertEqual(self.out.getvalue(), return_string)
+
+    def test_basic_files_multi(self):
+        tname = 'multi_bytes.torrent'
+        tp = self.torrent_path(tname)
+        ns = self.arg_namespace('-n -f %s' % tp)
+
+        return_string = '\n'.join([tname,
+                                   '    name           multibyte',
+                                   '    tracker url    fake.com/announce',
+                                   '    created by     mktorrent 1.0',
+                                   '    created on     2013/03/17 13:52:41 GMT',
+                                   '    files    ',
+                                   '        0',
+                                   '            megabyte',
+                                   '            1.0MB',
+                                   '        1',
+                                   '            two_megabytes',
+                                   '            2.0MB\n\n'])
+
+        torrentinfo.main(alt_args=ns, out=self.out, err=self.err)
+        assert self.err.getvalue() == ''
+        self.assertEqual(self.out.getvalue(), return_string)
+
+
+    def test_list_files_single(self):
+        tname = 'regular.torrent'
+        tp = self.torrent_path(tname)
+        ns = self.arg_namespace('-n -d %s' % tp)
+
+        return_string = '\n'.join([tname,
+                                   '    files    ',
+                                   '        0',
+                                   '            torrentinfo.py',
+                                   '            22.1KB',
+                                   '    piece length    ',
+                                   '            262144',
+                                   '    pieces    ',
+                                   '            \x9c\xf8\xe3\xe0qo\xfd>'
+                                   + '\xda\xbd\xd5a\x04\xfa\x96\x1a\x9e\r7a\n\n'])
+
+        torrentinfo.main(alt_args=ns, out=self.out, err=self.err)
+        assert self.err.getvalue() == ''
+        self.assertEqual(self.out.getvalue(), return_string)
+
+
+    def test_list_files_multi(self):
+        tname = 'multi_bytes.torrent'
+        tp = self.torrent_path(tname)
+        ns = self.arg_namespace('-n -d %s' % tp)
+
+        return_string = '\n'.join([tname,
+                                   '    files    ',
+                                   '        0',
+                                   '            path    ',
+                                   '                megabyte',
+                                   '            length    ',
+                                   '                1048576',
+                                   '        1',
+                                   '            path    ',
+                                   '                two_megabytes',
+                                   '            length    ',
+                                   '                2097152',
+                                   '    piece length    ',
+                                   '            262144',
+                                   '    pieces    ',
+                                   '            [240 UTF-8 Bytes]\n\n'])
+
+        torrentinfo.main(alt_args=ns, out=self.out, err=self.err)
+        assert self.err.getvalue() == ''
+        self.assertEqual(self.out.getvalue(), return_string)
+
+
+    def tearDown(self):
+        self.parser = None
+        self.out = None
+        self.err = None
 
 
 if __name__ == '__main__':
