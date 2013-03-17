@@ -84,7 +84,8 @@ class GenericTorrentTest(unittest.TestCase):
     __test__ = False
 
     def test_load_torrent_succeed(self):
-        self.assertNotEqual(self.torrent, None, "Loaded %s is None" % self.file)
+        self.assertNotEqual(self.torrent, None,
+                            "Loaded %s is None" % self.file['path'])
 
     def test_load_torrent_fail(self):
         self.assertRaises(IOError, torrentinfo.load_torrent,
@@ -96,7 +97,7 @@ class GenericTorrentTest(unittest.TestCase):
                           torrentinfo.Torrent, *('foo', data))
 
     def test_filename_succeed(self):
-        self.assertEqual(self.torrent.filename, self.file)
+        self.assertEqual(self.torrent.filename, self.file['path'])
 
     def test_filename_fail(self):
         self.assertNotEqual(self.torrent.filename, 'fakefilename.xyz')
@@ -124,41 +125,45 @@ class RegularTorrentTest(GenericTorrentTest):
     __test__ = True
 
     def setUp(self):
-        self.filename = 'regular.torrent'
+        self.file = dict()
+        self.file['name'] = 'regular.torrent'
         self.torrent = None
-        self.file = os.path.join('test', 'files', self.filename)
-        self.torrent = torrentinfo.Torrent(self.file,
-                                           torrentinfo.load_torrent(self.file))
+        self.file['path'] = os.path.join('test', 'files', self.file['name'])
+        self.torrent = torrentinfo.Torrent(self.file['path'],
+                                           torrentinfo.load_torrent(self.file['path']))
 
 class MegabyteTorrentTest(GenericTorrentTest):
     __test__ = True
 
     def setUp(self):
-        self.filename = 'megabyte.torrent'
+        self.file = dict()
+        self.file['name'] = 'megabyte.torrent'
         self.torrent = None
-        self.file = os.path.join('test', 'files', self.filename)
-        self.torrent = torrentinfo.Torrent(self.file,
-                                           torrentinfo.load_torrent(self.file))
+        self.file['path'] = os.path.join('test', 'files', self.file['name'])
+        self.torrent = torrentinfo.Torrent(self.file['path'],
+                                           torrentinfo.load_torrent(self.file['path']))
 
 class TwoMegabyteTorrentTest(GenericTorrentTest):
     __test__ = True
 
     def setUp(self):
-        self.filename = 'two_megabytes.torrent'
+        self.file = dict()
+        self.file['name'] = 'two_megabytes.torrent'
         self.torrent = None
-        self.file = os.path.join('test', 'files', self.filename)
-        self.torrent = torrentinfo.Torrent(self.file,
-                                           torrentinfo.load_torrent(self.file))
+        self.file['path'] = os.path.join('test', 'files', self.file['name'])
+        self.torrent = torrentinfo.Torrent(self.file['path'],
+                                           torrentinfo.load_torrent(self.file['path']))
 
 class MultiMegabyteTorrentTest(GenericTorrentTest):
     __test__ = True
 
     def setUp(self):
-        self.filename = 'multi_bytes.torrent'
+        self.file = dict()
+        self.file['name'] = 'multi_bytes.torrent'
         self.torrent = None
-        self.file = os.path.join('test', 'files', self.filename)
-        self.torrent = torrentinfo.Torrent(self.file,
-                                           torrentinfo.load_torrent(self.file))
+        self.file['path'] = os.path.join('test', 'files', self.file['name'])
+        self.torrent = torrentinfo.Torrent(self.file['path'],
+                                           torrentinfo.load_torrent(self.file['path']))
 
 
 
