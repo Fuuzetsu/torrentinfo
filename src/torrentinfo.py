@@ -540,7 +540,7 @@ def main(alt_args=None, out=sys.stdout, err=sys.stderr):
         formatter = TextFormatter(not args.nocolour)
 
         if args.version:
-            sys.out.write('torrentinfo %s' % VERSION)
+            out.write('torrentinfo %s' % VERSION)
             sys.exit(0)
 
         for filename in args.filename:
