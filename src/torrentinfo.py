@@ -181,14 +181,14 @@ def dump(item, formatter, tabchar, depth, newline=True):
                 dump(item[index], formatter, tabchar, depth + 1)
     elif teq(str):
         if is_printable(item):
-            output = '%s%s' % (
+            str_output = '%s%s' % (
                 tabchar * depth, item) + ('\n' if newline else '')
-            formatter.string_format(TextFormatter.NONE, output)
+            formatter.string_format(TextFormatter.NONE, str_output)
         else:
-            output = '%s[%d UTF-8 Bytes]' % (
+            str_output = '%s[%d UTF-8 Bytes]' % (
                 tabchar * depth, len(item)) + ('\n' if newline else '')
             formatter.string_format(
-                TextFormatter.BRIGHT | TextFormatter.RED, output)
+                TextFormatter.BRIGHT | TextFormatter.RED, str_output)
     elif teq(int):
         formatter.string_format(
             TextFormatter.CYAN, '%s%d\n' % (tabchar * depth, item))
