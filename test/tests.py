@@ -1,4 +1,5 @@
 #!/usr/bin/env/python
+# -*- coding: utf-8 -*-
 
 # This file is part of torrentinfo.
 #
@@ -53,7 +54,6 @@ class TextFormatterTest(unittest.TestCase):
     def test_colour_simple_succeed(self):
         formatter = torrentinfo.TextFormatter(True)
         red_code = self.colour_codes[torrentinfo.TextFormatter.RED]
-        norm_col = torrentinfo.TextFormatter.NORMAL
         norm_string = 'oaeuAOEU:<>%75'
         test_string = '%s%s%s' % (torrentinfo.TextFormatter.escape,
                                   red_code, norm_string)
@@ -65,7 +65,6 @@ class TextFormatterTest(unittest.TestCase):
     def test_colour_simple_fail(self):
         formatter = torrentinfo.TextFormatter(True)
         red_code = self.colour_codes[torrentinfo.TextFormatter.RED]
-        norm_col = torrentinfo.TextFormatter.NORMAL
         norm_string = 'oaeuAOEU:<>%75'
         test_string = '%s%s%s' % (torrentinfo.TextFormatter.escape,
                                   red_code, norm_string)
@@ -73,6 +72,53 @@ class TextFormatterTest(unittest.TestCase):
                                 string=norm_string, out=self.out)
         output = self.out.getvalue()
         self.assertNotEqual(output, test_string)
+
+    def test_no_colour_unicode_succeed(self):
+        formatter = torrentinfo.TextFormatter(False)
+        norm_col = torrentinfo.TextFormatter.NORMAL
+        test_string = 'oaeuAOEU灼眼のシャナ:<>%75'
+        formatter.string_format(norm_col, string=test_string, out=self.out)
+        output = self.out.getvalue()
+        self.assertEqual(output, test_string)
+
+    def test_no_colour_unicode_fail(self):
+        formatter = torrentinfo.TextFormatter(False)
+        norm_col = torrentinfo.TextFormatter.NORMAL
+        test_string = 'oaeuAOEU灼眼のシャナ:<>%75'
+        trash_output = 'oaeuAOEU封絶:<>%75'
+        formatter.string_format(norm_col, string=test_string, out=self.out)
+        output = self.out.getvalue()
+        assert trash_output != test_string
+        self.assertNotEqual(output, trash_output)
+
+    def test_colour_unicode_succeed(self):
+        formatter = torrentinfo.TextFormatter(True)
+        green_code = self.colour_codes[torrentinfo.TextFormatter.GREEN]
+        norm_string = 'oaeuAOEU灼眼のシャナ:<>%75'
+
+        test_string = '%s%s%s' % (torrentinfo.TextFormatter.escape,
+                                  green_code, norm_string)
+
+        formatter.string_format(torrentinfo.TextFormatter.GREEN,
+                                string=norm_string, out=self.out)
+
+        output = self.out.getvalue()
+        self.assertEqual(output, test_string)
+
+    def test_colour_unicode_fail(self):
+        formatter = torrentinfo.TextFormatter(True)
+        green_code = self.colour_codes[torrentinfo.TextFormatter.GREEN]
+        norm_string = 'oaeuAOEU灼眼のシャナ:<>%75'
+
+        test_string = '%s%s%s' % (torrentinfo.TextFormatter.escape,
+                                  green_code, norm_string)
+
+        formatter.string_format(torrentinfo.TextFormatter.YELLOW,
+                                string=norm_string, out=self.out)
+
+        output = self.out.getvalue()
+        self.assertNotEqual(output, test_string)
+
 
 
     def tearDown(self):
