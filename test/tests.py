@@ -123,18 +123,18 @@ class TextFormatterTest(unittest.TestCase):
     def test_date_succees(self):
         formatter = torrentinfo.TextFormatter(False)
         date_number = 1363542066
-        result = '2013/03/17 17:41:06 UTC\n'
+        result = '2013/03/17 17:41:06\n'
         torrentinfo.dump_as_date(date_number, formatter, out=self.out)
         output = self.out.getvalue()
-        self.assertEqual(output[:-5], result[:-5])
+        self.assertEqual(output, result)
 
     def test_date_fail(self):
         formatter = torrentinfo.TextFormatter(False)
         date_number = 1363542066
-        result = '2099/03/17 17:41:06 UTC\n'
+        result = '2099/03/17 17:41:06\n'
         torrentinfo.dump_as_date(date_number, formatter, out=self.out)
         output = self.out.getvalue()
-        self.assertNotEqual(output[:-5], result[:-5])
+        self.assertNotEqual(output, result)
 
     def test_size_success(self):
         formatter = torrentinfo.TextFormatter(False)
@@ -394,7 +394,7 @@ class CommandLineOutputTest(unittest.TestCase):
                                    '    name           torrentinfo.py',
                                    '    tracker url    fake.com/announce',
                                    '    created by     mktorrent 1.0',
-                                   '    created on     2013/03/17 14:32:36 GMT',
+                                   '    created on     2013/03/17 14:32:36',
                                    '    file name      torrentinfo.py',
                                    '    file size      22.1KB\n\n'])
 
@@ -411,7 +411,7 @@ class CommandLineOutputTest(unittest.TestCase):
                                    '    name           multibyte',
                                    '    tracker url    fake.com/announce',
                                    '    created by     mktorrent 1.0',
-                                   '    created on     2013/03/17 13:52:41 GMT',
+                                   '    created on     2013/03/17 13:52:41',
                                    '    num files      2',
                                    '    total size     3.0MB\n\n'])
 
@@ -453,7 +453,7 @@ class CommandLineOutputTest(unittest.TestCase):
                                    '    name           torrentinfo.py',
                                    '    tracker url    fake.com/announce',
                                    '    created by     mktorrent 1.0',
-                                   '    created on     2013/03/17 14:32:36 GMT',
+                                   '    created on     2013/03/17 14:32:36',
                                    '    files    ',
                                    '        0',
                                    '            torrentinfo.py',
@@ -472,7 +472,7 @@ class CommandLineOutputTest(unittest.TestCase):
                                    '    name           multibyte',
                                    '    tracker url    fake.com/announce',
                                    '    created by     mktorrent 1.0',
-                                   '    created on     2013/03/17 13:52:41 GMT',
+                                   '    created on     2013/03/17 13:52:41',
                                    '    files    ',
                                    '        0',
                                    '            megabyte',

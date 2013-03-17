@@ -109,7 +109,7 @@ def dump_as_date(number, formatter, out=sys.stdout):
     :type formatter: TextFormatter
     """
     formatter.string_format(TextFormatter.MAGENTA, time.strftime(
-            '%Y/%m/%d %H:%M:%S %Z\n', time.gmtime(number)), out=out)
+            '%Y/%m/%d %H:%M:%S\n', time.gmtime(number)), out=out)
 
 def dump_as_size(number, formatter, tabchar, depth, out=sys.stdout):
     """Dumps the string to the stdout as file size after formatting it.
