@@ -124,7 +124,7 @@ def dump_as_size(number, formatter, tabchar, depth, out=sys.stdout):
     """
     size = float(number)
     sizes = ['B', 'KB', 'MB', 'GB']
-    while size > 1024 and len(sizes) > 1:
+    while size >= 1024 and len(sizes) > 1:
         size /= 1024
         sizes = sizes[1:]
     formatter.string_format(TextFormatter.CYAN, '%s%.1f%s\n' % (
