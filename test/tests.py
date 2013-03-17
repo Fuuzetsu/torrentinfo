@@ -30,11 +30,12 @@ class TextFormatterTest(unittest.TestCase):
 
     def setUp(self):
         self.out = StringIO()
+        self.colour_codes = dict(torrentinfo.TextFormatter.mapping)
 
     def test_no_colour_simple_succeed(self):
         formatter = torrentinfo.TextFormatter(False)
         norm_col = torrentinfo.TextFormatter.NORMAL
-        test_string = 'foo_bar_baz'
+        test_string = 'oaeuAOEU:<>%75'
         formatter.string_format(norm_col, string=test_string, out=self.out)
         output = self.out.getvalue()
         self.assertEqual(output, test_string)
@@ -42,12 +43,37 @@ class TextFormatterTest(unittest.TestCase):
     def test_no_colour_simple_fail(self):
         formatter = torrentinfo.TextFormatter(False)
         norm_col = torrentinfo.TextFormatter.NORMAL
-        test_string = 'foo_bar_baz'
+        test_string = 'oaeuAOEU:<>%75'
         trash_output = 'trash_output'
         formatter.string_format(norm_col, string=test_string, out=self.out)
         output = self.out.getvalue()
         assert trash_output != test_string
         self.assertNotEqual(output, trash_output)
+
+    def test_colour_simple_succeed(self):
+        formatter = torrentinfo.TextFormatter(True)
+        red_code = self.colour_codes[torrentinfo.TextFormatter.RED]
+        norm_col = torrentinfo.TextFormatter.NORMAL
+        norm_string = 'oaeuAOEU:<>%75'
+        test_string = '%s%s%s' % (torrentinfo.TextFormatter.escape,
+                                  red_code, norm_string)
+        formatter.string_format(torrentinfo.TextFormatter.RED,
+                                string=norm_string, out=self.out)
+        output = self.out.getvalue()
+        self.assertEqual(output, test_string)
+
+    def test_colour_simple_fail(self):
+        formatter = torrentinfo.TextFormatter(True)
+        red_code = self.colour_codes[torrentinfo.TextFormatter.RED]
+        norm_col = torrentinfo.TextFormatter.NORMAL
+        norm_string = 'oaeuAOEU:<>%75'
+        test_string = '%s%s%s' % (torrentinfo.TextFormatter.escape,
+                                  red_code, norm_string)
+        formatter.string_format(torrentinfo.TextFormatter.GREEN,
+                                string=norm_string, out=self.out)
+        output = self.out.getvalue()
+        self.assertNotEqual(output, test_string)
+
 
     def tearDown(self):
         self.out = sys.stdout
