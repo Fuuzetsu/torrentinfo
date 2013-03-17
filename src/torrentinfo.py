@@ -107,7 +107,10 @@ def decode(string_buffer):
                   (re.compile('i'), int_parse)]
     for exp, parser in parser_map:
         if exp.match(content_type):
+            print string_buffer.string
+            print
             return parser(string_buffer)
+    print string_buffer.string
     raise UnknownTypeChar(content_type, string_buffer)
 
 
@@ -123,7 +126,9 @@ def dict_parse(string_buffer):
 
 def list_parse(string_buffer):
     string_buffer.get(1)
-    l = ''.join([decode(string_buffer) for x in string_buffer.peek() if x != 'e'])
+    l = []
+    while string_buffer.peek() != 'e':
+        l.append(decode(string_buffer))
     string_buffer.get(1)
     return l
 
