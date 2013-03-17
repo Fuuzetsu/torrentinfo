@@ -371,8 +371,5 @@ class MissingInfoTest(unittest.TestCase):
         self.torrent = None
 
 
-
-
-
 if __name__ == '__main__':
     nose.main(buffer=True)
