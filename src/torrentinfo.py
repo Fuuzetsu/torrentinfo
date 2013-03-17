@@ -304,7 +304,7 @@ class StringBuffer:
         pass
 
 
-def get_args():
+def get_arg_parser():
     """Parses command-line arguments.
 
     :returns: Namespace
@@ -325,7 +325,7 @@ def get_args():
     parser.add_argument('filename', type=str, metavar='filename',
                         nargs='+', help='Torrent files to process')
 
-    return parser.parse_args()
+    return parser
 
 
 def start_line(formatter, prefix, depth, postfix='',
@@ -533,7 +533,7 @@ def list_files(formatter, torrent, detailed=False,
 def main(alt_args=None, out=sys.stdout, err=sys.stderr):
     """Main control flow function used to encapsulate initialisation."""
     try:
-        args = get_args() if alt_args is None else alt_args
+        args = get_arg_parser().parse_args() if alt_args is None else alt_args
         formatter = TextFormatter(not args.nocolour)
 
         for filename in args.filename:
