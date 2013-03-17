@@ -92,6 +92,97 @@ class ANSIColour (TextFormatter):
         self.output(codestring + string)
 
 
+class Torrent(dict):
+    """A class modelling a parsed torrent file."""
+
+    def __init__(self, filename, string_buffer):
+        super(Torrent, self).__init__(decode(string_buffer))
+        self.filename = filename
+
+
+def dump_as_date(n, formatter):
+    """Dumps out the Integer instance as a date.
+
+    :param n: number to format
+    :type n: int
+    :param formatter: formatter to use for string formatting
+    :type formatter: TextFormatter
+    """
+    formatter.string_format(TextFormatter.MAGENTA, time.strftime(
+            '%Y/%m/%d %H:%M:%S %Z\n', time.gmtime(n)))
+
+def dump_as_size(n, formatter, tabchar, depth):
+    """Dumps the string to the stdout as file size after formatting it.
+
+    :param n: number to format
+    :type n: int
+    :param formatter: Text formatter to use to format the output
+    :type formatter: TextFormatter
+    :param tabchar: tab character to use for indentation
+    :type tabchar: str
+    :param depth: indentation depth
+    :type depth: int
+    """
+    size = float(n)
+    sizes = ['B', 'KB', 'MB', 'GB']
+    while size > 1024 and len(sizes) > 1:
+        size /= 1024
+        sizes = sizes[1:]
+    formatter.string_format(TextFormatter.CYAN, '%s%.1f%s\n' % (
+            tabchar * depth, size + 0.05, sizes[0]))
+
+
+def dump(item, formatter, tabchar, depth, newline=True):
+    """Printing method.
+
+    :param item: item to print
+    :type item: dict or list or str or int
+    :param formatter: Text formatter to use to format the output
+    :type formatter: TextFormatter
+    :param tabchar: tab character to use for indentation
+    :type tabchar: str
+    :param depth: indentation depth
+    :type depth: int
+    :param newline: indicates whether to insert a newline after certain strings
+    :type newline: bool
+    """
+    def teq(t):
+        return type(item) == t
+
+    if teq(dict):
+        for key in item.keys().sort():
+            formatter.string_format(TextFormatter.NORMAL | TextFormatter.GREEN)
+            if depth < 2:
+                formatter.string_format(TextFormatter.BRIGHT)
+            dump(key, formatter, tabchar, depth)
+            formatter.string_format(TextFormatter.NORMAL)
+            dump(item[key], formatter, tabchar, depth + 1)
+    elif teq(list):
+        if len(item) == 1:
+            dump(item[0], formatter, tabchar, depth)
+        else:
+            for index in range(len(item)):
+                formatter.string_format(TextFormatter.BRIGHT |
+                                        TextFormatter.YELLOW,
+                                        '%s%d\n' % (tabchar * depth, index))
+                formatter.string_format(TextFormatter.NORMAL)
+                dump(item[index], formatter, tabchar, depth + 1)
+    elif teq(str):
+        if is_printable(item):
+            output = '%s%s' % (
+                tabchar * depth, item) + ('\n' if newline else '')
+            formatter.string_format(TextFormatter.NONE, output)
+        else:
+            output = '%s[%d UTF-8 Bytes]' % (
+                tabchar * depth, len(item)) + ('\n' if newline else '')
+            formatter.string_format(
+                TextFormatter.BRIGHT | TextFormatter.RED, output)
+    elif teq(int):
+        formatter.string_format(
+            TextFormatter.CYAN, '%s%d\n' % (tabchar * depth, item))
+    else:
+        sys.exit("Don't know how to print %s" % str(item))
+
 def decode(string_buffer):
     """Decodes a bencoded string.
 
@@ -113,6 +204,13 @@ def decode(string_buffer):
 
 
 def pop_buffer(f):
+    """Decorator that pops a character before and after a function call.
+
+    :param f: function to call between pops
+    :type f: function
+
+    :returns: f(*args)
+    """
     def g(sb):
         sb.get(1)
         x = f(sb)
@@ -363,15 +461,50 @@ def get_line(formatter, prefix, key, torrent, depth=1, is_date=False,
     start_line(formatter, prefix, depth, format_spec=format_spec)
     if key in torrent:
         if is_date:
-            if torrent[key].__class__ is Integer:
-                torrent[key].dump_as_date(formatter)
+            if type(torrent[key]) == int:
+                dump_as_date(torrent[key], formatter)
             else:
                 formatter.string_format(TextFormatter.BRIGHT |
                                         TextFormatter.RED, '[Not An Integer]')
         else:
-            torrent[key].dump(formatter, '', 0)
+            dump(torrent[key], formatter, '', 0)
     else:
         formatter.string_format(TextFormatter.NORMAL, '\n')
+
+def is_ascii_only(string):
+    """Checks whether a string is ascii only.
+
+    :param string: string to check
+    :type string: str
+
+    :returns: bool
+    """
+    is_ascii = True
+    for char in string:
+        if char not in printable:
+            is_ascii = False
+            break
+    return is_ascii
+
+
+def is_printable(string):
+    """Determines whether a string only contains printable characters.
+
+    :param string: string to check for strictly printable characters
+    :type string: str
+
+    :returns: bool -- True if the string is fully printable
+    """
+    # Bit inefficient but ensures we can print ascii only
+    is_ascii = is_ascii_only(string)
+
+    # True if there are no Unicode escape characters in the string
+    control_chars = ''.join([unichr(x) for x in
+                             range(0, 32) + range(127, 160)])
+    control_char_re = re.compile('[%s]' % re.escape(control_chars))
+    is_unicode = control_char_re.match(string) is None
+
+    return is_ascii or not is_unicode
 
 
 def basic(formatter, torrent):
@@ -417,7 +550,7 @@ def basic_files(formatter, torrent):
     if not 'files' in torrent['info']:
         get_line(formatter, 'file name  ', 'name', torrent['info'])
         start_line(formatter, 'file size  ', 1)
-        torrent['info']['length'].dump_as_size(formatter, '', 0)
+        dump_as_size(torrent['info']['length'], formatter, '', 0)
     else:
         filestorrent = torrent['info']['files']
         numfiles = len(filestorrent)
@@ -450,8 +583,8 @@ def list_files(formatter, torrent):
                                 TextFormatter.BRIGHT,
                                 '%s%d' % (TAB_CHAR * 2, 0))
         formatter.string_format(TextFormatter.NORMAL, '\n')
-        torrent['info']['name'].dump(formatter, TAB_CHAR, 3)
-        torrent['info']['length'].dump_as_size(formatter, TAB_CHAR, 3)
+        dump(torrent['info']['name'], formatter, TAB_CHAR, 3)
+        dump_as_size(torrent['info']['length'], formatter, TAB_CHAR, 3)
     else:
         filestorrent = torrent['info']['files']
         for index in range(len(filestorrent)):
@@ -459,13 +592,13 @@ def list_files(formatter, torrent):
                                     TextFormatter.BRIGHT,
                                     '%s%d' % (TAB_CHAR * 2, index))
             formatter.string_format(TextFormatter.NORMAL, '\n')
-            if filestorrent[index]['path'].__class__ is String:
-                filestorrent[index]['path'].dump(formatter, TAB_CHAR, 3)
+            if type(filestorrent[index]['path']) == str:
+                dump(filestorrent[index]['path'], formatter, TAB_CHAR, 3)
             else:
-                filestorrent[index]['path'].join(
-                    os.path.sep).dump(formatter, TAB_CHAR, 3)
-            filestorrent[index]['length'].dump_as_size(
+                dump(os.path.join(*filestorrent[index]['path']), formatter, TAB_CHAR, 3)
+            dump_as_size(filestorrent[index]['length'],
                 formatter, TAB_CHAR, 3)
+
 
 def main():
     """Main control flow function used to encapsulate initialisation."""
@@ -476,31 +609,28 @@ def main():
         if 'nocolour' in settings:
             del settings['nocolour']
         if 'ascii' in settings:
-            String.asciionly = True
             del settings['ascii']
 
         for filename in filenames:
-            # try:
-            torrent = load_torrent(filename)
-            print decode(torrent)
-            sys.exit(0)
-            #     formatter.string_format(TextFormatter.BRIGHT, '%s\n' %
-            #                             os.path.basename(torrent.filename))
-            #     if settings and not 'basic' in settings:
-            #         if 'dump' in settings:
-            #             dump(formatter, torrent)
-            #         elif 'files' in settings:
-            #             basic(formatter, torrent)
-            #             list_files(formatter, torrent)
-            #         elif 'top' in settings:
-            #             top(formatter, torrent)
-            #     else:
-            #         basic(formatter, torrent)
-            #         basic_files(formatter, torrent)
-            #     formatter.string_format(TextFormatter.NORMAL, '\n')
-            # except Torrent.UnknownTypeChar:
-            #     sys.stderr.write(
-            #         'Could not parse %s as a valid torrent file.\n' % filename)
+            try:
+                torrent = Torrent(filename, load_torrent(filename))
+                formatter.string_format(TextFormatter.BRIGHT, '%s\n' %
+                                        os.path.basename(torrent.filename))
+                if settings and not 'basic' in settings:
+                    if 'dump' in settings:
+                        dump(formatter, torrent)
+                    elif 'files' in settings:
+                        basic(formatter, torrent)
+                        list_files(formatter, torrent)
+                    elif 'top' in settings:
+                        top(formatter, torrent)
+                else:
+                    basic(formatter, torrent)
+                    basic_files(formatter, torrent)
+                formatter.string_format(TextFormatter.NORMAL, '\n')
+            except UnknownTypeChar:
+                sys.stderr.write(
+                    'Could not parse %s as a valid torrent file.\n' % filename)
     except SystemExit, message:
         sys.exit(message)
     except KeyboardInterrupt:
