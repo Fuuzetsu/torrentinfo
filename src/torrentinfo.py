@@ -211,10 +211,16 @@ def pop_buffer(wrapped_func):
     :param f: function to call between pops
     :type f: function
 
-    :returns: f(*args)
+    :returns: function
     """
     def wrapper(string_buffer):
-        """Wraps passed in func in StringBuffer get(1)s."""
+        """Wraps passed in func in StringBuffer get(1)s.
+
+        :param string_buffer: StringBuffer to be used by the function
+        :type string_buffer: StringBuffer
+
+        :returns: wrapped_func(string_buffer)
+        """
         string_buffer.get(1)
         parsed_struct = wrapped_func(string_buffer)
         string_buffer.get(1)
