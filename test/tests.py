@@ -20,6 +20,7 @@ import os.path
 import os
 sys.path.append(os.path.join('..', 'src'))
 
+from StringIO import StringIO
 import unittest
 import nose
 import torrentinfo
@@ -121,46 +122,70 @@ class GenericTorrentTest(unittest.TestCase):
                             'different_tracker.fake')
 
 
-class RegularTorrentTest(GenericTorrentTest):
+class GenericOutputTest(unittest.TestCase):
+    __test__ = False
+
+    def setUp(self):
+        self.out = StringIO()
+
+    def test_top_succeed(self):
+        formatter = torrentinfo.TextFormatter(False)
+        torrentinfo.top(formatter, self.torrent, out=self.out)
+        output = self.out.getvalue()
+        self.assertEqual(self.file['top'], output)
+
+    def tearDown(self):
+        self.out = sys.stdout
+
+
+class RegularTorrentTest(GenericTorrentTest, GenericOutputTest):
     __test__ = True
 
     def setUp(self):
+        super(RegularTorrentTest, self).setUp()
+        self.torrent = None
         self.file = dict()
         self.file['name'] = 'regular.torrent'
-        self.torrent = None
+        self.file['top'] = 'torrentinfo.py'
         self.file['path'] = os.path.join('test', 'files', self.file['name'])
         self.torrent = torrentinfo.Torrent(self.file['path'],
                                            torrentinfo.load_torrent(self.file['path']))
 
-class MegabyteTorrentTest(GenericTorrentTest):
+class MegabyteTorrentTest(GenericTorrentTest, GenericOutputTest):
     __test__ = True
 
     def setUp(self):
+        super(MegabyteTorrentTest, self).setUp()
+        self.torrent = None
         self.file = dict()
         self.file['name'] = 'megabyte.torrent'
-        self.torrent = None
+        self.file['top'] = 'megabyte'
         self.file['path'] = os.path.join('test', 'files', self.file['name'])
         self.torrent = torrentinfo.Torrent(self.file['path'],
                                            torrentinfo.load_torrent(self.file['path']))
 
-class TwoMegabyteTorrentTest(GenericTorrentTest):
+class TwoMegabyteTorrentTest(GenericTorrentTest, GenericOutputTest):
     __test__ = True
 
     def setUp(self):
+        super(TwoMegabyteTorrentTest, self).setUp()
+        self.torrent = None
         self.file = dict()
         self.file['name'] = 'two_megabytes.torrent'
-        self.torrent = None
+        self.file['top'] = 'two_megabytes'
         self.file['path'] = os.path.join('test', 'files', self.file['name'])
         self.torrent = torrentinfo.Torrent(self.file['path'],
                                            torrentinfo.load_torrent(self.file['path']))
 
-class MultiMegabyteTorrentTest(GenericTorrentTest):
+class MultiMegabyteTorrentTest(GenericTorrentTest, GenericOutputTest):
     __test__ = True
 
     def setUp(self):
+        super(MultiMegabyteTorrentTest, self).setUp()
+        self.torrent = None
         self.file = dict()
         self.file['name'] = 'multi_bytes.torrent'
-        self.torrent = None
+        self.file['top'] = 'multibyte'
         self.file['path'] = os.path.join('test', 'files', self.file['name'])
         self.torrent = torrentinfo.Torrent(self.file['path'],
                                            torrentinfo.load_torrent(self.file['path']))
@@ -168,4 +193,4 @@ class MultiMegabyteTorrentTest(GenericTorrentTest):
 
 
 if __name__ == '__main__':
-    nose.main()
+    nose.main(buffer=True)
