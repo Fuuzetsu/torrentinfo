@@ -79,13 +79,9 @@ class StringBufferTest(unittest.TestCase):
         self.assertRaises(torrentinfo.StringBuffer.CharacterExpected,
                           s.get_upto, 'x')
 
-class TorrentTest(unittest.TestCase):
 
-    def setUp(self):
-        self.torrent = None
-        self.file = os.path.join('test', 'files', 'regular.torrent')
-        self.torrent = torrentinfo.Torrent(self.file,
-                                           torrentinfo.load_torrent(self.file))
+class GenericTorrentTest(unittest.TestCase):
+    __test__ = False
 
     def test_load_torrent_succeed(self):
         self.assertNotEqual(self.torrent, None, "Loaded %s is None" % self.file)
@@ -122,6 +118,49 @@ class TorrentTest(unittest.TestCase):
     def test_tracker_fail(self):
         self.assertNotEqual(self.torrent['announce'],
                             'different_tracker.fake')
+
+
+class RegularTorrentTest(GenericTorrentTest):
+    __test__ = True
+
+    def setUp(self):
+        self.filename = 'regular.torrent'
+        self.torrent = None
+        self.file = os.path.join('test', 'files', self.filename)
+        self.torrent = torrentinfo.Torrent(self.file,
+                                           torrentinfo.load_torrent(self.file))
+
+class MegabyteTorrentTest(GenericTorrentTest):
+    __test__ = True
+
+    def setUp(self):
+        self.filename = 'megabyte.torrent'
+        self.torrent = None
+        self.file = os.path.join('test', 'files', self.filename)
+        self.torrent = torrentinfo.Torrent(self.file,
+                                           torrentinfo.load_torrent(self.file))
+
+class TwoMegabyteTorrentTest(GenericTorrentTest):
+    __test__ = True
+
+    def setUp(self):
+        self.filename = 'two_megabytes.torrent'
+        self.torrent = None
+        self.file = os.path.join('test', 'files', self.filename)
+        self.torrent = torrentinfo.Torrent(self.file,
+                                           torrentinfo.load_torrent(self.file))
+
+class MultiMegabyteTorrentTest(GenericTorrentTest):
+    __test__ = True
+
+    def setUp(self):
+        self.filename = 'multi_bytes.torrent'
+        self.torrent = None
+        self.file = os.path.join('test', 'files', self.filename)
+        self.torrent = torrentinfo.Torrent(self.file,
+                                           torrentinfo.load_torrent(self.file))
+
+
 
 if __name__ == '__main__':
     nose.main()
