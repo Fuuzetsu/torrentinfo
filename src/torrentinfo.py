@@ -75,7 +75,7 @@ class TextFormatter:
                     codestring += TextFormatter.escape + code
             out.write(codestring + string)
         else:
-            out.stdout.write(string)
+            out.write(string)
 
 
 class Torrent(dict):
