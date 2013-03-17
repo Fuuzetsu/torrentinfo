@@ -129,8 +129,7 @@ def list_parse(string_buffer):
 
 
 def str_parse(string_buffer):
-    length = int(string_buffer.get_upto(':'))
-    return string_buffer.get(length)
+    return string_buffer.get(int(string_buffer.get_upto(':')))
 
 
 def int_parse(string_buffer):
@@ -164,13 +163,6 @@ class StringBuffer:
         self.string = string
         self.index = 0
 
-    # def is_eof(self):
-    #     """Checks whether we're at the end of the string.
-
-    #     :returns: bool -- true if this instance reached end of line
-    #     """
-    #     return self.index >= len(self.string)
-
     def is_eof(self):
         """Checks whether we're at the end of the string.
 
@@ -178,15 +170,7 @@ class StringBuffer:
         """
         return len(self.string) == 0
 
-    # def peek(self):
-    #     """Peeks at the next character in the string.
 
-    #     :returns: str -- next character of this instance
-    #     :raises: `BufferOverrun`
-    #     """
-    #     if self.is_eof():
-    #         raise StringBuffer.BufferOverrun(1)
-    #     return self.string[self.index]
     def peek(self):
         """Peeks at the next character in the string.
 
@@ -197,23 +181,8 @@ class StringBuffer:
             raise StringBuffer.BufferOverrun(1)
         return self.string[0]
 
-    # def get(self, length):
-    #     """Gets certain amount of characters from the buffer.
 
-    #     :param length: Number of characters to get from the buffer
-    #     :type length: int
-
-    #     :returns: str -- first `length` characters from the buffer
-    #     :raises: BufferOverrun
-    #     """
-    #     last = self.index + length
-    #     if last > len(self.string):
-    #         raise StringBuffer.BufferOverrun(last - len(self.string))
-    #     segment = self.string[self.index: last]
-    #     self.index = last
-    #     return segment
-
-    def get(self, length): # destructive
+    def get(self, length):
         """Gets certain amount of characters from the buffer.
 
         :param length: Number of characters to get from the buffer
