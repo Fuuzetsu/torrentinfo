@@ -122,18 +122,18 @@ class TextFormatterTest(unittest.TestCase):
     def test_date_succees(self):
         formatter = torrentinfo.TextFormatter(False)
         date_number = 1363542066
-        result = '2013/03/17 17:41:06 GMT\n'
+        result = '2013/03/17 17:41:06 UTC\n'
         torrentinfo.dump_as_date(date_number, formatter, out=self.out)
         output = self.out.getvalue()
-        self.assertEqual(output, result)
+        self.assertEqual(output[:-5], result[:-5])
 
     def test_date_fail(self):
         formatter = torrentinfo.TextFormatter(False)
         date_number = 1363542066
-        result = '2099/03/17 17:41:06 GMT\n'
+        result = '2099/03/17 17:41:06 UTC\n'
         torrentinfo.dump_as_date(date_number, formatter, out=self.out)
         output = self.out.getvalue()
-        self.assertNotEqual(output, result)
+        self.assertNotEqual(output[:-5], result[:-5])
 
 
     def tearDown(self):
