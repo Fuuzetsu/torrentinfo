@@ -312,8 +312,10 @@ def get_arg_parser():
     """
     parser = argparse.ArgumentParser(description='Print information '
                                      + 'about torrent files')
-    parser.add_argument('-v', '--version', dest='version', action='store_true',
+    parser.add_argument('-v', '--version', action='version',
+                        version='torrentinfo %s' % VERSION,
                         help='Print version and quit')
+
     group = parser.add_mutually_exclusive_group()
     group.add_argument('-t', '--top', dest='top', action='store_true',
                         help='Only show top level file/directory')
@@ -538,10 +540,6 @@ def main(alt_args=None, out=sys.stdout, err=sys.stderr):
     try:
         args = get_arg_parser().parse_args() if alt_args is None else alt_args
         formatter = TextFormatter(not args.nocolour)
-
-        if args.version:
-            out.write('torrentinfo %s' % VERSION)
-            sys.exit(0)
 
         for filename in args.filename:
             try:
