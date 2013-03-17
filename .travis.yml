@@ -9,4 +9,5 @@ notifications:
     on_failure: always
 install:
   - pip install coverage
+  - pip install argparse
 script: nosetests -v --with-coverage --cover-package=torrentinfo test/tests.py

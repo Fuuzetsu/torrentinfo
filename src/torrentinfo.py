@@ -305,7 +305,7 @@ class StringBuffer:
         pass
 
 
-def get_args():
+def get_arg_parser():
     """Parses command-line arguments.
 
     :returns: Namespace
@@ -328,7 +328,7 @@ def get_args():
     parser.add_argument('filename', type=str, metavar='filename',
                         nargs='+', help='Torrent files to process')
 
-    return parser.parse_args()
+    return parser
 
 
 def start_line(formatter, prefix, depth, postfix='',
@@ -419,7 +419,7 @@ def is_printable(string):
     return is_ascii or not is_unicode
 
 
-def basic(formatter, torrent, out=sys.stdout):
+def basic(formatter, torrent, out=sys.stdout, err=sys.stderr):
     """Prints out basic information about a Torrent instance.
 
     :param formatter: text formatter to use
@@ -428,7 +428,8 @@ def basic(formatter, torrent, out=sys.stdout):
     :type torrent: Torrent
     """
     if not 'info' in torrent:
-        sys.exit('Missing "info" section in %s' % torrent.filename)
+        err.write('Missing "info" section in %s' % torrent.filename)
+        sys.exit(1)
     get_line(formatter, 'name       ', 'name', torrent['info'], out=out)
     get_line(formatter, 'tracker url', 'announce', torrent, out=out)
     get_line(formatter, 'created by ', 'created by', torrent, out=out)
@@ -436,7 +437,7 @@ def basic(formatter, torrent, out=sys.stdout):
              torrent, is_date=True, out=out)
 
 
-def top(formatter, torrent, out=sys.stdout):
+def top(formatter, torrent, out=sys.stdout, err=sys.stderr):
     """Prints out the top file/directory name as well as torrent file name.
 
     :param formatter: text formatter to use
@@ -445,11 +446,12 @@ def top(formatter, torrent, out=sys.stdout):
     :type torrent: Torrent
     """
     if not 'info' in torrent:
-        sys.exit('Missing "info" section in %s' % torrent.filename)
+        err.write('Missing "info" section in %s' % torrent.filename)
+        sys.exit(1)
     dump(torrent['info']['name'], formatter, '', 1, newline=False, out=out)
 
 
-def basic_files(formatter, torrent, out=sys.stdout):
+def basic_files(formatter, torrent, out=sys.stdout, err=sys.stderr):
     """Prints out basic file information of a Torrent instance.
 
     :param formatter: text formatter to use
@@ -458,7 +460,8 @@ def basic_files(formatter, torrent, out=sys.stdout):
     :type torrent: Torrent
     """
     if not 'info' in torrent:
-        sys.exit('Missing "info" section in %s' % torrent.filename)
+        err.write('Missing "info" section in %s' % torrent.filename)
+        sys.exit(1)
     if not 'files' in torrent['info']:
         get_line(formatter, 'file name  ', 'name', torrent['info'], out=out)
         start_line(formatter, 'file size  ', 1, out=out)
@@ -478,7 +481,8 @@ def basic_files(formatter, torrent, out=sys.stdout):
             dump_as_size(filestorrent[0]['length'], formatter, '', 0, out=out)
 
 
-def list_files(formatter, torrent, detailed=False, out=sys.stdout):
+def list_files(formatter, torrent, detailed=False,
+               out=sys.stdout, err=sys.stderr):
     """Prints out a list of files using a Torrent instance
 
     :param formatter: text formatter to use
@@ -487,7 +491,8 @@ def list_files(formatter, torrent, detailed=False, out=sys.stdout):
     :type torrent: Torrent
     """
     if not 'info' in torrent:
-        sys.exit('Missing "info" section in %s' % torrent.filename)
+        err.write('Missing "info" section in %s' % torrent.filename)
+        sys.exit(1)
     start_line(formatter, 'files', 1, postfix='\n', out=out)
     if not 'files' in torrent['info']:
         formatter.string_format(TextFormatter.YELLOW |
@@ -528,10 +533,10 @@ def list_files(formatter, torrent, detailed=False, out=sys.stdout):
         dump(torrent['info']['pieces'], formatter, TAB_CHAR, 3, out=out)
 
 
-def main():
+def main(alt_args=None, out=sys.stdout, err=sys.stderr):
     """Main control flow function used to encapsulate initialisation."""
     try:
-        args = get_args()
+        args = get_arg_parser().parse_args() if alt_args is None else alt_args
         formatter = TextFormatter(not args.nocolour)
 
         if args.version:
@@ -542,23 +547,24 @@ def main():
             try:
                 torrent = Torrent(filename, load_torrent(filename))
                 formatter.string_format(TextFormatter.BRIGHT, '%s\n' %
-                                        os.path.basename(torrent.filename))
+                                        os.path.basename(torrent.filename),
+                                        out=out)
                 if args.dump:
-                    list_files(formatter, torrent, detailed=True)
+                    list_files(formatter, torrent, detailed=True,
+                               out=out, err=err)
                 elif args.files:
-                    basic(formatter, torrent)
-                    list_files(formatter, torrent, detailed=False)
+                    basic(formatter, torrent, out=out, err=err)
+                    list_files(formatter, torrent, detailed=False,
+                               out=out, err=err)
                 elif args.top:
-                    top(formatter, torrent)
+                    top(formatter, torrent, out=out, err=err)
                 else:
-                    basic(formatter, torrent)
-                    basic_files(formatter, torrent)
-                formatter.string_format(TextFormatter.NORMAL, '\n')
+                    basic(formatter, torrent, out=out, err=err)
+                    basic_files(formatter, torrent, out=out, err=err)
+                formatter.string_format(TextFormatter.NORMAL, '\n', out=out)
             except UnknownTypeChar:
-                sys.stderr.write(
+                err.write(
                     'Could not parse %s as a valid torrent file.\n' % filename)
-    except SystemExit, message:
-        sys.exit(message)
     except KeyboardInterrupt:
         pass
 
