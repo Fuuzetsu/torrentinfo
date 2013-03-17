@@ -523,7 +523,7 @@ def top(formatter, torrent):
     """
     if not 'info' in torrent:
         sys.exit('Missing "info" section in %s' % torrent.filename)
-    torrent['info']['name'].dump(formatter, '', 1, newline=False)
+    dump(torrent['info']['name'], formatter, '', 1, newline=False)
 
 
 def basic_files(formatter, torrent):
