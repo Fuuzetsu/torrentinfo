@@ -26,6 +26,7 @@ import argparse
 import os.path
 import re
 import time
+import getopt
 
 #  see pylint ticket #2481
 from string import printable  # pylint: disable-msg=W0402
@@ -638,9 +639,10 @@ def list_files(formatter, torrent, detailed=False, out=sys.stdout):
 def main():
     """Main control flow function used to encapsulate initialisation."""
     try:
+        args = get_args()
         settings, filenames = get_commandline_arguments(
             os.path.basename(sys.argv[0]), sys.argv[1:])
-        formatter = TextFormatter('nocolour' not in settings)
+        formatter = TextFormatter(not args.nocolour)
         if 'nocolour' in settings:
             del settings['nocolour']
         if 'ascii' in settings:
