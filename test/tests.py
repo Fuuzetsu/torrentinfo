@@ -499,8 +499,7 @@ class CommandLineOutputTest(unittest.TestCase):
                                    '    piece length    ',
                                    '            262144',
                                    '    pieces    ',
-                                   '            \x9c\xf8\xe3\xe0qo\xfd>'
-                                   + '\xda\xbd\xd5a\x04\xfa\x96\x1a\x9e\r7a\n\n'])
+                                   '            [20 UTF-8 Bytes]\n\n'])
 
         torrentinfo.main(alt_args=ns, out=self.out, err=self.err)
         assert self.err.getvalue() == ''
