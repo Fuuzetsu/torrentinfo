@@ -133,7 +133,8 @@ def dump_as_size(number, formatter, tabchar, depth, out=sys.stdout):
                             out=out)
 
 
-def dump(item, formatter, tabchar, depth, newline=True, out=sys.stdout):
+def dump(item, formatter, tabchar, depth, newline=True, out=sys.stdout,
+         as_utf_repr=False):
     """Printing method.
 
     :param item: item to print
@@ -174,7 +175,7 @@ def dump(item, formatter, tabchar, depth, newline=True, out=sys.stdout):
                 formatter.string_format(TextFormatter.NORMAL, out=out)
                 dump(item[index], formatter, tabchar, depth + 1, out=out)
     elif teq(str):
-        if is_printable(item):
+        if is_ascii_only(item) or not as_utf_repr:
             str_output = '%s%s' % (
                 tabchar * depth, item) + ('\n' if newline else '')
             formatter.string_format(TextFormatter.NONE, str_output, out=out)
@@ -401,26 +402,6 @@ def is_ascii_only(string):
     return is_ascii
 
 
-def is_printable(string):
-    """Determines whether a string only contains printable characters.
-
-    :param string: string to check for strictly printable characters
-    :type string: str
-
-    :returns: bool -- True if the string is fully printable
-    """
-    # Bit inefficient but ensures we can print ascii only
-    is_ascii = is_ascii_only(string)
-
-    # True if there are no Unicode escape characters in the string
-    control_chars = ''.join([unichr(x) for x in
-                             range(0, 32) + range(127, 160)])
-    control_char_re = re.compile('[%s]' % re.escape(control_chars))
-    is_unicode = control_char_re.match(string) is None
-
-    return is_ascii or not is_unicode
-
-
 def basic(formatter, torrent, out=sys.stdout, err=sys.stderr):
     """Prints out basic information about a Torrent instance.
 
@@ -532,7 +513,8 @@ def list_files(formatter, torrent, detailed=False,
         start_line(formatter, 'piece length', 1, postfix='\n', out=out)
         dump(torrent['info']['piece length'], formatter, TAB_CHAR, 3, out=out)
         start_line(formatter, 'pieces', 1, postfix='\n', out=out)
-        dump(torrent['info']['pieces'], formatter, TAB_CHAR, 3, out=out)
+        dump(torrent['info']['pieces'], formatter, TAB_CHAR, 3, out=out,
+             as_utf_repr=True)
 
 
 def main(alt_args=None, out=sys.stdout, err=sys.stderr):
