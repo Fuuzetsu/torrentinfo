@@ -545,14 +545,14 @@ class PrintableTest(unittest.TestCase):
         self.out = StringIO()
         self.tf = torrentinfo.TextFormatter(False)
 
-    def test_is_printable_ascii_true(self):
+    def test_is__ascii_true(self):
         test_string = 'simple ascii'
-        p = torrentinfo.is_printable(test_string)
+        p = torrentinfo.is_ascii_only(test_string)
         self.assertTrue(p)
 
-    def test_is_printable_unicode_true(self):
+    def test_is_ascii_false(self):
         test_string ='oaeuAOEU灼眼のシャナ:<>%75'
-        p = torrentinfo.is_printable(test_string)
+        p = torrentinfo.is_ascii_only(test_string)
         torrentinfo.dump(test_string, self.tf, '    ', 0, out=self.out,
                          newline=False)
         self.assertFalse(p)
