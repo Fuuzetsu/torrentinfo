@@ -309,7 +309,7 @@ class StringBuffer:
 def get_arg_parser():
     """Parses command-line arguments.
 
-    :returns: Namespace
+    :returns: ArgumentParser
     """
     parser = argparse.ArgumentParser(description='Print information '
                                      + 'about torrent files')
