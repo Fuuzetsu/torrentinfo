@@ -78,6 +78,15 @@ class TextFormatter:
         else:
             out.write(string)
 
+class Config:
+    """Class storing configuration propagated throughout the program."""
+
+    def __init__(self, formatter, out=sys.out, err=sys.err, tab_char='    '):
+        self.formatter = formatter
+        self.out = out
+        self.err = err
+        self.tab_char = tab_char
+
 
 class Torrent(dict):
     """A class modelling a parsed torrent file."""
