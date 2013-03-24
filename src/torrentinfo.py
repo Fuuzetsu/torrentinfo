@@ -547,8 +547,8 @@ def main(alt_args=None, out=sys.stdout, err=sys.stderr):
         for filename in args.filename:
             try:
                 torrent = Torrent(filename, load_torrent(filename))
-                config.formatter.string_format(TextFormatter.BRIGHT, '%s\n' %
-                                               os.path.basename(torrent.filename))
+                config.formatter.string_format(TextFormatter.BRIGHT, config,
+                                               '%s\n' % os.path.basename(torrent.filename))
 
                 if args.dump:
                     list_files(config, torrent, detailed=True)
