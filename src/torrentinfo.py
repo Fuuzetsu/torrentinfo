@@ -125,8 +125,8 @@ def dump_as_date(number, config):
 
     :param n: number to format
     :type n: int
-    :param formatter: formatter to use for string formatting
-    :type formatter: TextFormatter
+    :param config: configuration object to use in this method
+    :type config: Config
     """
     config.formatter.string_format(TextFormatter.MAGENTA, config,
                                    time.strftime(
@@ -138,10 +138,8 @@ def dump_as_size(number, config, depth):
 
     :param n: number to format
     :type n: int
-    :param formatter: Text formatter to use to format the output
-    :type formatter: TextFormatter
-    :param tabchar: tab character to use for indentation
-    :type tabchar: str
+    :param config: configuration object to use in this method
+    :type config: Config
     :param depth: indentation depth
     :type depth: int
     """
@@ -162,14 +160,14 @@ def dump(item, config, depth, newline=True, as_utf_repr=False):
 
     :param item: item to print
     :type item: dict or list or str or int
-    :param formatter: Text formatter to use to format the output
-    :type formatter: TextFormatter
-    :param tabchar: tab character to use for indentation
-    :type tabchar: str
+    :param config: configuration object to use in this method
+    :type config: Config
     :param depth: indentation depth
     :type depth: int
     :param newline: indicates whether to insert a newline after certain strings
     :type newline: bool
+    :param as_utf_repr: indicates whether only ASCII should be printed
+    :param as_utf_repr: bool
     """
     def teq(comp_type):
         """Helper that checks for type equality."""
@@ -362,8 +360,8 @@ def start_line(config, prefix, depth, postfix='',
                format_spec=TextFormatter.NORMAL):
     """Print the first line during information output.
 
-    :param formatter: text formatter to use
-    :type formatter: TextFormatter
+    :param config: configuration object to use in this method
+    :type config: Config
     :param prefix: prefix to insert in front of the line
     :type prefix: str
     :param depth: indentation depth
@@ -381,8 +379,8 @@ def start_line(config, prefix, depth, postfix='',
 def get_line(config, prefix, key, torrent, is_date=False):
     """Print lines from a torrent instance.
 
-    :param formatter: text formatter to use
-    :type formatter: TextFormatter
+    :param config: configuration object to use in this method
+    :type config: Config
     :param prefix: prefix to insert in front of the line
     :type prefix: str
     :param key: key name in the torrent to print out
@@ -432,8 +430,8 @@ def is_ascii_only(string):
 def basic(config, torrent):
     """Prints out basic information about a Torrent instance.
 
-    :param formatter: text formatter to use
-    :type formatter: TextFormatter
+    :param config: configuration object to use in this method
+    :type config: Config
     :param torrent: torrent instance to use for information
     :type torrent: Torrent
     """
@@ -450,8 +448,8 @@ def basic(config, torrent):
 def top(config, torrent):
     """Prints out the top file/directory name as well as torrent file name.
 
-    :param formatter: text formatter to use
-    :type formatter: TextFormatter
+    :param config: configuration object to use in this method
+    :type config: Config
     :param torrent: torrent instance to use for information
     :type torrent: Torrent
     """
@@ -468,8 +466,8 @@ def top(config, torrent):
 def basic_files(config, torrent):
     """Prints out basic file information of a Torrent instance.
 
-    :param formatter: text formatter to use
-    :type formatter: TextFormatter
+    :param config: configuration object to use in this method
+    :type config: Config
     :param torrent: torrent instance to use for information
     :type torrent: Torrent
     """
@@ -502,10 +500,12 @@ def basic_files(config, torrent):
 def list_files(config, torrent, detailed=False):
     """Prints out a list of files using a Torrent instance
 
-    :param formatter: text formatter to use
-    :type formatter: TextFormatter
+    :param config: configuration object to use in this method
+    :type config: Config
     :param torrent: torrent instance to use for information
     :type torrent: Torrent
+    :param detailed: indicates whether to print more information about files
+    :param detailed: bool
     """
     if not 'info' in torrent:
         config.err.write('Missing "info" section in %s' % torrent.filename)
