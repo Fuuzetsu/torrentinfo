@@ -32,123 +32,120 @@ class TextFormatterTest(unittest.TestCase):
 
     def setUp(self):
         self.out = StringIO()
+        self.config = torrentinfo.Config(torrentinfo.TextFormatter(False),
+                                         out=self.out)
         self.colour_codes = dict(torrentinfo.TextFormatter.mapping)
 
     def test_no_colour_simple_succeed(self):
-        formatter = torrentinfo.TextFormatter(False)
         norm_col = torrentinfo.TextFormatter.NORMAL
         test_string = 'oaeuAOEU:<>%75'
-        formatter.string_format(norm_col, string=test_string, out=self.out)
+        self.config.formatter.string_format(norm_col, self.config,
+                                            string=test_string)
         output = self.out.getvalue()
         self.assertEqual(output, test_string)
 
     def test_no_colour_simple_fail(self):
-        formatter = torrentinfo.TextFormatter(False)
         norm_col = torrentinfo.TextFormatter.NORMAL
         test_string = 'oaeuAOEU:<>%75'
         trash_output = 'trash_output'
-        formatter.string_format(norm_col, string=test_string, out=self.out)
+        self.config.formatter.string_format(norm_col, self.config, string=test_string)
         output = self.out.getvalue()
         assert trash_output != test_string
         self.assertNotEqual(output, trash_output)
 
     def test_colour_simple_succeed(self):
-        formatter = torrentinfo.TextFormatter(True)
+        local_config = torrentinfo.Config(torrentinfo.TextFormatter(True),
+                                          out=self.out)
         red_code = self.colour_codes[torrentinfo.TextFormatter.RED]
         norm_string = 'oaeuAOEU:<>%75'
         test_string = '%s%s%s' % (torrentinfo.TextFormatter.escape,
                                   red_code, norm_string)
-        formatter.string_format(torrentinfo.TextFormatter.RED,
-                                string=norm_string, out=self.out)
+        local_config.formatter.string_format(torrentinfo.TextFormatter.RED,
+                                             local_config, string=norm_string)
         output = self.out.getvalue()
         self.assertEqual(output, test_string)
 
     def test_colour_simple_fail(self):
-        formatter = torrentinfo.TextFormatter(True)
+        local_config = torrentinfo.Config(torrentinfo.TextFormatter(True),
+                                          out=self.out)
         red_code = self.colour_codes[torrentinfo.TextFormatter.RED]
         norm_string = 'oaeuAOEU:<>%75'
         test_string = '%s%s%s' % (torrentinfo.TextFormatter.escape,
                                   red_code, norm_string)
-        formatter.string_format(torrentinfo.TextFormatter.GREEN,
-                                string=norm_string, out=self.out)
+        local_config.formatter.string_format(torrentinfo.TextFormatter.GREEN,
+                                             local_config, string=norm_string)
         output = self.out.getvalue()
         self.assertNotEqual(output, test_string)
 
     def test_no_colour_unicode_succeed(self):
-        formatter = torrentinfo.TextFormatter(False)
         norm_col = torrentinfo.TextFormatter.NORMAL
         test_string = 'oaeuAOEU灼眼のシャナ:<>%75'
-        formatter.string_format(norm_col, string=test_string, out=self.out)
+        self.config.formatter.string_format(norm_col, self.config, string=test_string)
         output = self.out.getvalue()
         self.assertEqual(output, test_string)
 
     def test_no_colour_unicode_fail(self):
-        formatter = torrentinfo.TextFormatter(False)
         norm_col = torrentinfo.TextFormatter.NORMAL
         test_string = 'oaeuAOEU灼眼のシャナ:<>%75'
         trash_output = 'oaeuAOEU封絶:<>%75'
-        formatter.string_format(norm_col, string=test_string, out=self.out)
+        self.config.formatter.string_format(norm_col, self.config, string=test_string)
         output = self.out.getvalue()
         assert trash_output != test_string
         self.assertNotEqual(output, trash_output)
 
     def test_colour_unicode_succeed(self):
-        formatter = torrentinfo.TextFormatter(True)
+        local_config = torrentinfo.Config(torrentinfo.TextFormatter(True),
+                                          out=self.out)
         green_code = self.colour_codes[torrentinfo.TextFormatter.GREEN]
         norm_string = 'oaeuAOEU灼眼のシャナ:<>%75'
 
         test_string = '%s%s%s' % (torrentinfo.TextFormatter.escape,
                                   green_code, norm_string)
 
-        formatter.string_format(torrentinfo.TextFormatter.GREEN,
-                                string=norm_string, out=self.out)
+        local_config.formatter.string_format(torrentinfo.TextFormatter.GREEN,
+                                             local_config, string=norm_string)
 
         output = self.out.getvalue()
         self.assertEqual(output, test_string)
 
     def test_colour_unicode_fail(self):
-        formatter = torrentinfo.TextFormatter(True)
+        local_config = torrentinfo.Config(torrentinfo.TextFormatter(True),
+                                          out=self.out)
         green_code = self.colour_codes[torrentinfo.TextFormatter.GREEN]
         norm_string = 'oaeuAOEU灼眼のシャナ:<>%75'
-
         test_string = '%s%s%s' % (torrentinfo.TextFormatter.escape,
                                   green_code, norm_string)
 
-        formatter.string_format(torrentinfo.TextFormatter.YELLOW,
-                                string=norm_string, out=self.out)
+        local_config.formatter.string_format(torrentinfo.TextFormatter.YELLOW,
+                                             local_config,
+                                             string=norm_string)
 
         output = self.out.getvalue()
         self.assertNotEqual(output, test_string)
 
     def test_date_succees(self):
-        formatter = torrentinfo.TextFormatter(False)
         date_number = 1363542066
         result = '2013/03/17 17:41:06\n'
-        torrentinfo.dump_as_date(date_number, formatter, out=self.out)
+        torrentinfo.dump_as_date(date_number, self.config)
         output = self.out.getvalue()
         self.assertEqual(output, result)
 
     def test_date_fail(self):
-        formatter = torrentinfo.TextFormatter(False)
         date_number = 1363542066
         result = '2099/03/17 17:41:06\n'
-        torrentinfo.dump_as_date(date_number, formatter, out=self.out)
+        torrentinfo.dump_as_date(date_number, self.config)
         output = self.out.getvalue()
         self.assertNotEqual(output, result)
 
     def test_size_success(self):
-        formatter = torrentinfo.TextFormatter(False)
         size = 1024 * 1024
-        torrentinfo.dump_as_size(size, formatter, '    ', 0,
-                                 out=self.out)
+        torrentinfo.dump_as_size(size, self.config, 0)
         output = self.out.getvalue()
         self.assertEqual(output, '1.0MB\n')
 
     def test_size_fail(self):
-        formatter = torrentinfo.TextFormatter(False)
         size = 1024
-        torrentinfo.dump_as_size(size, formatter, '    ', 0,
-                                 out=self.out)
+        torrentinfo.dump_as_size(size, self.config, 0)
         output = self.out.getvalue()
         self.assertNotEqual(output, '1.0GB')
 
