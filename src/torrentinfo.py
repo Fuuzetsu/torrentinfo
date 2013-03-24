@@ -142,8 +142,7 @@ def dump_as_size(number, formatter, tabchar, depth, out=sys.stdout):
                             out=out)
 
 
-def dump(item, formatter, tabchar, depth, newline=True, out=sys.stdout,
-         as_utf_repr=False):
+def dump(item, config, depth, newline=True, as_utf_repr=False):
     """Printing method.
 
     :param item: item to print
@@ -163,41 +162,41 @@ def dump(item, formatter, tabchar, depth, newline=True, out=sys.stdout,
 
     if teq(dict):
         for key in item.keys().sort():
-            formatter.string_format(TextFormatter.NORMAL | TextFormatter.GREEN,
-                                    out=out)
+            config.formatter.string_format(TextFormatter.NORMAL | TextFormatter.GREEN,
+                                           config)
 
             if depth < 2:
-                formatter.string_format(TextFormatter.BRIGHT, out=out)
+                config.formatter.string_format(TextFormatter.BRIGHT, config)
 
-            dump(key, formatter, tabchar, depth, out=out)
-            formatter.string_format(TextFormatter.NORMAL, out=out)
-            dump(item[key], formatter, tabchar, depth + 1, out=out)
+            dump(key, config, depth, as_utf_repr=as_utf_repr)
+            config.formatter.string_format(TextFormatter.NORMAL, config)
+            dump(item[key], config, depth + 1, as_utf_repr=as_utf_repr)
     elif teq(list):
         if len(item) == 1:
-            dump(item[0], formatter, tabchar, depth, out=out)
+            dump(item[0], config, depth, as_utf_repr=as_utf_repr)
         else:
             for index in range(len(item)):
-                formatter.string_format(TextFormatter.BRIGHT |
-                                        TextFormatter.YELLOW,
-                                        '%s%d\n' % (tabchar * depth, index),
-                                        out=out)
-                formatter.string_format(TextFormatter.NORMAL, out=out)
-                dump(item[index], formatter, tabchar, depth + 1, out=out)
+                config.formatter.string_format(TextFormatter.BRIGHT |
+                                               TextFormatter.YELLOW,
+                                               config,
+                                               '%s%d\n' % (config.tab_char * depth, index))
+                config.formatter.string_format(TextFormatter.NORMAL, config)
+                dump(item[index], config, depth + 1, as_utf_repr=as_utf_repr)
     elif teq(str):
         if is_ascii_only(item) or not as_utf_repr:
             str_output = '%s%s' % (
-                tabchar * depth, item) + ('\n' if newline else '')
-            formatter.string_format(TextFormatter.NONE, str_output, out=out)
+                config.tab_char * depth, item) + ('\n' if newline else '')
+            config.formatter.string_format(TextFormatter.NONE, config, str_output)
         else:
             str_output = '%s[%d UTF-8 Bytes]' % (
-                tabchar * depth, len(item)) + ('\n' if newline else '')
-            formatter.string_format(
-                TextFormatter.BRIGHT | TextFormatter.RED, str_output,
-                out=out)
+                config.tab_char * depth, len(item)) + ('\n' if newline else '')
+            config.formatter.string_format(
+                TextFormatter.BRIGHT | TextFormatter.RED, config, str_output)
     elif teq(int):
-        formatter.string_format(
-            TextFormatter.CYAN, '%s%d\n' % (tabchar * depth, item),
-            out=out)
+        config.formatter.string_format(
+            TextFormatter.CYAN, config,
+            '%s%d\n' % (config.tab_char * depth, item))
+
     else:
         sys.exit("Don't know how to print %s" % str(item))
 
