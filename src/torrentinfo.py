@@ -198,7 +198,8 @@ def dump(item, config, depth, newline=True, as_utf_repr=False):
             '%s%d\n' % (config.tab_char * depth, item))
 
     else:
-        sys.exit("Don't know how to print %s" % str(item))
+        config.err.write("Don't know how to print %s" % str(item))
+        sys.exit(1)
 
 def decode(string_buffer):
     """Decodes a bencoded string.
