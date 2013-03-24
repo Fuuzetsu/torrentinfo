@@ -502,7 +502,7 @@ def list_files(config, torrent, detailed=False):
     start_line(config, 'files', 1, postfix='\n')
     if not 'files' in torrent['info']:
         config.formatter.string_format(TextFormatter.YELLOW |
-                                TextFormatter.BRIGHT,
+                                TextFormatter.BRIGHT, config,
                                 '%s%d' % (config.tab_char * 2, 0))
         config.formatter.string_format(TextFormatter.NORMAL, config, '\n')
         dump(torrent['info']['name'], config, 3)
