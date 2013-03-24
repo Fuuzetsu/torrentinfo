@@ -81,7 +81,8 @@ class TextFormatter:
 class Config:
     """Class storing configuration propagated throughout the program."""
 
-    def __init__(self, formatter, out=sys.out, err=sys.err, tab_char='    '):
+    def __init__(self, formatter, out=sys.stdout,
+                 err=sys.stderr, tab_char='    '):
         self.formatter = formatter
         self.out = out
         self.err = err
