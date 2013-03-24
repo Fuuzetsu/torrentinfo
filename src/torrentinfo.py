@@ -109,7 +109,7 @@ class UnknownTypeChar(Exception):
     """Thrown when Torrent.parse encounters unexpected character"""
     pass
 
-def dump_as_date(number, formatter, out=sys.stdout):
+def dump_as_date(number, config):
     """Dumps out the Integer instance as a date.
 
     :param n: number to format
@@ -117,10 +117,12 @@ def dump_as_date(number, formatter, out=sys.stdout):
     :param formatter: formatter to use for string formatting
     :type formatter: TextFormatter
     """
-    formatter.string_format(TextFormatter.MAGENTA, time.strftime(
-            '%Y/%m/%d %H:%M:%S\n', time.gmtime(number)), out=out)
+    config,formatter.string_format(TextFormatter.MAGENTA, config,
+                                   time.strftime(
+                                       '%Y/%m/%d %H:%M:%S\n',
+                                       time.gmtime(number)))
 
-def dump_as_size(number, formatter, tabchar, depth, out=sys.stdout):
+def dump_as_size(number, config, depth):
     """Dumps the string to the stdout as file size after formatting it.
 
     :param n: number to format
@@ -137,9 +139,11 @@ def dump_as_size(number, formatter, tabchar, depth, out=sys.stdout):
     while size >= 1024 and len(sizes) > 1:
         size /= 1024
         sizes = sizes[1:]
-    formatter.string_format(TextFormatter.CYAN, '%s%.1f%s\n' % (
-            tabchar * depth, size, sizes[0]),
-                            out=out)
+    config.formatter.string_format(TextFormatter.CYAN, config,
+                                   '%s%.1f%s\n' % (
+                                       config.tab_char * depth,
+                                       size, sizes[0]))
+
 
 
 def dump(item, config, depth, newline=True, as_utf_repr=False):
@@ -385,7 +389,7 @@ def get_line(config, prefix, key, torrent, is_date=False):
     if key in torrent:
         if is_date:
             if type(torrent[key]) == int:
-                dump_as_date(torrent[key], formatter, out=out)
+                dump_as_date(torrent[key], config)
             else:
                 config.formatter.string_format(TextFormatter.BRIGHT |
                                                TextFormatter.RED, config,
@@ -461,10 +465,14 @@ def basic_files(config, torrent):
     if not 'info' in torrent:
         config.err.write('Missing "info" section in %s' % torrent.filename)
         sys.exit(1)
+
+    local_config = Config(config.formatter,
+                          out=config.out, err=config.err,
+                          tab_char = '')
     if not 'files' in torrent['info']:
         get_line(config, 'file name  ', 'name', torrent['info'])
         start_line(config, 'file size  ', 1)
-        dump_as_size(torrent['info']['length'], formatter, '', 0, out=out)
+        dump_as_size(torrent['info']['length'], local_config, 0)
     else:
         filestorrent = torrent['info']['files']
         numfiles = len(filestorrent)
@@ -473,11 +481,11 @@ def basic_files(config, torrent):
             lengths = [filetorrent['length']
                        for filetorrent in filestorrent]
             start_line(config, 'total size ', 1)
-            dump_as_size(sum(lengths), formatter, '', 0, out=out)
+            dump_as_size(sum(lengths), local_config, 0)
         else:
             get_line(config, 'file name  ', 'path', filestorrent[0])
             start_line(config, 'file size  ', 1)
-            dump_as_size(filestorrent[0]['length'], formatter, '', 0, out=out)
+            dump_as_size(filestorrent[0]['length'], local_config 0)
 
 
 def list_files(config, torrent, detailed=False):
@@ -498,7 +506,7 @@ def list_files(config, torrent, detailed=False):
                                 '%s%d' % (config.tab_char * 2, 0))
         config.formatter.string_format(TextFormatter.NORMAL, config, '\n')
         dump(torrent['info']['name'], config, 3)
-        dump_as_size(torrent['info']['length'], formatter, config.tab_char, 3, out=out)
+        dump_as_size(torrent['info']['length'], config, 3)
     else:
         filestorrent = torrent['info']['files']
         for index in range(len(filestorrent)):
