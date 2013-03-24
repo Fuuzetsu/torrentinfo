@@ -485,7 +485,7 @@ def basic_files(config, torrent):
         else:
             get_line(config, 'file name  ', 'path', filestorrent[0])
             start_line(config, 'file size  ', 1)
-            dump_as_size(filestorrent[0]['length'], local_config 0)
+            dump_as_size(filestorrent[0]['length'], local_config, 0)
 
 
 def list_files(config, torrent, detailed=False):
@@ -511,9 +511,10 @@ def list_files(config, torrent, detailed=False):
         filestorrent = torrent['info']['files']
         for index in range(len(filestorrent)):
             config.formatter.string_format(TextFormatter.YELLOW |
-                                    TextFormatter.BRIGHT,
-                                    '%s%d' % (config.tab_char * 2, index),
-                                    out=out)
+                                           TextFormatter.BRIGHT,
+                                           config,
+                                           '%s%d' % (config.tab_char * 2, index))
+
 
             config.formatter.string_format(TextFormatter.NORMAL, config, '\n')
             if detailed:
