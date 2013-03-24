@@ -391,7 +391,10 @@ def get_line(config, prefix, key, torrent, is_date=False):
                                                TextFormatter.RED, config,
                                                '[Not An Integer]')
         else:
-            dump(torrent[key], formatter, '', 0, out=out)
+            local_config = Config(config.formatter,
+                                  out=config.out, err=config.err,
+                                  tab_char = '')
+            dump(torrent[key], local_config, 0)
     else:
         config.formatter.string_format(TextFormatter.NORMAL, config, '\n')
 
@@ -440,7 +443,11 @@ def top(config, torrent):
     if not 'info' in torrent:
         config.err.write('Missing "info" section in %s' % torrent.filename)
         sys.exit(1)
-    dump(torrent['info']['name'], formatter, '', 1, newline=False, out=out)
+
+    local_config = Config(config.formatter,
+                          out=config.out, err=config.err,
+                          tab_char = '')
+    dump(torrent['info']['name'], local_config, 1, newline=False)
 
 
 def basic_files(config, torrent):
@@ -490,7 +497,7 @@ def list_files(config, torrent, detailed=False):
                                 TextFormatter.BRIGHT,
                                 '%s%d' % (config.tab_char * 2, 0))
         config.formatter.string_format(TextFormatter.NORMAL, config, '\n')
-        dump(torrent['info']['name'], formatter, config.tab_char, 3, out=out)
+        dump(torrent['info']['name'], config, 3)
         dump_as_size(torrent['info']['length'], formatter, config.tab_char, 3, out=out)
     else:
         filestorrent = torrent['info']['files']
@@ -504,24 +511,22 @@ def list_files(config, torrent, detailed=False):
             if detailed:
                 for kwrd in filestorrent[index]:
                     start_line(config, kwrd, 3, postfix='\n')
-                    dump(filestorrent[index][kwrd], formatter, config.tab_char, 4,
-                         out=out)
+                    dump(filestorrent[index][kwrd], config, 4)
             else:
                 if type(filestorrent[index]['path']) == str:
-                    dump(filestorrent[index]['path'], formatter, config.tab_char, 3,
-                         out=out)
+                    dump(filestorrent[index]['path'], config, 3)
+
                 else:
                     dump(os.path.join(*filestorrent[index]['path']),
-                         formatter, config.tab_char, 3, out=out)
+                         config, 3)
                     dump_as_size(filestorrent[index]['length'],
-                                 formatter, config.tab_char, 3, out=out)
+                                 config, 3)
 
     if detailed:
         start_line(config, 'piece length', 1, postfix='\n')
-        dump(torrent['info']['piece length'], formatter, config.tab_char, 3, out=out)
+        dump(torrent['info']['piece length'], config, 3)
         start_line(config, 'pieces', 1, postfix='\n')
-        dump(torrent['info']['pieces'], formatter, config.tab_char, 3, out=out,
-             as_utf_repr=True)
+        dump(torrent['info']['pieces'], config, 3, as_utf_repr=True)
 
 
 def main(alt_args=None, out=sys.stdout, err=sys.stderr):
