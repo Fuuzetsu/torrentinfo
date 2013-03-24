@@ -82,6 +82,17 @@ class Config:
 
     def __init__(self, formatter, out=sys.stdout,
                  err=sys.stderr, tab_char='    '):
+        """Initialises a config class.
+
+        :param formatter: formatter to use when printing
+        :type formatter: TextFormatter
+        :param out: default output destination
+        :type out: file
+        :param err: default error destination
+        :type err: file
+        :param tab_char: character to use as a tab
+        :type tab_char: str
+        """
         self.formatter = formatter
         self.out = out
         self.err = err
