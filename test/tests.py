@@ -322,18 +322,19 @@ class MultiMegabyteTorrentTest(GenericTorrentTest, GenericOutputTest):
 class MissingInfoTest(unittest.TestCase):
 
     def setUp(self):
-        self.config = torrentinfo.Config(torrentinfo.TextFormatter(False))
+        self.out = StringIO()
+        self.config = torrentinfo.Config(torrentinfo.TextFormatter(False),
+                                         err=self.out)
         path = os.path.join('test', 'files', 'missing_info.torrent')
         self.torrent = torrentinfo.Torrent(path,
                                            torrentinfo.load_torrent(path))
         self.msg = 'Missing "info" section in %s' % self.torrent.filename
 
     def generic_exit_trigger(self, f):
-        out = StringIO()
         try:
-            out = f(self.config, self.torrent, err=out)
+            f(self.config, self.torrent)
         except SystemExit:
-            return out.getvalue()
+            return self.out.getvalue()
 
     def test_top_exit_value_on_fail(self):
         self.assertRaises(SystemExit, torrentinfo.top, *(self.config, self.torrent))
