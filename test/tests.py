@@ -257,8 +257,9 @@ class GenericOutputTest(unittest.TestCase):
         self.out = StringIO()
 
     def test_top_succeed(self):
-        formatter = torrentinfo.TextFormatter(False)
-        torrentinfo.top(formatter, self.torrent, out=self.out)
+        config = torrentinfo.Config(torrentinfo.TextFormatter(False),
+                        out=self.out)
+        torrentinfo.top(config, self.torrent)
         output = self.out.getvalue()
         self.assertEqual(self.file['top'], output)
 
