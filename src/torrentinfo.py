@@ -117,7 +117,7 @@ def dump_as_date(number, config):
     :param formatter: formatter to use for string formatting
     :type formatter: TextFormatter
     """
-    config,formatter.string_format(TextFormatter.MAGENTA, config,
+    config.formatter.string_format(TextFormatter.MAGENTA, config,
                                    time.strftime(
                                        '%Y/%m/%d %H:%M:%S\n',
                                        time.gmtime(number)))
