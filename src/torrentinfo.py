@@ -61,7 +61,7 @@ class TextFormatter:
     def __init__(self, colour):
         self.colour = colour
 
-    def string_format(self, format_spec, string='', out=sys.stdout):
+    def string_format(self, format_spec, config, string=''):
         """Attaches colour codes to strings before outputting them.
 
         :param format_spec: value of the colour code
@@ -74,9 +74,9 @@ class TextFormatter:
             for name, code in TextFormatter.mapping:
                 if format_spec & name:
                     codestring += TextFormatter.escape + code
-            out.write(codestring + string)
+            config.out.write(codestring + string)
         else:
-            out.write(string)
+            config.out.write(string)
 
 class Config:
     """Class storing configuration propagated throughout the program."""
@@ -474,8 +474,7 @@ def basic_files(formatter, torrent, out=sys.stdout, err=sys.stderr):
             dump_as_size(filestorrent[0]['length'], formatter, '', 0, out=out)
 
 
-def list_files(formatter, torrent, detailed=False,
-               out=sys.stdout, err=sys.stderr):
+def list_files(config, torrent, detailed=False):
     """Prints out a list of files using a Torrent instance
 
     :param formatter: text formatter to use
@@ -536,16 +535,14 @@ def main(alt_args=None, out=sys.stdout, err=sys.stderr):
         for filename in args.filename:
             try:
                 torrent = Torrent(filename, load_torrent(filename))
-                formatter.string_format(TextFormatter.BRIGHT, '%s\n' %
-                                        os.path.basename(torrent.filename),
-                                        out=out)
+                config.formatter.string_format(TextFormatter.BRIGHT, '%s\n' %
+                                               os.path.basename(torrent.filename))
+
                 if args.dump:
-                    list_files(formatter, torrent, detailed=True,
-                               out=out, err=err)
+                    list_files(config, torrent, detailed=True)
                 elif args.files:
                     basic(formatter, torrent, out=out, err=err)
-                    list_files(formatter, torrent, detailed=False,
-                               out=out, err=err)
+                    list_files(config, torrent, detailed=False)
                 elif args.top:
                     top(formatter, torrent, out=out, err=err)
                 else:
