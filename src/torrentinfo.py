@@ -532,7 +532,7 @@ def main(alt_args=None, out=sys.stdout, err=sys.stderr):
     try:
         args = get_arg_parser().parse_args() if alt_args is None else alt_args
         formatter = TextFormatter(not args.nocolour)
-
+        config = Config(formatter, out=out, err=err, tab_char='    ')
         for filename in args.filename:
             try:
                 torrent = Torrent(filename, load_torrent(filename))
