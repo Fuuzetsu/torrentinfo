@@ -575,6 +575,7 @@ def main(alt_args=None, out=sys.stdout, err=sys.stderr):
             except UnknownTypeChar:
                 err.write(
                     'Could not parse %s as a valid torrent file.\n' % filename)
+                sys.exit(1)
     except KeyboardInterrupt:
         pass
 
