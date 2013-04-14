@@ -528,7 +528,8 @@ def list_files(config, torrent, detailed=False):
             config.formatter.string_format(TextFormatter.YELLOW |
                                            TextFormatter.BRIGHT,
                                            config,
-                                           '%s%d' % (config.tab_char * 2, index))
+                                           '%s%d' % (config.tab_char * 2,
+                                                     index))
 
 
             config.formatter.string_format(TextFormatter.NORMAL, config, '\n')
