@@ -173,8 +173,8 @@ def dump(item, config, depth, newline=True, as_utf_repr=False):
         """Helper that checks for type equality."""
         return type(item) == comp_type
 
-    if teq(dict):
-        for key in item.keys().sort():
+    if teq(dict) or teq(Torrent):
+        for key in sorted(item):
             config.formatter.string_format(
                 TextFormatter.NORMAL | TextFormatter.GREEN, config)
 
@@ -183,7 +183,10 @@ def dump(item, config, depth, newline=True, as_utf_repr=False):
 
             dump(key, config, depth, as_utf_repr=as_utf_repr)
             config.formatter.string_format(TextFormatter.NORMAL, config)
-            dump(item[key], config, depth + 1, as_utf_repr=as_utf_repr)
+            if key == 'pieces':
+                dump(item[key], config, depth + 1, as_utf_repr=True)
+            else:
+                dump(item[key], config, depth + 1, as_utf_repr=as_utf_repr)
     elif teq(list):
         if len(item) == 1:
             dump(item[0], config, depth, as_utf_repr=as_utf_repr)
@@ -356,8 +359,11 @@ def get_arg_parser():
                         help='Only show top level file/directory')
     group.add_argument('-f', '--files', dest='files', action='store_true',
                         help='Show files within the torrent')
-    group.add_argument('-d', '--dump', dest='dump', action='store_true',
-                       help='Dump the whole file hierarchy')
+    group.add_argument('-d', '--detailed', dest='detailed', action='store_true',
+                       help='Print more information about the files')
+    group.add_argument('-e', '--everything', dest='everything',
+                       action='store_true',
+                       help='Print everything we can about the torrent')
     parser.add_argument('-a', '--ascii', dest='ascii', action='store_true',
                         help='Only print out ascii')
     parser.add_argument('-n', '--nocolour', dest='nocolour',
@@ -577,7 +583,9 @@ def main(alt_args=None, out=sys.stdout, err=sys.stderr):
                                                '%s\n' % os.path.basename(
                                                    torrent.filename))
 
-                if args.dump:
+                if args.everything:
+                    dump(torrent, config, 1)
+                elif args.detailed:
                     list_files(config, torrent, detailed=True)
                 elif args.files:
                     basic(config, torrent)
