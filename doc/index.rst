@@ -46,13 +46,14 @@ Usage
     filename        Torrent files to process
 
   optional arguments:
-    -h, --help      show this help message and exit
-    -v, --version   Print version and quit
-    -t, --top       Only show top level file/directory
-    -f, --files     Show files within the torrent
-    -d, --dump      Dump the whole file hierarchy
-    -a, --ascii     Only print out ascii
-    -n, --nocolour  No ANSI colour
+    -h, --help        show this help message and exit
+    -v, --version     Print version and quit
+    -t, --top         Only show top level file/directory
+    -f, --files       Show files within the torrent
+    -d, --detailed    Print more information about the files
+    -e, --everything  Print everything we can about the torrent
+    -a, --ascii       Only print out ascii
+    -n, --nocolour    No ANSI colour
 
 
 If no settings are specified the script will default to showing the basic

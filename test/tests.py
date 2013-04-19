@@ -545,8 +545,72 @@ class CommandLineOutputTest(unittest.TestCase):
         assert self.err.getvalue() == ''
         self.assertEqual(self.out.getvalue(), return_string)
 
+    def test_dump_single(self):
+        tname = 'regular.torrent'
+        tp = self.torrent_path(tname)
+        ns = self.arg_namespace('-n -e %s' % tp)
 
-    def tearDown(self):
+        return_string = '\n'.join([tname,
+                                   '    announce',
+                                   '        fake.com/announce',
+                                   '    created by',
+                                   '        mktorrent 1.0',
+                                   '    creation date',
+                                   '        1363530756',
+                                   '    info',
+                                   '        length',
+                                   '            22602',
+                                   '        name',
+                                   '            torrentinfo.py',
+                                   '        piece length',
+                                   '            262144',
+                                   '        pieces',
+                                   '            [20 UTF-8 Bytes]\n\n'])
+
+
+        torrentinfo.main(alt_args=ns, out=self.out, err=self.err)
+        assert self.err.getvalue() == ''
+        self.assertEqual(self.out.getvalue(), return_string)
+
+
+    def test_dump_multi(self):
+        tname = 'multi_bytes.torrent'
+        tp = self.torrent_path(tname)
+        ns = self.arg_namespace('-n -e %s' % tp)
+
+        return_string = '\n'.join([tname,
+                                   '    announce',
+                                   '        fake.com/announce',
+                                   '    created by',
+                                   '        mktorrent 1.0',
+                                   '    creation date',
+                                   '        1363528361',
+                                   '    info',
+                                   '        files',
+                                   '            0',
+                                   '                length',
+                                   '                    1048576',
+                                   '                path',
+                                   '                    megabyte',
+                                   '            1',
+                                   '                length',
+                                   '                    2097152',
+                                   '                path',
+                                   '                    two_megabytes',
+                                   '        name',
+                                   '            multibyte',
+                                   '        piece length',
+                                   '            262144',
+                                   '        pieces',
+                                   '            [240 UTF-8 Bytes]\n\n'])
+
+        torrentinfo.main(alt_args=ns, out=self.out, err=self.err)
+        assert self.err.getvalue() == ''
+        self.assertEqual(self.out.getvalue(), return_string)
+
+
+
+def tearDown(self):
         self.parser = None
         self.out = None
         self.err = None
