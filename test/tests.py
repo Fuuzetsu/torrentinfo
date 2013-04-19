@@ -28,7 +28,6 @@ else:
 
 import unittest
 import nose
-import argparse
 import torrentinfo
 
 
