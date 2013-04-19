@@ -565,7 +565,7 @@ class CommandLineOutputTest(unittest.TestCase):
                                    '        piece length',
                                    '            262144',
                                    '        pieces',
-                                   '             [20 UTF-8 Bytes]\n\n'])
+                                   '            [20 UTF-8 Bytes]\n\n'])
 
 
         torrentinfo.main(alt_args=ns, out=self.out, err=self.err)
@@ -580,29 +580,29 @@ class CommandLineOutputTest(unittest.TestCase):
 
         return_string = '\n'.join([tname,
                                    '    announce',
-                                   '      fake.com/announce',
-                                   '  created by',
-                                   '      mktorrent 1.0',
-                                   '  creation date',
-                                   '      1363528361',
-                                   '  info',
-                                   '      files',
-                                   '          0',
-                                   '              length',
-                                   '                  1048576',
-                                   '              path',
-                                   '                  megabyte',
-                                   '          1',
-                                   '              length',
-                                   '                  2097152',
-                                   '              path',
-                                   '                  two_megabytes',
-                                   '      name',
-                                   '          multibyte',
-                                   '      piece length',
-                                   '          262144',
-                                   '       pieces',
-                                   '             [240 UTF-8 Bytes]\n\n'])
+                                   '        fake.com/announce',
+                                   '    created by',
+                                   '        mktorrent 1.0',
+                                   '    creation date',
+                                   '        1363528361',
+                                   '    info',
+                                   '        files',
+                                   '            0',
+                                   '                length',
+                                   '                    1048576',
+                                   '                path',
+                                   '                    megabyte',
+                                   '            1',
+                                   '                length',
+                                   '                    2097152',
+                                   '                path',
+                                   '                    two_megabytes',
+                                   '        name',
+                                   '            multibyte',
+                                   '        piece length',
+                                   '            262144',
+                                   '        pieces',
+                                   '            [240 UTF-8 Bytes]\n\n'])
 
         torrentinfo.main(alt_args=ns, out=self.out, err=self.err)
         assert self.err.getvalue() == ''
