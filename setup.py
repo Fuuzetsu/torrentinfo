@@ -7,15 +7,16 @@ install_file = 'torrentinfo.py'
 if os.name is 'posix':
     src_path = os.path.abspath('src')
     file_path = os.path.join(src_path, 'torrentinfo')
-    if not os.path.exists(file_path):
-        if not os.path.exists(file_path):
-            os.symlink(os.path.join(src_path, 'torrentinfo.py'), file_path)
+    if os.path.exists(file_path):
+        os.remove(file_path)
+
+    os.symlink(os.path.join(src_path, 'torrentinfo.py'), file_path)
 
     install_file = 'torrentinfo'
 
 
 setup(name="torrentinfo",
-      version="1.8.2",
+      version="1.8.3",
       description="Bittorrent .torrent file parser and summariser",
       author="Mateusz Kowalczyk",
       author_email="fuuzetsu@fuuzetsu.co.uk",
