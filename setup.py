@@ -13,7 +13,7 @@ if os.name is 'posix':
 
 
 setup(name="torrentinfo",
-      version="1.6.1",
+      version="1.7.0",
       description="Bittorrent .torrent file parser and summariser",
       author="Mateusz Kowalczyk",
       author_email="fuuzetsu@fuuzetsu.co.uk",

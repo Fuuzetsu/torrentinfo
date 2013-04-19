@@ -30,7 +30,7 @@ import time
 #  see pylint ticket #2481
 from string import printable  # pylint: disable-msg=W0402
 
-VERSION = '1.6.1'
+VERSION = '1.7.0'
 
 class TextFormatter:
     """Class used to format strings before printing."""
