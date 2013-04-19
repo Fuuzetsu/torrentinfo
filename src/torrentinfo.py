@@ -175,8 +175,8 @@ def dump(item, config, depth, newline=True, as_utf_repr=False):
 
     if teq(dict):
         for key in item.keys().sort():
-            config.formatter.string_format(TextFormatter.NORMAL | TextFormatter.GREEN,
-                                           config)
+            config.formatter.string_format(
+                TextFormatter.NORMAL | TextFormatter.GREEN, config)
 
             if depth < 2:
                 config.formatter.string_format(TextFormatter.BRIGHT, config)
@@ -192,14 +192,16 @@ def dump(item, config, depth, newline=True, as_utf_repr=False):
                 config.formatter.string_format(TextFormatter.BRIGHT |
                                                TextFormatter.YELLOW,
                                                config,
-                                               '%s%d\n' % (config.tab_char * depth, index))
+                                               '%s%d\n' % (config.tab_char
+                                                           * depth, index))
                 config.formatter.string_format(TextFormatter.NORMAL, config)
                 dump(item[index], config, depth + 1, as_utf_repr=as_utf_repr)
     elif teq(str):
         if is_ascii_only(item) or not as_utf_repr:
             str_output = '%s%s' % (
                 config.tab_char * depth, item) + ('\n' if newline else '')
-            config.formatter.string_format(TextFormatter.NONE, config, str_output)
+            config.formatter.string_format(TextFormatter.NONE,
+                                           config, str_output)
         else:
             str_output = '%s[%d UTF-8 Bytes]' % (
                 config.tab_char * depth, len(item)) + ('\n' if newline else '')
@@ -372,8 +374,10 @@ def start_line(config, prefix, depth, postfix='',
     :type format_spec: int
     """
     config.formatter.string_format(TextFormatter.BRIGHT | TextFormatter.GREEN,
-                                   config, '%s%s' % (config.tab_char * depth, prefix))
-    config.formatter.string_format(format_spec, config, '%s%s' % (config.tab_char, postfix))
+                                   config, '%s%s'
+                                   % (config.tab_char * depth, prefix))
+    config.formatter.string_format(format_spec, config, '%s%s'
+                                   % (config.tab_char, postfix))
 
 
 def get_line(config, prefix, key, torrent, is_date=False):
@@ -524,7 +528,8 @@ def list_files(config, torrent, detailed=False):
             config.formatter.string_format(TextFormatter.YELLOW |
                                            TextFormatter.BRIGHT,
                                            config,
-                                           '%s%d' % (config.tab_char * 2, index))
+                                           '%s%d' % (config.tab_char * 2,
+                                                     index))
 
 
             config.formatter.string_format(TextFormatter.NORMAL, config, '\n')
@@ -559,7 +564,8 @@ def main(alt_args=None, out=sys.stdout, err=sys.stderr):
             try:
                 torrent = Torrent(filename, load_torrent(filename))
                 config.formatter.string_format(TextFormatter.BRIGHT, config,
-                                               '%s\n' % os.path.basename(torrent.filename))
+                                               '%s\n' % os.path.basename(
+                                                   torrent.filename))
 
                 if args.dump:
                     list_files(config, torrent, detailed=True)
@@ -571,7 +577,8 @@ def main(alt_args=None, out=sys.stdout, err=sys.stderr):
                 else:
                     basic(config, torrent)
                     basic_files(config, torrent)
-                config.formatter.string_format(TextFormatter.NORMAL, config, '\n')
+                config.formatter.string_format(TextFormatter.NORMAL,
+                                               config, '\n')
             except UnknownTypeChar:
                 err.write(
                     'Could not parse %s as a valid torrent file.\n' % filename)
