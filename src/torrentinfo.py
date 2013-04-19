@@ -129,7 +129,7 @@ def dump_as_date(number, config):
     """
     config.formatter.string_format(TextFormatter.MAGENTA, config,
                                    time.strftime(
-                                       '%Y/%m/%d %H:%M:%S\n',
+                                       '%Y/%m/%d %H:%M:%S %Z\n',
                                        time.gmtime(number)))
 
 def dump_as_size(number, config, depth):
