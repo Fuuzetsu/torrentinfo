@@ -8,7 +8,11 @@ if os.name is 'posix':
     src_path = os.path.abspath('src')
     file_path = os.path.join(src_path, 'torrentinfo')
     if not os.path.exists(file_path):
+        if os.path.exists(file_path):
+            os.remove(file_path) # Remove possibly stale file
+
         os.symlink(os.path.join(src_path, 'torrentinfo.py'), file_path)
+
     install_file = 'torrentinfo'
 
 
