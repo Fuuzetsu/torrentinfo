@@ -24,6 +24,7 @@ sys.path.append(os.path.join('..', 'src'))
 from StringIO import StringIO
 import unittest
 import nose
+import re
 import argparse
 import torrentinfo
 
@@ -125,17 +126,20 @@ class TextFormatterTest(unittest.TestCase):
 
     def test_date_succees(self):
         date_number = 1363542066
-        result = '2013/03/17 17:41:06\n'
+        result = '2013/03/17 17:41:06 \\w+?\n'
+        pattern = re.compile(result)
+
         torrentinfo.dump_as_date(date_number, self.config)
         output = self.out.getvalue()
-        self.assertEqual(output, result)
+        self.assertTrue(re.match(pattern, output) != None)
 
     def test_date_fail(self):
         date_number = 1363542066
-        result = '2099/03/17 17:41:06\n'
+        result = '2099/03/17 17:41:06 \\w+?\n'
+        pattern = re.compile(result)
         torrentinfo.dump_as_date(date_number, self.config)
         output = self.out.getvalue()
-        self.assertNotEqual(output, result)
+        self.assertTrue(re.match(pattern, output) == None)
 
     def test_size_success(self):
         size = 1024 * 1024
@@ -393,13 +397,15 @@ class CommandLineOutputTest(unittest.TestCase):
                                    '    name           torrentinfo.py',
                                    '    tracker url    fake.com/announce',
                                    '    created by     mktorrent 1.0',
-                                   '    created on     2013/03/17 14:32:36',
+                                   r'    created on     \d{4}/\d\d/\d\d \d\d:\d\d:\d\d \w+?',
                                    '    file name      torrentinfo.py',
                                    '    file size      22.1KB\n\n'])
+        pattern = re.compile(return_string)
 
         torrentinfo.main(alt_args=ns, out=self.out, err=self.err)
         assert self.err.getvalue() == ''
-        self.assertEqual(self.out.getvalue(), return_string)
+
+        self.assertTrue(re.match(pattern, self.out.getvalue()) != None)
 
     def test_basic_multi(self):
         tname = 'multi_bytes.torrent'
@@ -410,13 +416,14 @@ class CommandLineOutputTest(unittest.TestCase):
                                    '    name           multibyte',
                                    '    tracker url    fake.com/announce',
                                    '    created by     mktorrent 1.0',
-                                   '    created on     2013/03/17 13:52:41',
+                                   r'    created on     \d{4}/\d\d/\d\d \d\d:\d\d:\d\d \w+?',
                                    '    num files      2',
                                    '    total size     3.0MB\n\n'])
+        pattern = re.compile(return_string)
 
         torrentinfo.main(alt_args=ns, out=self.out, err=self.err)
         assert self.err.getvalue() == ''
-        self.assertEqual(self.out.getvalue(), return_string)
+        self.assertTrue(re.match(pattern, self.out.getvalue()) != None)
 
     def test_top_single(self):
         tname = 'regular.torrent'
@@ -452,15 +459,17 @@ class CommandLineOutputTest(unittest.TestCase):
                                    '    name           torrentinfo.py',
                                    '    tracker url    fake.com/announce',
                                    '    created by     mktorrent 1.0',
-                                   '    created on     2013/03/17 14:32:36',
+                                   r'    created on     \d{4}/\d\d/\d\d \d\d:\d\d:\d\d \w+?',
                                    '    files    ',
                                    '        0',
                                    '            torrentinfo.py',
                                    '            22.1KB\n\n'])
 
+        pattern = re.compile(return_string)
+
         torrentinfo.main(alt_args=ns, out=self.out, err=self.err)
         assert self.err.getvalue() == ''
-        self.assertEqual(self.out.getvalue(), return_string)
+        self.assertTrue(re.match(pattern, self.out.getvalue()) != None)
 
     def test_basic_files_multi(self):
         tname = 'multi_bytes.torrent'
@@ -471,7 +480,7 @@ class CommandLineOutputTest(unittest.TestCase):
                                    '    name           multibyte',
                                    '    tracker url    fake.com/announce',
                                    '    created by     mktorrent 1.0',
-                                   '    created on     2013/03/17 13:52:41',
+                                   r'    created on     \d{4}/\d\d/\d\d \d\d:\d\d:\d\d \w+?',
                                    '    files    ',
                                    '        0',
                                    '            megabyte',
@@ -480,9 +489,11 @@ class CommandLineOutputTest(unittest.TestCase):
                                    '            two_megabytes',
                                    '            2.0MB\n\n'])
 
+        pattern = re.compile(return_string)
+
         torrentinfo.main(alt_args=ns, out=self.out, err=self.err)
         assert self.err.getvalue() == ''
-        self.assertEqual(self.out.getvalue(), return_string)
+        self.assertTrue(re.match(pattern, self.out.getvalue()) != None)
 
 
     def test_list_files_single(self):
