@@ -38,15 +38,21 @@ themself in a similar position and does a Google search for "torrentinfo".
 Usage
 =====
 
-``torrentinfo.py [ -h -n ] filename1 [ ... filenameN ]``::
+``usage: torrentinfo [-h] [-v] [-t | -f | -d] [-a] [-n] filename [filename ...]``::
 
-    -h --help      Displays this message
-    -b --basic     Shows basic file information (default)
-    -t --top       Shows only the top level file/directory
-    -f --files     Shows files within the torrent
-    -d --dump      Dumps the whole file hierarchy
-    -a --ascii     Only prints out ascii
-    -n --nocolour  No ANSI colour
+  Print information about torrent files
+
+  positional arguments:
+    filename        Torrent files to process
+
+  optional arguments:
+    -h, --help      show this help message and exit
+    -v, --version   Print version and quit
+    -t, --top       Only show top level file/directory
+    -f, --files     Show files within the torrent
+    -d, --dump      Dump the whole file hierarchy
+    -a, --ascii     Only print out ascii
+    -n, --nocolour  No ANSI colour
 
 
 If no settings are specified the script will default to showing the basic
