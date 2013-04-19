@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 # This file is part of torrentinfo.
 #
@@ -243,7 +244,7 @@ def decode(string_buffer):
     elif content_type == 'i':
         string_buffer.get(1)
         return int(string_buffer.get_upto('e'))
-    elif content_type in [str(x) for x in xrange(0, 10)]:
+    elif content_type in [str(x) for x in range(0, 10)]:
         return string_buffer.get(int(string_buffer.get_upto(':')))
 
     raise UnknownTypeChar(content_type, string_buffer)
@@ -257,8 +258,18 @@ def load_torrent(filename):
 
     :returns: StringBuffer
     """
-    handle = file(filename, 'rb')
-    return StringBuffer(handle.read())
+    handle = open(filename, 'rb')
+    read_handle = handle.read()
+
+    # Python 2 → 3 compatibility hack
+    if (type(read_handle) == str):
+        return StringBuffer(read_handle)
+
+    string = ''
+    for i in read_handle:
+        string += chr(i)
+
+    return StringBuffer(string)
 
 class StringBuffer:
     """String processing class."""

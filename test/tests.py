@@ -21,11 +21,14 @@ import os.path
 import os
 sys.path.append(os.path.join('..', 'src'))
 
-from StringIO import StringIO
+if sys.version_info[0] == 2:
+    from StringIO import StringIO
+else:
+    from io import StringIO
+
 import unittest
 import nose
 import re
-import argparse
 import torrentinfo
 
 
