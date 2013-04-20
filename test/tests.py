@@ -398,6 +398,7 @@ class CommandLineOutputTest(unittest.TestCase):
 
         return_string = '\n'.join([tname,
                                    '    name           torrentinfo.py',
+                                   '    comment        ',
                                    '    tracker url    fake.com/announce',
                                    '    created by     mktorrent 1.0',
                                    r'    created on     \d{4}/\d\d/\d\d \d\d:\d\d:\d\d \w+?',
@@ -417,6 +418,7 @@ class CommandLineOutputTest(unittest.TestCase):
 
         return_string = '\n'.join([tname,
                                    '    name           multibyte',
+                                   '    comment        ',
                                    '    tracker url    fake.com/announce',
                                    '    created by     mktorrent 1.0',
                                    r'    created on     \d{4}/\d\d/\d\d \d\d:\d\d:\d\d \w+?',
@@ -460,6 +462,7 @@ class CommandLineOutputTest(unittest.TestCase):
 
         return_string = '\n'.join([tname,
                                    '    name           torrentinfo.py',
+                                   '    comment        ',
                                    '    tracker url    fake.com/announce',
                                    '    created by     mktorrent 1.0',
                                    r'    created on     \d{4}/\d\d/\d\d \d\d:\d\d:\d\d \w+?',
@@ -481,6 +484,7 @@ class CommandLineOutputTest(unittest.TestCase):
 
         return_string = '\n'.join([tname,
                                    '    name           multibyte',
+                                   '    comment        ',
                                    '    tracker url    fake.com/announce',
                                    '    created by     mktorrent 1.0',
                                    r'    created on     \d{4}/\d\d/\d\d \d\d:\d\d:\d\d \w+?',
