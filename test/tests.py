@@ -398,6 +398,7 @@ class CommandLineOutputTest(unittest.TestCase):
 
         return_string = '\n'.join([tname,
                                    '    name           torrentinfo.py',
+                                   '    comment        ',
                                    '    tracker url    fake.com/announce',
                                    '    created by     mktorrent 1.0',
                                    r'    created on     \d{4}/\d\d/\d\d \d\d:\d\d:\d\d \w+?',
@@ -417,6 +418,7 @@ class CommandLineOutputTest(unittest.TestCase):
 
         return_string = '\n'.join([tname,
                                    '    name           multibyte',
+                                   '    comment        ',
                                    '    tracker url    fake.com/announce',
                                    '    created by     mktorrent 1.0',
                                    r'    created on     \d{4}/\d\d/\d\d \d\d:\d\d:\d\d \w+?',
@@ -460,6 +462,7 @@ class CommandLineOutputTest(unittest.TestCase):
 
         return_string = '\n'.join([tname,
                                    '    name           torrentinfo.py',
+                                   '    comment        ',
                                    '    tracker url    fake.com/announce',
                                    '    created by     mktorrent 1.0',
                                    r'    created on     \d{4}/\d\d/\d\d \d\d:\d\d:\d\d \w+?',
@@ -474,6 +477,27 @@ class CommandLineOutputTest(unittest.TestCase):
         assert self.err.getvalue() == ''
         self.assertTrue(re.match(pattern, self.out.getvalue()) != None)
 
+    def test_basic_comment_single(self):
+        tname = 'comment.torrent'
+        tp = self.torrent_path(tname)
+        ns = self.arg_namespace('-n %s' % tp)
+
+        return_string = '\n'.join([tname,
+                                   '    name           nothinghere',
+                                   '    comment        Some comment',
+                                   '    tracker url    fake.com',
+                                   '    created by     mktorrent 1.0',
+                                   r'    created on     \d{4}/\d\d/\d\d \d\d:\d\d:\d\d \w+?',
+                                   '    file name      nothinghere',
+                                   '    file size      0.0B'])
+
+        pattern = re.compile(return_string)
+
+        torrentinfo.main(alt_args=ns, out=self.out, err=self.err)
+        assert self.err.getvalue() == ''
+        self.assertTrue(re.match(pattern, self.out.getvalue()) != None)
+
+
     def test_basic_files_multi(self):
         tname = 'multi_bytes.torrent'
         tp = self.torrent_path(tname)
@@ -481,6 +505,7 @@ class CommandLineOutputTest(unittest.TestCase):
 
         return_string = '\n'.join([tname,
                                    '    name           multibyte',
+                                   '    comment        ',
                                    '    tracker url    fake.com/announce',
                                    '    created by     mktorrent 1.0',
                                    r'    created on     \d{4}/\d\d/\d\d \d\d:\d\d:\d\d \w+?',
