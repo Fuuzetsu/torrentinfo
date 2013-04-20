@@ -30,7 +30,7 @@ import time
 #  see pylint ticket #2481
 from string import printable  # pylint: disable-msg=W0402
 
-VERSION = '1.8.3'
+VERSION = '1.8.4'
 
 class TextFormatter:
     """Class used to format strings before printing."""
@@ -459,6 +459,7 @@ def basic(config, torrent):
         config.err.write('Missing "info" section in %s' % torrent.filename)
         sys.exit(1)
     get_line(config, 'name       ', 'name', torrent['info'])
+    get_line(config, 'comment    ', 'comment', torrent)
     get_line(config, 'tracker url', 'announce', torrent)
     get_line(config, 'created by ', 'created by', torrent)
     get_line(config, 'created on ', 'creation date',
