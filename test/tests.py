@@ -438,16 +438,10 @@ class CommandLineOutputTest(unittest.TestCase):
         return_string += 'as a valid torrent file.\n'
         ns = self.arg_namespace(tp)
 
-        if sys.version_info[0] == 2 and sys.version_info[1] < 6:
-            try:
-                torrentinfo.main(alt_args=ns, out=self.out, err=self.err)
-            except SystemExit:
-                pass
-        else:
-            try:
-                torrentinfo.main(alt_args=ns, out=self.out, err=self.err)
-            except SystemExit as se:
-                assert se.code == 1
+        try:
+            torrentinfo.main(alt_args=ns, out=self.out, err=self.err)
+        except SystemExit as se:
+            assert se.code == 1
 
         assert self.out.getvalue() == ''
         self.assertEqual(self.err.getvalue(), return_string)
