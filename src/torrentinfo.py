@@ -261,9 +261,11 @@ def load_torrent(filename):
 
     :returns: StringBuffer
     """
-    handle = open(filename, 'rb')
+    file_value = open(filename, 'rb').read()
+    if len(file_value) == 0:
+        raise UnknownTypeChar('', StringBuffer(''))
 
-    return StringBuffer(handle.read())
+    return StringBuffer(file_value)
 
 class StringBuffer:
     """String processing class."""
