@@ -434,11 +434,16 @@ class CommandLineOutputTest(unittest.TestCase):
     def test_empty(self):
         tname = 'empty.torrent'
         tp = self.torrent_path(tname)
-        return_string = 'Could not parse %s ' % tname
-        return_string += 'as a valid torrent file.'
+        return_string = 'Could not parse %s ' % tp
+        return_string += 'as a valid torrent file.\n'
         ns = self.arg_namespace(tp)
-        torrentinfo.main(alt_args=ns, out=self.out, err=self.err)
-        assert self.err.getvalue() == ''
+
+        try:
+            torrentinfo.main(alt_args=ns, out=self.out, err=self.err)
+        except SystemExit as se:
+            assert se.code == 1
+
+        assert self.out.getvalue() == ''
         self.assertEqual(self.err.getvalue(), return_string)
 
     def test_top_single(self):
