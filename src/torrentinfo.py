@@ -262,17 +262,8 @@ def load_torrent(filename):
     :returns: StringBuffer
     """
     handle = open(filename, 'rb')
-    read_handle = handle.read()
 
-    # Python 2 → 3 compatibility hack
-    if (type(read_handle) == str):
-        return StringBuffer(read_handle)
-
-    string = ''
-    for i in read_handle:
-        string += chr(i)
-
-    return StringBuffer(string)
+    return StringBuffer(handle.read())
 
 class StringBuffer:
     """String processing class."""
@@ -283,6 +274,36 @@ class StringBuffer:
         :type string: str
         """
         self.string = string
+
+    def unicode_get(self, length, destructive=True, replacement='×'):
+        """A get method called when bytes are encountered. Casts into unicode
+        where at all possible or uses the replacement character otherwise.
+
+
+        :param length: number of characters to get from the buffer
+        :type length: int
+        :param destructive: decides whether to progress the buffer
+        :type destructive: bool
+        :param replacement: Replacement to use character if unicode decode fails
+        :type replacement: str
+
+        :returns: str -- Unicode string from the string buffer
+        """
+        if self.is_eof():
+            raise StringBuffer.BufferOverrun(1)
+        if length > len(self.string):
+            raise StringBuffer.BufferOverrun(length - len(self.string))
+
+        try:
+            ret_val = self.string[:length]
+            if destructive:
+                self.string = self.string[length:]
+            if type(ret_val) == str:
+                return ret_val
+            return ret_val.decode('utf-8')
+        except UnicodeDecodeError:
+            return replacement * length
+
 
     def is_eof(self):
         """Checks whether we're at the end of the string.
@@ -298,10 +319,7 @@ class StringBuffer:
         :returns: str -- next character of this instance
         :raises: `BufferOverrun`
         """
-        if self.is_eof():
-            raise StringBuffer.BufferOverrun(1)
-        return self.string[0]
-
+        return self.unicode_get(1, destructive=False)
 
     def get(self, length):
         """Gets certain amount of characters from the buffer.
@@ -312,10 +330,7 @@ class StringBuffer:
         :returns: str -- first `length` characters from the buffer
         :raises: BufferOverrun
         """
-        if length > len(self.string):
-            raise StringBuffer.BufferOverrun(length - len(self.string))
-        segment, self.string = self.string[:length], self.string[length:]
-        return segment
+        return self.unicode_get(length)
 
     def get_upto(self, character):
         """Gets all characters in a string until the specified one, exclusive.
