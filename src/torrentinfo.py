@@ -167,7 +167,7 @@ def dump(item, config, depth, newline=True, as_utf_repr=False):
     :param newline: indicates whether to insert a newline after certain strings
     :type newline: bool
     :param as_utf_repr: indicates whether only ASCII should be printed
-    :param as_utf_repr: bool
+    :type as_utf_repr: bool
     """
     def teq(comp_type):
         """Helper that checks for type equality."""
