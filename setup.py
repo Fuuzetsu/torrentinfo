@@ -20,6 +20,6 @@ setup(name="torrentinfo",
       description="Bittorrent .torrent file parser and summariser",
       author="Mateusz Kowalczyk",
       author_email="fuuzetsu@fuuzetsu.co.uk",
-      url="https://github.com/ShanaTsunTsunLove/torrentinfo",
+      url="https://github.com/Fuuzetsu/torrentinfo",
       license="GNU General Public License v2 (see LICENSE file)",
       scripts=[os.path.join("src", install_file)])

@@ -73,7 +73,7 @@ file in the install directory.
 Bugs
 ====
 
-Any bugs or fixes should be submitted to `my GitHub <https://github.com/ShanaTsunTsunLove/torrentinfo>`_.
+Any bugs or fixes should be submitted to `my GitHub <https://github.com/Fuuzetsu/torrentinfo>`_.
 
 Credits
 =======
