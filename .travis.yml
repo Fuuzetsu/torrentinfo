@@ -9,6 +9,9 @@ notifications:
       - fuuzetsu@fuuzetsu.co.uk
     on_success: never
     on_failure: always
+  irc:
+    channels:
+      - "irc.freenode.net#fuuzetsu"
 install:
   - pip install coverage
   - pip install argparse
