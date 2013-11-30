@@ -276,6 +276,8 @@ class StringBuffer:
         :type string: str
         """
         self.string = string
+        self.string_length = len(self.string)
+        self.taken = 0
 
     def unicode_get(self, length, destructive=True, replacement='×'):
         """A get method called when bytes are encountered. Casts into unicode
@@ -293,13 +295,12 @@ class StringBuffer:
         """
         if self.is_eof():
             raise StringBuffer.BufferOverrun(1)
-        if length > len(self.string):
-            raise StringBuffer.BufferOverrun(length - len(self.string))
-
+        if length > self.string_length - self.taken:
+            raise StringBuffer.BufferOverrun(length - (self.string_length - self.taken))
         try:
-            ret_val = self.string[:length]
+            ret_val = self.string[self.taken : self.taken + length]
             if destructive:
-                self.string = self.string[length:]
+                self.taken += length
             if type(ret_val) == str:
                 return ret_val
             return ret_val.decode('utf-8')
@@ -312,7 +313,7 @@ class StringBuffer:
 
         :returns: bool -- true if this instance reached end of line
         """
-        return len(self.string) == 0
+        return self.taken >= self.string_length
 
 
     def peek(self):
