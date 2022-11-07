@@ -569,7 +569,7 @@ def list_files(config, torrent, detailed=False):
 
             config.formatter.string_format(TextFormatter.NORMAL, config, '\n')
             if detailed:
-                for kwrd in filestorrent[index]:
+                for kwrd in sorted(filestorrent[index], reverse=True):
                     start_line(config, kwrd, 3, postfix='\n')
                     dump(filestorrent[index][kwrd], config, 4)
             else:
