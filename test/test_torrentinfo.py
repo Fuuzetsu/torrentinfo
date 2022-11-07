@@ -27,7 +27,6 @@ else:
     from io import StringIO
 
 import unittest
-import nose
 import re
 import torrentinfo
 
@@ -704,7 +703,3 @@ class PrintableTest(unittest.TestCase):
         test_string = 'perfectly printable ascii'
         torrentinfo.dump(test_string, self.config, 0, newline=False)
         self.assertEqual(self.out.getvalue(), test_string)
-
-
-if __name__ == '__main__':
-    nose.main(buffer=True)
